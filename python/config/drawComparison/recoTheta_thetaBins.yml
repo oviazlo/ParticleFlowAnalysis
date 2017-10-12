@@ -1,0 +1,45 @@
+thetaBins:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/build/PhotonECAL/FCCee_singleParticle_performace/kaon0L/nominalEfficiency/thetaBins/
+        fileName:
+                - particleGun_E50_Theta43_Phi0.root 
+                - particleGun_E50_Theta47_Phi0.root 
+                - particleGun_E50_Theta51_Phi0.root 
+                - particleGun_E50_Theta55_Phi0.root 
+                - particleGun_E50_Theta59_Phi0.root 
+                - particleGun_E50_Theta63_Phi0.root 
+        legTitle:
+                - theta 43
+                - theta 47
+                - theta 51
+                - theta 55
+                - theta 59
+                - theta 63
+        legCaptionMode: mean
+        histTitle: ""
+        histName: 
+                - PandoraPFOs_22_2112/firstEnergeticPartOfType_Energy
+        rebinFactor: 10
+        legPos:
+                - 0.2
+                - 0.7
+                - 0.5
+                - 0.9
+        histColor:
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                - 7
+                - 8
+        yAxisLabel: Counts
+        # xAxisLabel: Cos(Theta)
+        yAxisRange:
+                - 0
+                - 200
+        xAxisRange:
+                - 0
+                - 70
+                # - 0.5
+                # - 0.95
