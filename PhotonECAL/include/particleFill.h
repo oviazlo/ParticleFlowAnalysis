@@ -2,7 +2,6 @@
 #define particleFill_H
 
 #include <objectFill.h>
-#include <EVENT/Cluster.h>
 
 struct histStruct{
 	string title;
@@ -41,6 +40,7 @@ class particleFill : public objectFill{
 		void createTwoParticleCorrelationHists(string prefix);
 		void createHistsFromMap(map<string,histStruct> inHistStructMap, string prefix);
 		int fillHist(double inVal, string baseString, string prefix);
+		int fillHist(double inVal1, double inVal2, string baseString, string prefix);
 		void dumpTruthPart(EVENT::MCParticle* part, int counter = 0);
 		void dumpReconstructedPart(EVENT::ReconstructedParticle* part, int counter = 0);
 		int fillPart (EVENT::MCParticle* inPart, string prefix="truthParticle_");
@@ -57,6 +57,7 @@ class particleFill : public objectFill{
 		map<string,histStruct> singleRecoParticleClustersHistStructMap;
 		map<string,histStruct> twoParticleCorrelationHistStructMap;
 		double dPhiMergeValue;
+		vector<bool> boolVecDefaultFalse;
 
 };
 
