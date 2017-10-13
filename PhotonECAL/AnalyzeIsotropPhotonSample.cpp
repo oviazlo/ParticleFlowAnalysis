@@ -8,15 +8,15 @@
 using namespace std;
 
 // COLLECTIONS TO USE
-vector<string> particleFillCollections = {"SiTracks","MCParticlesSkimmed","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs"};
-// vector<string> particleFillCollections = {"MCParticlesSkimmed","PandoraPFOs"};
+// vector<string> particleFillCollections = {"SiTracks","MCParticlesSkimmed","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs"};
+vector<string> particleFillCollections = {"MCParticlesSkimmed","PandoraPFOs","PandoraPFOs"};
 // 11:		electron
 // 13:		muon
 // 22:		photon
 // 211: 	pi+
 // 2112:	neutron
-vector<vector<int> > PFOPartTypes = {{},{},{11},{-11},{13},{-13},{22},{-211},{211},{2112},{11,22},{11,-11,13,-13,211,-211},{22,2112}};
-// vector<vector<int> > PFOPartTypes = {{},{11}};
+// vector<vector<int> > PFOPartTypes = {{},{},{11},{-11},{13},{-13},{22},{-211},{211},{2112},{11,22},{11,-11,13,-13,211,-211},{22,2112}};
+vector<vector<int> > PFOPartTypes = {{},{22},{2112}};
 // int efficiencyPFOType = 11;
 // vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap"[>, "ECalBarrelCollection", "ECalEndcapCollection"<]};
 // vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap","ECalBarrelCollection", "ECalEndcapCollection", "HCALBarrel","HCALEndcap","HCalBarrelCollection", "HCalEndcapCollection"};
