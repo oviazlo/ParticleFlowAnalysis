@@ -2,7 +2,7 @@
 
 #include <IMPL/ReconstructedParticleImpl.h>
 
-#define nBinsPerGeV 10
+#define nBinsPerGeV 1
 
 void particleFill::initHistStructs(){
 	// all histogram NEED to have unique names!!!
@@ -18,15 +18,24 @@ void particleFill::initHistStructs(){
 	twoParticleCorrelationHistStructMap["sumE"] = histStruct("E_{1}+E_{2}; E_{1}+E_{2} [GeV] ; Counts",250*nBinsPerGeV,0.0,250.0);
 	twoParticleCorrelationHistStructMap["TwoParticleType"] = histStruct("Particle Type; Type; Counts",2200,0,2200,"TH1I");
 
-	// singleRecoParticleClustersHistStructMap["clusterPositionZY"] = histStruct("Cluster Position; Z [mm]; Y [mm]",800,-4000,4000,"TH2D",800,-4000,4000);
+	singleRecoParticleClustersHistStructMap["ECALtoHCALRatio"] = histStruct("ECAL/HCAL Energy Ratio; ECAL/HCAL ratio; Counts",250,0,100);
+	singleRecoParticleClustersHistStructMap["ECALEnergy"] = histStruct("ECAL Energy; ECAL Energy [GeV]; Counts",125*nBinsPerGeV,0.0,125.0);
+	singleRecoParticleClustersHistStructMap["HCALEnergy"] = histStruct("HCAL Energy; HCAL Energy [GeV]; Counts",125*nBinsPerGeV,0.0,125.0);
 	singleRecoParticleClustersHistStructMap["clusterPositionZR"] = histStruct("Cluster Position; Z [mm]; R [mm]",800,-4000,4000,"TH2D",400,0,4000);
-	// singleRecoParticleClustersHistStructMap["clusterPositionXY"] = histStruct("Cluster Position; X [mm]; Y [mm]",800,-4000,4000,"TH2D",800,-4000,4000);
+	singleRecoParticleClustersHistStructMap["clusterPositionMoreECALEnergy"] = histStruct("Cluster Position; Z [mm]; R [mm]",800,-4000,4000,"TH2D",400,0,4000);
+	singleRecoParticleClustersHistStructMap["clusterPositionMoreHCALEnergy"] = histStruct("Cluster Position; Z [mm]; R [mm]",800,-4000,4000,"TH2D",400,0,4000);
+	singleRecoParticleClustersHistStructMap["hitPositionsOneEventExample1"] = histStruct("Calo hits position; Z [mm]; R [mm]",800,-4000,4000,"TH2D",400,0,4000);
+	singleRecoParticleClustersHistStructMap["hitPositionsOneEventExample2"] = histStruct("Calo hits position; Z [mm]; R [mm]",800,-4000,4000,"TH2D",400,0,4000);
+	singleRecoParticleClustersHistStructMap["hitPositionsOneEventExample3"] = histStruct("Calo hits position; Z [mm]; R [mm]",800,-4000,4000,"TH2D",400,0,4000);
+	singleRecoParticleClustersHistStructMap["hitPositionsOneEventExample4"] = histStruct("Calo hits position; Z [mm]; R [mm]",800,-4000,4000,"TH2D",400,0,4000);
 
 }
 
 int particleFill::init(){
 
 	initHistStructs();
+	for (int i=0; i<9; i++)
+		boolVecDefaultFalse.push_back(false);
 
 	if (IsInWord("MCParticle",collectionName)){ 
 		createSingleParticleHists("truthParticle_");
@@ -49,6 +58,7 @@ int particleFill::init(){
 	else{ // Reconstructed particles
 		createSingleParticleHists("allPartsOfType_");
 		createSingleParticleHists("firstEnergeticPartOfType_");
+		createSingleParticleHists("firstEnergeticPartOfType_truthParts_");
 		createSingleParticleHists("firstEnergeticPartOfType_noAdditionalPFOs_");
 		createSingleParticleHists("firstEnergeticPartOfType_thereAreAdditionalPFOs_");
 		createSingleParticleHists("firstEnergeticPartOfWrongType_");
@@ -60,7 +70,7 @@ int particleFill::init(){
 		createTwoParticleCorrelationHists("signalPFO_secondEnergeticPFO_");
 		createTwoParticleCorrelationHists("signalPFO_secondEnergeticPhoton_");
 
-		createSingleRecoParticleClustersHists("test_");
+		createSingleRecoParticleClustersHists("signalPFO_clusterInfo_");
 
 		TH1I* h_setPartType = new TH1I("setPFOPartType","Set PFO particle type to use; Type; Counts",2200,0,2200); // max part.type = 2112 (neutron)
 		histMap["setPFOPartType"] = h_setPartType;
@@ -78,7 +88,7 @@ int particleFill::init(){
 	}
 
 	dPhiMergeValue = 0;
-	debugFlag = false;
+	debugFlag = true;
 
 	return 0;
 }
@@ -232,7 +242,7 @@ int particleFill::fillEvent(EVENT::LCEvent* event){
 			if(find(partTypeToSelect.begin(), partTypeToSelect.end(), part->getType()) != partTypeToSelect.end()){
 
 				fillPart(part,"firstEnergeticPartOfType_");
-				fillClusterInfo(part,"test_");
+				fillClusterInfo(part,"signalPFO_clusterInfo_");
 				if (nElements>=2 && countE_1!=countE_2){
 					auto part2 = static_cast<EVENT::ReconstructedParticle*>(collection->getElementAt(countE_2));
 					fillPart(part2,"secondEnergeticPart_");
@@ -299,8 +309,56 @@ int particleFill::fillPart (EVENT::ReconstructedParticle* inPart, string prefix)
 int particleFill::fillClusterInfo (EVENT::ReconstructedParticle* inPart, string prefix){
 	vector<EVENT::Cluster*> clusterVec = inPart->getClusters();
 	for (int i=0; i<clusterVec.size(); i++){
-		 const float *pos = clusterVec[i]->getPosition();
-		 histMap[prefix+"clusterPositionZR"]->Fill(pos[2],sqrt(pos[1]*pos[1]+pos[0]*pos[0]));
+		const float *pos = clusterVec[i]->getPosition();
+		fillHist(pos[2],sqrt(pos[1]*pos[1]+pos[0]*pos[0]), "clusterPositionZR", prefix);
+		// "ecal", "hcal", "yoke", "lcal", "lhcal", "bcal"
+		vector<float> subdetEnergies = clusterVec[i]->getSubdetectorEnergies();
+		double ratio = subdetEnergies[0]/subdetEnergies[1];
+		fillHist(subdetEnergies[0], "ECALEnergy", prefix);
+		fillHist(subdetEnergies[1], "HCALEnergy", prefix);
+		fillHist(ratio, "ECALtoHCALRatio", prefix);
+		if (ratio>1)
+			fillHist(pos[2],sqrt(pos[1]*pos[1]+pos[0]*pos[0]), "clusterPositionMoreECALEnergy", prefix);
+		else
+			fillHist(pos[2],sqrt(pos[1]*pos[1]+pos[0]*pos[0]), "clusterPositionMoreHCALEnergy", prefix);
+		if (ratio>5.0 && ratio<10 && boolVecDefaultFalse[0]==false){
+			boolVecDefaultFalse[0]==true;
+			histMap[prefix+"hitPositionsOneEventExample1"]->SetTitle(("E: " + DoubToStr(clusterVec[i]->getEnergy()) + " GeV, ECAL to HCAL ratio: " + DoubToStr(ratio)).c_str());
+			vector<EVENT::CalorimeterHit*> caloHits = clusterVec[i]->getCalorimeterHits();
+			for (int j=0; j<caloHits.size(); j++){
+				const float *hitPos = caloHits[j]->getPosition();
+				fillHist(hitPos[2],sqrt(hitPos[1]*hitPos[1]+hitPos[0]*hitPos[0]), "hitPositionsOneEventExample1", prefix);
+			}
+		}
+		if (ratio>0.8 && ratio<1.2 && boolVecDefaultFalse[1]==false){
+			boolVecDefaultFalse[1]==true;
+			histMap[prefix+"hitPositionsOneEventExample2"]->SetTitle(("E: " + DoubToStr(clusterVec[i]->getEnergy()) + " GeV, ECAL to HCAL ratio: " + DoubToStr(ratio)).c_str());
+			vector<EVENT::CalorimeterHit*> caloHits = clusterVec[i]->getCalorimeterHits();
+			for (int j=0; j<caloHits.size(); j++){
+				const float *hitPos = caloHits[j]->getPosition();
+				fillHist(hitPos[2],sqrt(hitPos[1]*hitPos[1]+hitPos[0]*hitPos[0]), "hitPositionsOneEventExample2", prefix);
+			}
+		}
+		if (ratio>0.1 && ratio<0.2 && boolVecDefaultFalse[2]==false){
+			boolVecDefaultFalse[2]==true;
+			histMap[prefix+"hitPositionsOneEventExample3"]->SetTitle(("E: " + DoubToStr(clusterVec[i]->getEnergy()) + " GeV, ECAL to HCAL ratio: " + DoubToStr(ratio)).c_str());
+			vector<EVENT::CalorimeterHit*> caloHits = clusterVec[i]->getCalorimeterHits();
+			for (int j=0; j<caloHits.size(); j++){
+				const float *hitPos = caloHits[j]->getPosition();
+				fillHist(hitPos[2],sqrt(hitPos[1]*hitPos[1]+hitPos[0]*hitPos[0]), "hitPositionsOneEventExample3", prefix);
+			}
+		}
+		if (ratio>0.2 && ratio<0.3 && boolVecDefaultFalse[3]==false){
+			boolVecDefaultFalse[3]==true;
+			histMap[prefix+"hitPositionsOneEventExample4"]->SetTitle(("E: " + DoubToStr(clusterVec[i]->getEnergy()) + " GeV, ECAL to HCAL ratio: " + DoubToStr(ratio)).c_str());
+			vector<EVENT::CalorimeterHit*> caloHits = clusterVec[i]->getCalorimeterHits();
+			for (int j=0; j<caloHits.size(); j++){
+				const float *hitPos = caloHits[j]->getPosition();
+				fillHist(hitPos[2],sqrt(hitPos[1]*hitPos[1]+hitPos[0]*hitPos[0]), "hitPositionsOneEventExample4", prefix);
+			}
+		}
+
+
 	}
 
 	return 0;
@@ -315,7 +373,8 @@ void particleFill::dumpTruthPart(EVENT::MCParticle* part, int counter){
 	bool inTracker = part->isDecayedInTracker();
 	bool inCal = part->isDecayedInCalorimeter();
 	int genStatus = part->getGeneratorStatus();
-	cout << "t" << counter << ": E: " << ((int)(100*part->getEnergy()))/100.0 << " GeV; theta: " << partTheta << "; phi: " << partPhi << "; inTracker: " << inTracker << "; inCal: " << inCal << "; genStatus: " << genStatus << endl;
+	int pdgId = part->getPDG();
+	cout << "t" << counter << ": pdg: " << pdgId << ": E: " << ((int)(100*part->getEnergy()))/100.0 << " GeV; theta: " << partTheta << "; phi: " << partPhi << "; inTracker: " << inTracker << "; inCal: " << inCal << "; genStatus: " << genStatus << "; pointer: " << part << endl;
 
 }
 
@@ -343,6 +402,22 @@ int particleFill::fillHist(double inVal, string baseString, string prefix){
 
 	return histMap[prefix+baseString]->Fill(inVal);
 }
+
+int particleFill::fillHist(double inVal1, double inVal2, string baseString, string prefix){
+	try {
+		if (histMap[prefix+baseString]==NULL){
+			cout << "[FATAL]\t[particleFill] Can't find histogram with name: " << prefix+baseString << endl;
+			throw 1;
+		}
+	}
+	catch (const std::exception& e) {
+		cout << "[ERROR]\t[particleFill] Exception was caught, during accessing element: <" << prefix << baseString << "> from histMap:"
+			  << endl << e.what() << endl;
+	}
+
+	return histMap[prefix+baseString]->Fill(inVal1,inVal2);
+}
+
 
 double particleFill::getMeanEnergy(){
 	return histMap["allPartsOfType_Energy"]->GetMean();
