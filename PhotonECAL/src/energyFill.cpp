@@ -23,7 +23,7 @@ int energyFill::init(){
 }
 
 
-int energyFill::fillEvent(EVENT::LCEvent* event){
+int energyFill::fillEvent(const EVENT::LCEvent* event){
 
 	try {
 		collection = event->getCollection(collectionName);
@@ -39,7 +39,7 @@ int energyFill::fillEvent(EVENT::LCEvent* event){
 		double totalEnergyDeposited = 0.0;
 		int maxLayer = 0;
 		for(int j=0; j < nElements; j++){
-			auto calHit = static_cast<EVENT::SimCalorimeterHit*>(collection->getElementAt(j));
+			auto calHit = dynamic_cast<EVENT::CalorimeterHit*>(collection->getElementAt(j));
 			totalEnergyDeposited += calHit->getEnergy();
 			// int nContributions = calHit->getNMCContributions();
 			// for (int iCont = 0; iCont < nContributions;++iCont){
@@ -64,13 +64,13 @@ int energyFill::fillEvent(EVENT::LCEvent* event){
 	return 0;
 }
 
-int energyFill::fillEnergy(double energy){
+int energyFill::fillEnergy(const double energy){
 	return histMap["CAL_Energy"]->Fill(energy);
 }
-int energyFill::fillNHits(int nHits){
+int energyFill::fillNHits(const int nHits){
 	return histMap["CAL_Nhits"]->Fill(nHits);
 }
-int energyFill::fillMaxLayer(int maxLayer){
+int energyFill::fillMaxLayer(const int maxLayer){
 	return histMap["CAL_maxLayer"]->Fill(maxLayer);
 }
 

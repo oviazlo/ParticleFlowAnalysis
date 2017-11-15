@@ -40,14 +40,14 @@
 
 class objectFill{
 	public:
-		objectFill(string _outDirName);
+		objectFill(const string _outDirName);
 		~objectFill();
 		virtual int writeToFile(TFile* outFile);
 		virtual int init(){return 0;}
-		virtual int fillEvent(EVENT::LCEvent*){return 0;}
-		void setDebugFlag(bool inFlag){debugFlag = inFlag;}
+		virtual int fillEvent(const EVENT::LCEvent*){return 0;}
+		void setDebugFlag(const bool inFlag){debugFlag = inFlag;}
 		// template <class T> vector<T> getObjVecFromCollection(EVENT::LCCollection* inCollection);
-		vector<EVENT::ReconstructedParticle*> getObjVecFromCollection(EVENT::LCCollection* inCollection);
+		vector<EVENT::ReconstructedParticle*> getObjVecFromCollection(const EVENT::LCCollection* inCollection);
 
 	protected:
 		std::map<std::string, TH1*> histMap;

@@ -43,27 +43,28 @@
 
 class truthParticleSelector{
 	public:
-		truthParticleSelector(string _mcTruthCollection);
+		truthParticleSelector(const string _mcTruthCollection);
 		~truthParticleSelector();
 		
-		void setDebugFlag(bool inFlag){debugFlag = inFlag;}
-		void setEfficiencyCollection(string _effCollection){effCollection=_effCollection;}
-		void setEfficiencyPFOType(int pfoType){efficiencyPFOType=pfoType;}
-		void setParticleFillCollections(vector<string> _particleFillCollections){particleFillCollections = _particleFillCollections;}
-		void setPFOTypes(vector<vector<int> > inVec){PFOTypes = inVec;}
-		void setEnergyFillCollections(vector<string> _energyFillCollections){energyFillCollections = _energyFillCollections;}
+		void setDebugFlag(const bool inFlag){debugFlag = inFlag;}
+		void setEfficiencyCollection(const string _effCollection){effCollection=_effCollection;}
+		void setEfficiencyPFOType(const int pfoType){efficiencyPFOType=pfoType;}
+		void setParticleFillCollections(const vector<string> _particleFillCollections){particleFillCollections = _particleFillCollections;}
+		void setPFOTypes(const vector<vector<int> > inVec){PFOTypes = inVec;}
+		void setEnergyFillCollections(const vector<string> _energyFillCollections){energyFillCollections = _energyFillCollections;}
 		void init(); 
 	
-		void setEnergyRange(double min, double max){energyRange = make_pair(min,max);}
-		void setThetaRange(double min, double max){thetaRange = make_pair(min,max);}
-		void setPhiRange(double min, double max){phiRange = make_pair(min,max);}
+		void setEnergyRange(const double min, const double max){energyRange = make_pair(min,max);}
+		void setThetaRange(const double min, const double max){thetaRange = make_pair(min,max);}
+		void setPhiRange(const double min, const double max){phiRange = make_pair(min,max);}
 		string getPostFixString(){return "E"+DoubToStr((energyRange.first+energyRange.second)/2.0)+"_Theta"+DoubToStr((thetaRange.first+thetaRange.second)/2.0)+"_Phi"+DoubToStr((phiRange.first+phiRange.second)/2.0);  }
 
-		bool selectEvent(EVENT::LCEvent*);
+		bool selectEvent(const EVENT::LCEvent*);
 
 		void writeToFile(TFile *outFile); 
-		void setDiscardFSREvents(bool inBool){discardFSREvents = inBool;}
-		void setDPhiMergeValue(double inVal){dPhiMergeValue = inVal;}
+		void setDiscardFSREvents(const bool inBool){discardFSREvents = inBool;}
+		void setDPhiMergeValue(const double inVal){dPhiMergeValue = inVal;}
+		void setEfficiencyOneClusterRequirement(bool inVal){onlyOneRecoClusterPerEvent = inVal;}
 
 	private:
 		string mcTruthCollection;
@@ -79,6 +80,7 @@ class truthParticleSelector{
 		int efficiencyPFOType;
 		bool discardFSREvents;
 		double dPhiMergeValue;
+		bool onlyOneRecoClusterPerEvent;
 };
 
 #endif

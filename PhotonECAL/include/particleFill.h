@@ -23,32 +23,32 @@ class particleFill : public objectFill{
 		~particleFill(){}
 
 		int init();
-		int fillEvent(EVENT::LCEvent*);
+		int fillEvent(const EVENT::LCEvent*);
 		double getMeanEnergy();
 		double getMeanTheta();
-		void setCollectionName(string _collectionName){collectionName = _collectionName;}
-		void setReconstructedParticleType(int _partTypeToSelect){partTypeToSelect.push_back(_partTypeToSelect);}
-		void setReconstructedParticleType(vector<int> _partTypeToSelect){partTypeToSelect = _partTypeToSelect;}
-		void updateRootDirName(string inStr){outDirName = inStr;}
-		void setDPhiMergeValue(double inVal){dPhiMergeValue = inVal;}
+		void setCollectionName(const string _collectionName){collectionName = _collectionName;}
+		void setReconstructedParticleType(const int _partTypeToSelect){partTypeToSelect.push_back(_partTypeToSelect);}
+		void setReconstructedParticleType(const vector<int> _partTypeToSelect){partTypeToSelect = _partTypeToSelect;}
+		void updateRootDirName(const string inStr){outDirName = inStr;}
+		void setDPhiMergeValue(const double inVal){dPhiMergeValue = inVal;}
 		int writeToFile(TFile* outFile);
 
 	private:
 		void initHistStructs();
-		void createSingleRecoParticleClustersHists(string prefix);
-		void createSingleParticleHists(string prefix);
-		void createTwoParticleCorrelationHists(string prefix);
-		void createHistsFromMap(map<string,histStruct> inHistStructMap, string prefix);
-		int fillHist(double inVal, string baseString, string prefix);
-		int fillHist(double inVal1, double inVal2, string baseString, string prefix);
-		void dumpTruthPart(EVENT::MCParticle* part, int counter = 0);
-		void dumpReconstructedPart(EVENT::ReconstructedParticle* part, int counter = 0);
-		int fillPart (EVENT::MCParticle* inPart, string prefix="truthParticle_");
-		int fillPart (EVENT::ReconstructedParticle* inPart, string prefix);
-		int fillParticleCorrelations (EVENT::ReconstructedParticle* inPart1, EVENT::ReconstructedParticle* inPart2, string prefix);
-		int fillClusterInfo (EVENT::ReconstructedParticle* inPart, string prefix);
+		void createSingleRecoParticleClustersHists(const string prefix);
+		void createSingleParticleHists(const string prefix);
+		void createTwoParticleCorrelationHists(const string prefix);
+		void createHistsFromMap(const map<string,histStruct> inHistStructMap, const string prefix);
+		int fillHist(const double inVal, const string baseString, const string prefix);
+		int fillHist(const double inVal1, const double inVal2, const string baseString, const string prefix);
+		void dumpTruthPart(const EVENT::MCParticle* part, const int counter = 0);
+		void dumpReconstructedPart(const EVENT::ReconstructedParticle* part, const int counter = 0);
+		int fillPart (const EVENT::MCParticle* inPart, const string prefix="truthParticle_");
+		int fillPart (const EVENT::ReconstructedParticle* inPart, const string prefix);
+		int fillParticleCorrelations (const EVENT::ReconstructedParticle* inPart1, const EVENT::ReconstructedParticle* inPart2, const string prefix);
+		int fillClusterInfo (const EVENT::ReconstructedParticle* inPart, const string prefix);
 		// FIXME hardcoded default name of the truth collection
-		vector<EVENT::MCParticle*> getTruthMCParticlesFromCollection(EVENT::LCEvent* event, string truthCollectionName = "MCParticlesSkimmed");
+		vector<EVENT::MCParticle*> getTruthMCParticlesFromCollection(const EVENT::LCEvent* event, const string truthCollectionName = "MCParticlesSkimmed");
 
 		EVENT::LCCollection *collection;
 		string collectionName;
@@ -58,6 +58,11 @@ class particleFill : public objectFill{
 		map<string,histStruct> twoParticleCorrelationHistStructMap;
 		double dPhiMergeValue;
 		vector<bool> boolVecDefaultFalse;
+		map<string,unsigned int> intMap;
+		vector< pair<int, double> > PFOtypeAndEnergyVec;
+		void clasiffyPFO(EVENT::ReconstructedParticle* inPFO);
+
+
 
 };
 

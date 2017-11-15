@@ -144,7 +144,7 @@ int main (int argn, char* argv[]) {
 		// if (eventCounter>100) break;
 		if (printVerbose) cout << endl << "Event " << eventCounter << ":" << endl;
 		eventCounter++;
-		
+	
 		for(auto i=0; i<selectors.size(); i++){
 			selectors[i]->selectEvent(event);
 		}

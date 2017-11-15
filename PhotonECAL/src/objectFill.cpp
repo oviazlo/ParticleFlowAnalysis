@@ -25,11 +25,11 @@ int objectFill::writeToFile(TFile* outFile){
 	return 0;
 }
 
-vector<EVENT::ReconstructedParticle*> objectFill::getObjVecFromCollection(EVENT::LCCollection* inCollection){
+vector<EVENT::ReconstructedParticle*> objectFill::getObjVecFromCollection(const EVENT::LCCollection* inCollection){
 	int nElements = inCollection->getNumberOfElements();
 	vector<EVENT::ReconstructedParticle*> outVec;
 	for(int j=0; j < nElements; j++) {
-		auto part = static_cast<EVENT::ReconstructedParticle*>(inCollection->getElementAt(j));
+		auto part = dynamic_cast<EVENT::ReconstructedParticle*>(inCollection->getElementAt(j));
 		outVec.push_back(part);
 	}
 	return outVec;
@@ -39,7 +39,7 @@ vector<EVENT::ReconstructedParticle*> objectFill::getObjVecFromCollection(EVENT:
 //         int nElements = inCollection->getNumberOfElements();
 //         vector<T> outVec;
 //         for(int j=0; j < nElements; j++) {
-//                 auto part = static_cast<T>(inCollection->getElementAt(j));
+//                 auto part = dynamic_cast<T>(inCollection->getElementAt(j));
 //                 outVec.push_back(part);
 //         }
 //         return outVec;

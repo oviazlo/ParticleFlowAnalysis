@@ -11,14 +11,14 @@ class energyFill : public objectFill{
 		energyFill(string _outDirName) : objectFill(_outDirName) {}
 		~energyFill(){}
 		int init();
-		int fillEvent(EVENT::LCEvent*);
-		void setCollectionName(string _collectionName){collectionName = _collectionName;}
+		int fillEvent(const EVENT::LCEvent*);
+		void setCollectionName(const string _collectionName){collectionName = _collectionName;}
 		int writeToFile(TFile* outFile);
 
 	private:
-		int fillEnergy(double energy);
-		int fillNHits(int nHits);
-		int fillMaxLayer(int maxLayer);
+		int fillEnergy(const double energy);
+		int fillNHits(const int nHits);
+		int fillMaxLayer(const int maxLayer);
 		int createHists();
 		EVENT::LCCollection *collection;
 		string collectionName;

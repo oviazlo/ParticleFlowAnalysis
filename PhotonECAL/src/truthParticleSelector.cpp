@@ -1,6 +1,6 @@
 #include <truthParticleSelector.h>
 
-bool truthParticleSelector::selectEvent(EVENT::LCEvent* event){
+bool truthParticleSelector::selectEvent(const EVENT::LCEvent* event){
 	EVENT::LCCollection *MCTruthCollection = NULL;
 	try {
 		MCTruthCollection = event->getCollection(mcTruthCollection);
@@ -14,7 +14,7 @@ bool truthParticleSelector::selectEvent(EVENT::LCEvent* event){
 	int nElements = MCTruthCollection->getNumberOfElements();
 	if (discardFSREvents && nElements!=1) return 0;
 	for(int j=0; j < nElements; j++) {
-		auto part = static_cast<EVENT::MCParticle*>(MCTruthCollection->getElementAt(j));
+		auto part = dynamic_cast<EVENT::MCParticle*>(MCTruthCollection->getElementAt(j));
 		if (part->getGeneratorStatus()==1){
 			const double *partMom = part->getMomentum();
 			TVector3 v1;
@@ -39,7 +39,7 @@ bool truthParticleSelector::selectEvent(EVENT::LCEvent* event){
 	}
 }
 
-truthParticleSelector::truthParticleSelector(string _mcTruthCollection){
+truthParticleSelector::truthParticleSelector(const string _mcTruthCollection){
 	mcTruthCollection=_mcTruthCollection;
 	energyRange = make_pair(0.0,std::numeric_limits<double>::max());
 	thetaRange = make_pair(-180.0,180.);
@@ -56,6 +56,9 @@ truthParticleSelector::~truthParticleSelector(){
 }
 
 void truthParticleSelector::init(){
+	discardFSREvents = false;
+	dPhiMergeValue = 0;
+	onlyOneRecoClusterPerEvent = false;
 	for (int i; i<particleFillCollections.size(); i++){
 		particleFill* tmpPartFill = new particleFill(particleFillCollections[i]);
 		tmpPartFill->setCollectionName(particleFillCollections[i]);
@@ -78,6 +81,7 @@ void truthParticleSelector::init(){
 	effCalculator->setPFOCollection(effCollection);
 	effCalculator->setMCTruthCollection(mcTruthCollection);
 	effCalculator->setPFOType(efficiencyPFOType);
+	effCalculator->setEfficiencyOneClusterRequirement(onlyOneRecoClusterPerEvent);
 	if (dPhiMergeValue > 0.0)
 		effCalculator->setDPhiMergeValue(dPhiMergeValue);
 	objFillMap["photonEfficiency"] = effCalculator;
@@ -86,8 +90,6 @@ void truthParticleSelector::init(){
 		mapElement.second->init();
 	}
 
-	discardFSREvents = false;
-	dPhiMergeValue = 0;
 }
 
 void truthParticleSelector::writeToFile(TFile *outFile){

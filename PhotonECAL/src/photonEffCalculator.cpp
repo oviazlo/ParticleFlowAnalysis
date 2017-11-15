@@ -6,9 +6,9 @@ int photonEffCalculator::init(){
 	TH1D* tmpHist;
 	tmpHist = new TH1D("dAngle","(PFO,MCTruth) angle; angle [degree]; Counts",1800,0.0,90.0);
 	histMap["dAngle"] = tmpHist;
-	tmpHist = new TH1D("dE","E_{PFO}-E_{MC}; Energy [GeV]; Counts",500,-50.0,50.0);
+	tmpHist = new TH1D("dE","E_{PFO}-E_{MC}; Energy [GeV]; Counts",100,-25.0,25.0);
 	histMap["dE"] = tmpHist;
-	tmpHist = new TH1D("dE_matched","E_{PFO}-E_{MC}^{matched}; Energy [GeV]; Counts",500,-50.0,50.0);
+	tmpHist = new TH1D("dE_matched","E_{PFO}-E_{MC}^{matched}; Energy [GeV]; Counts",1000,-25.0,25.0);
 	histMap["dE_matched"] = tmpHist;
 	tmpHist = new TH1D("PFO_E","E_{PFO}; Energy [GeV]; Counts",750,0.0,150.0);
 	histMap["PFO_E"] = tmpHist;
@@ -26,11 +26,12 @@ int photonEffCalculator::init(){
 	histMap["matchedMC_vs_E"] = tmpHist;
 	debugFlag = false;
 	dPhiMergeValue = 0;
+	onlyOneRecoClusterPerEvent = false;
 	return 0;
 
 }
 
-EVENT::ReconstructedParticle* photonEffCalculator::getMatchedPFO(EVENT::MCParticle* inMCPart, vector<EVENT::ReconstructedParticle*> findablePFO){
+EVENT::ReconstructedParticle* photonEffCalculator::getMatchedPFO(const EVENT::MCParticle* inMCPart, const vector<EVENT::ReconstructedParticle*> findablePFO){
 
 	EVENT::ReconstructedParticle* matchedPFO = NULL;
 
@@ -73,7 +74,7 @@ EVENT::ReconstructedParticle* photonEffCalculator::getMatchedPFO(EVENT::MCPartic
 	return matchedPFO;
 }
 
-int photonEffCalculator::fillEvent(EVENT::LCEvent* event){
+int photonEffCalculator::fillEvent(const EVENT::LCEvent* event){
 	// read collections
 	try {
 		PFOCollection = event->getCollection(PFOCollectionName);
@@ -92,7 +93,7 @@ int photonEffCalculator::fillEvent(EVENT::LCEvent* event){
 	EVENT::MCParticle* genPart = NULL;
 	int nElements = MCTruthCollection->getNumberOfElements();
 	for(int j=0; j < nElements; j++) {
-		auto part = static_cast<EVENT::MCParticle*>(MCTruthCollection->getElementAt(j));
+		auto part = dynamic_cast<EVENT::MCParticle*>(MCTruthCollection->getElementAt(j));
 		if (part->getGeneratorStatus()==1){
 			const double *partMom = part->getMomentum();
 			TVector3 v1;
@@ -117,6 +118,8 @@ int photonEffCalculator::fillEvent(EVENT::LCEvent* event){
 	vector<EVENT::ReconstructedParticle*> recoPFOs = getObjVecFromCollection(PFOCollection);
 	// cout << "[DEBUG]\trecoPFOs.size():" << recoPFOs.size() << endl;
 	if (recoPFOs.size()==0) return 0; // no reco PFOs
+	// FIXME hardcoded type!!!
+	// if (PFOPartType==22 && onlyOneRecoClusterPerEvent && recoPFOs.size()!=1) return 0;
 	int itMostEnergeticOfType = -1;
 	for (int i=0; i<recoPFOs.size(); i++){
 		// cout << "[DEBUG]\tPFOPartType: " << PFOPartType << "\trecoPFOs[i]->getType(): " << recoPFOs[i]->getType() << endl;

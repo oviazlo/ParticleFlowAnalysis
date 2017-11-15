@@ -10,20 +10,23 @@ class photonEffCalculator : public objectFill{
 		~photonEffCalculator(){}
 
 		int init();
-		int fillEvent(EVENT::LCEvent*);
-		void setPFOCollection(string _collectionName){PFOCollectionName = _collectionName;}
-		void setPFOType(int pfoType){PFOPartType = pfoType;}
-		void setMCTruthCollection(string _collectionName){MCTruthCollectionName = _collectionName;}
-		void setDPhiMergeValue(double inVal){dPhiMergeValue = inVal;}
+		int fillEvent(const EVENT::LCEvent*);
+		void setPFOCollection(const string _collectionName){PFOCollectionName = _collectionName;}
+		void setPFOType(const int pfoType){PFOPartType = pfoType;}
+		void setMCTruthCollection(const string _collectionName){MCTruthCollectionName = _collectionName;}
+		void setDPhiMergeValue(const double inVal){dPhiMergeValue = inVal;}
 		int writeToFile(TFile* outFile);
+		void setEfficiencyOneClusterRequirement(bool inVal){onlyOneRecoClusterPerEvent = inVal;}
+
 
 	private:
 		string PFOCollectionName;
 		string MCTruthCollectionName;
 		EVENT::LCCollection *PFOCollection;
 		EVENT::LCCollection *MCTruthCollection;
-		EVENT::ReconstructedParticle* getMatchedPFO(EVENT::MCParticle* inMCPart, vector<EVENT::ReconstructedParticle*> findablePFO);
+		EVENT::ReconstructedParticle* getMatchedPFO(const EVENT::MCParticle* inMCPart, const vector<EVENT::ReconstructedParticle*> findablePFO);
 		int PFOPartType;
 		double dPhiMergeValue;
+		bool onlyOneRecoClusterPerEvent;
 };
 #endif
