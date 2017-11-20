@@ -46,6 +46,7 @@ class particleFill : public objectFill{
 		int fillPart (const EVENT::MCParticle* inPart, const string prefix="truthParticle_");
 		int fillPart (const EVENT::ReconstructedParticle* inPart, const string prefix);
 		int fillParticleCorrelations (const EVENT::ReconstructedParticle* inPart1, const EVENT::ReconstructedParticle* inPart2, const string prefix);
+		int fillParticleCorrelations (const EVENT::ReconstructedParticle* inPart1, const EVENT::MCParticle* inPart2, const string prefix);
 		int fillClusterInfo (const EVENT::ReconstructedParticle* inPart, const string prefix);
 		// FIXME hardcoded default name of the truth collection
 		vector<EVENT::MCParticle*> getTruthMCParticlesFromCollection(const EVENT::LCEvent* event, const string truthCollectionName = "MCParticlesSkimmed");
@@ -58,7 +59,7 @@ class particleFill : public objectFill{
 		map<string,histStruct> twoParticleCorrelationHistStructMap;
 		double dPhiMergeValue;
 		vector<bool> boolVecDefaultFalse;
-		map<string,unsigned int> intMap;
+		map<string,int> intMap;
 		vector< pair<int, double> > PFOtypeAndEnergyVec;
 		void clasiffyPFO(EVENT::ReconstructedParticle* inPFO);
 

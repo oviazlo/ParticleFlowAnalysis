@@ -2,7 +2,7 @@
 
 #include <IMPL/ReconstructedParticleImpl.h>
 
-#define nBinsPerGeV 1
+#define nBinsPerGeV 10
 #define nExampleClusterHists 10
 #define maxEnergyRatioExampleClusterHist 2.0
 
@@ -63,12 +63,17 @@ int particleFill::init(){
 		createSingleParticleHists("signalPFO_truthParts_");
 		createSingleParticleHists("signalPFO_noAdditionalPFOs_");
 		createSingleParticleHists("signalPFO_noAdditionalPFOs_truthParts_");
+		// createSingleParticleHists("signalPFO_noAdditionalPFOs_truthParts_withinEnergyCut_");
 		createSingleParticleHists("signalPFO_thereAreAdditionalPFOs_");
 		createSingleParticleHists("firstEnergeticPartOfWrongType_");
 		createSingleParticleHists("secondEnergeticPart_");
 
+		createSingleParticleHists("PFOofType_");
 		createSingleParticleHists("PFOofType_noAdditionalPFOs_");
 		createSingleParticleHists("PFOofType_thereAreAdditionalPFOs_");
+		createSingleParticleHists("PFOofType_thereAreAdditionalPFOs_withinEnergyCut_");
+		createSingleParticleHists("PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_");
+		createSingleParticleHists("PFONOTofType_thereAreAdditionalPFOs_outsideEnergyCut_");
 		createSingleParticleHists("mostEnergeticPFO_noPFOofType_");
 		// truth hists:
 		createSingleParticleHists("truthParticle_onlyOneRecoPFO_");
@@ -76,9 +81,16 @@ int particleFill::init(){
 
 		createTwoParticleCorrelationHists("signalPFO_secondEnergeticPFO_");
 		createTwoParticleCorrelationHists("signalPFO_secondEnergeticPhoton_");
+		createTwoParticleCorrelationHists("PFOofType_secondPFO_outsideEnergyCut_");
+		createTwoParticleCorrelationHists("PFOofType_truthPart_outsideEnergyCut_");
+		createTwoParticleCorrelationHists("secondPFO_truthPart_outsideEnergyCut_");
+
 
 		createSingleRecoParticleClustersHists("signalPFO_clusterInfo_");
 		createSingleRecoParticleClustersHists("signalPFO_noAdditionalPFOs_clusterInfo_");
+
+		createSingleRecoParticleClustersHists("PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_clusterInfo_");
+		createSingleRecoParticleClustersHists("secondPFO_thereAreAdditionalPFOs_outsideEnergyCut_clusterInfo_");
 
 		TH1I* h_setPartType = new TH1I("setPFOPartType","Set PFO particle type to use; Type; Counts",2200,0,2200); // max part.type = 2112 (neutron)
 		histMap["setPFOPartType"] = h_setPartType;
@@ -128,6 +140,33 @@ int particleFill::fillParticleCorrelations (const EVENT::ReconstructedParticle* 
 	return 0;
 }
 
+
+int particleFill::fillParticleCorrelations (const EVENT::ReconstructedParticle* inPart1, const EVENT::MCParticle* inPart2, const string prefix){
+	// TODO implement dE, dPhi between properly reconstructed and second energetic PFOs
+	const double *partMom1 = inPart1->getMomentum();
+	TVector3 v1, v2;
+	v1.SetXYZ(partMom1[0],partMom1[1],partMom1[2]);
+	const double *partMom2 = inPart2->getMomentum();
+	v2.SetXYZ(partMom2[0],partMom2[1],partMom2[2]);
+	double dPhi = v1.DeltaPhi(v2)*180./TMath::Pi();
+	double dR = v1.DeltaR(v2);
+
+	double dE = inPart1->getEnergy() - inPart2->getEnergy();
+	double sumE = inPart1->getEnergy() + inPart2->getEnergy();
+
+	fillHist(dPhi, "dPhi", prefix);
+	fillHist(dR, "dR", prefix);
+	fillHist(dE, "dE", prefix);
+	fillHist(sumE, "sumE", prefix);
+
+	fillHist(inPart1->getType(), "TwoParticleType", prefix);
+	fillHist(inPart2->getPDG(), "TwoParticleType", prefix);
+
+	return 0;
+
+}
+
+
 vector<EVENT::MCParticle*> particleFill::getTruthMCParticlesFromCollection(const EVENT::LCEvent* event, const string truthCollectionName){
 	// FIXME hardcoding of the collection name
 	vector<EVENT::MCParticle*> outPartVec;
@@ -160,6 +199,7 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 	// for (int iTr=0; iTr<truthParts.size(); iTr++){
 	//         cout << iTr << ": " << truthParts[iTr] << endl;
 	// }
+	// cout << "[DEBUG]\tE_truth: " << truthParts[0]->getEnergy() << endl;
 
 	if( collection ) {
 		string collectionType = collection->getTypeName();
@@ -174,11 +214,16 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 		double E_1 = 0.0;
 		double E_2 = 0.0;
 
-		intMap["id_firstEnergeticPFO"] = -1;
-		intMap["id_secondEnergeticPFO"] = -1;
-		intMap["id_mostEnergeticPFOofType"] = -1;
-		intMap["n_PFOofType"] = 0;
-		intMap["n_PFO"] = nElements;
+		if (collectionType=="ReconstructedParticle"){
+			intMap["id_firstEnergeticPFO"] = -1;
+			intMap["id_secondEnergeticPFO"] = -1;
+			intMap["id_mostEnergeticPFOofType"] = -1;
+			intMap["id_mostEnergeticPFONOTofType"] = -1;
+			intMap["n_PFOofType"] = 0;
+			intMap["n_PFONOTofType"] = 0;
+			intMap["n_PFO"] = nElements;
+			PFOtypeAndEnergyVec.clear();
+		}
 
 		
       		for(int j=0; j < nElements; j++) {
@@ -241,19 +286,23 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 				cout << "[ERROR|fillEvent]\tuknown particle collection: " << collectionType << endl;
 			}
 		}
+
+
 		if (collectionType=="ReconstructedParticle"){
-			auto part = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(countE_1));
+			
+			// auto part = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(countE_1));
+			auto part = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(intMap["id_firstEnergeticPFO"]));
 			
 			// FIXME WARNING testing merging of clusters...
 			if (dPhiMergeValue > 0.0){
-				auto tmpPart = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(countE_1));
+				auto tmpPart = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(intMap["id_firstEnergeticPFO"]));
 				part = new IMPL::ReconstructedParticleImpl();
 				part->setEnergy(tmpPart->getEnergy());
 				part->setMomentum(tmpPart->getMomentum());
 				part->setType(tmpPart->getType());
 
 				for(int j=0; j < nElements; j++) {
-					if (j==countE_1) continue;
+					if (j==intMap["id_firstEnergeticPFO"]) continue;
 					TVector3 v1, v2;
 					const double *partMom1 = part->getMomentum();
 					v1.SetXYZ(partMom1[0],partMom1[1],partMom1[2]);
@@ -267,14 +316,17 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 				}
 			}
 			// FIXME
-			if(find(partTypeToSelect.begin(), partTypeToSelect.end(), part->getType()) != partTypeToSelect.end()){
+			
+			// if (find(partTypeToSelect.begin(), partTypeToSelect.end(), part->getType()) != partTypeToSelect.end()){
+			if ( intMap["id_firstEnergeticPFO"] == intMap["id_mostEnergeticPFOofType"]  ){
 
 				fillPart(part,"signalPFO_");
 				for (int iTr=0; iTr<truthParts.size(); iTr++)
 					fillPart(truthParts[iTr],"signalPFO_truthParts_");
 				fillClusterInfo(part,"signalPFO_clusterInfo_");
-				if (nElements>=2 && countE_1!=countE_2){
-					auto part2 = dynamic_cast<EVENT::ReconstructedParticle*>(collection->getElementAt(countE_2));
+				// if (nElements>=2 && countE_1!=countE_2){
+				if (intMap["id_secondEnergeticPFO"]>=0){
+					auto part2 = dynamic_cast<EVENT::ReconstructedParticle*>(collection->getElementAt(intMap["id_secondEnergeticPFO"]));
 					fillPart(part2,"secondEnergeticPart_");
 					fillParticleCorrelations(part,part2,"signalPFO_secondEnergeticPFO_");
 					if (part2->getType()==22)
@@ -285,7 +337,7 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 				// }
 
 
-				if (nElements>=2){
+				if (intMap["n_PFO"]>=2){
 					fillPart(part,"signalPFO_thereAreAdditionalPFOs_");
 					fillPart(truthParts[0],"truthParticle_twoOrMoreRecoPFO_");
 				}
@@ -302,6 +354,46 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 			}
 			else
 				fillPart(part,"firstEnergeticPartOfWrongType_");
+		
+			if (intMap["n_PFOofType"]>=1){
+				part = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(intMap["id_mostEnergeticPFOofType"]));
+				fillPart(part,"PFOofType_");
+				if (intMap["n_PFO"]==1)
+					fillPart(part,"PFOofType_noAdditionalPFOs_");
+				else{
+					fillPart(part,"PFOofType_thereAreAdditionalPFOs_");
+					double truthE = truthParts[0]->getEnergy();
+					// if (abs(part->getEnergy()-truthE)<(2*sqrt(truthE)+0.5))
+					if (abs(part->getEnergy()-truthE)<(0.75*sqrt(truthE)))
+						fillPart(part,"PFOofType_thereAreAdditionalPFOs_withinEnergyCut_");
+					else{
+						fillPart(part,"PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_");
+						int tmpId = -1;
+						if (intMap["id_mostEnergeticPFOofType"]==intMap["id_firstEnergeticPFO"])
+							tmpId = intMap["id_secondEnergeticPFO"];
+						else
+							tmpId = intMap["id_firstEnergeticPFO"];
+
+						auto partTemp = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(tmpId));
+						fillPart(partTemp,"PFONOTofType_thereAreAdditionalPFOs_outsideEnergyCut_");
+						fillParticleCorrelations(part,partTemp,"PFOofType_secondPFO_outsideEnergyCut_");
+
+						fillParticleCorrelations(part,truthParts[0],"PFOofType_truthPart_outsideEnergyCut_");
+						fillParticleCorrelations(partTemp,truthParts[0],"secondPFO_truthPart_outsideEnergyCut_");
+
+						fillClusterInfo(part,"PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_clusterInfo_");
+						fillClusterInfo(partTemp,"secondPFO_thereAreAdditionalPFOs_outsideEnergyCut_clusterInfo_");
+
+
+					}
+				}
+			}
+			else{
+				part = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(intMap["id_firstEnergeticPFO"]));
+				// cout << "[DEBUG]\tid_mostEnergeticPFOofType: " << intMap["id_mostEnergeticPFOofType"] << endl;
+				// cout << "[DEBUG]\tpart type: " << part->getType() << endl;
+				fillPart(part,"mostEnergeticPFO_noPFOofType_");
+			}
 				
 
 		}
@@ -522,28 +614,68 @@ int particleFill::writeToFile(TFile* outFile){
 }
 void particleFill::clasiffyPFO(EVENT::ReconstructedParticle* inPFO){
 	
-	int PFOtype = inPFO->getType();
-	double PFOenergy = inPFO->getEnergy();
+	const int PFOtype = inPFO->getType();
+	const double PFOenergy = inPFO->getEnergy();
+	// cout << "[DEBUG]\tPFOtype: " << PFOtype << endl;
+	// cout << "[DEBUG]\tpartTypeToSelect[0]: " << partTypeToSelect[0] << endl;
+	// cout << "[DEBUG]\tif statement: " << (find(partTypeToSelect.begin(), partTypeToSelect.end(), PFOtype) != partTypeToSelect.end()) << endl;
 
 	if (intMap["id_firstEnergeticPFO"] == -1){
 		intMap["id_firstEnergeticPFO"] = 0;
-		if(find(partTypeToSelect.begin(), partTypeToSelect.end(), inPFO->getType()) != partTypeToSelect.end()){
+		if(find(partTypeToSelect.begin(), partTypeToSelect.end(), PFOtype) != partTypeToSelect.end()){
 			intMap["id_mostEnergeticPFOofType"] = 0;
 			intMap["n_PFOofType"] = 1;
 		}
+		else{
+			intMap["id_mostEnergeticPFONOTofType"] = 0;
+			intMap["n_PFONOTofType"] = 1;
+		}
 	}
 	else{
-		if (PFOenergy>PFOtypeAndEnergyVec.at(intMap["id_firstEnergeticPFO"])){
+		if (PFOenergy>PFOtypeAndEnergyVec.at(intMap["id_firstEnergeticPFO"]).second){
 			intMap["id_secondEnergeticPFO"] = intMap["id_firstEnergeticPFO"];
 			intMap["id_firstEnergeticPFO"] = PFOtypeAndEnergyVec.size();
 		}
-		if(find(partTypeToSelect.begin(), partTypeToSelect.end(), inPFO->getType()) != partTypeToSelect.end()){
-			if (PFOenergy>PFOtypeAndEnergyVec.at(intMap["mostEnergeticPFOofType"]))
-				intMap["mostEnergeticPFOofType"] = PFOtypeAndEnergyVec.size();
+		else{
+			if (intMap["id_secondEnergeticPFO"] == -1){
+				intMap["id_secondEnergeticPFO"] = PFOtypeAndEnergyVec.size();
+			}
+			else{
+				if (PFOenergy>PFOtypeAndEnergyVec.at(intMap["id_secondEnergeticPFO"]).second)
+					intMap["id_secondEnergeticPFO"] = PFOtypeAndEnergyVec.size();
+			}
+		}
+		if(find(partTypeToSelect.begin(), partTypeToSelect.end(), PFOtype) != partTypeToSelect.end()){
+			if (intMap["n_PFOofType"] == 0){
+				intMap["id_mostEnergeticPFOofType"] = PFOtypeAndEnergyVec.size();
+				// cout << "[dd2]\tid_mostEnergeticPFOofType: " << intMap["id_mostEnergeticPFOofType"] << endl;
+				// cout << "[dd2]\tPFOtypeAndEnergyVec.size(): " << PFOtypeAndEnergyVec.size() << endl;
+			}
+			else{
+				if (PFOenergy>PFOtypeAndEnergyVec.at(intMap["id_mostEnergeticPFOofType"]).second)
+					intMap["id_mostEnergeticPFOofType"] = PFOtypeAndEnergyVec.size();
+			}
 			intMap["n_PFOofType"]++;
+		}
+		else{
+			if (intMap["n_PFONOTofType"] == 0){
+				intMap["id_mostEnergeticPFONOTofType"] = PFOtypeAndEnergyVec.size();
+			}
+			else{
+				if (PFOenergy>PFOtypeAndEnergyVec.at(intMap["id_mostEnergeticPFONOTofType"]).second)
+					 intMap["id_mostEnergeticPFONOTofType"] = PFOtypeAndEnergyVec.size();
+			}
+			intMap["n_PFONOTofType"]++;
 		}
 	}
 	
-	PFOtypeAndEnergyVec.push_back( pair(PFOtype, PFOenergy) );
-
+	PFOtypeAndEnergyVec.push_back( pair<int, double>(PFOtype, PFOenergy) );
+	// cout << "[DEBUG]\tintMap printout:" << endl;
+	// cout << "id_firstEnergeticPFO: " << intMap["id_firstEnergeticPFO"] << endl;
+	// cout << "id_secondEnergeticPFO: " << intMap["id_secondEnergeticPFO"] << endl;
+	// cout << "id_mostEnergeticPFOofType: " << intMap["id_mostEnergeticPFOofType"] << endl;
+	// cout << "n_PFOofType: " << intMap["n_PFOofType"] << endl;
+	// cout << "n_PFO: " << intMap["n_PFO"] << endl;
+	// cout << "PFOtypeAndEnergyVec.size(): " << PFOtypeAndEnergyVec.size() << endl;
+        
 }

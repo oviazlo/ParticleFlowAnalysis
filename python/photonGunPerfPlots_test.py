@@ -3,7 +3,105 @@ import glob, os, ROOT, math, sys
 from ROOT import TCanvas, TGraph, TLegend, TF1, TH1, TH1F
 from ROOT import gROOT, gStyle
 from array import array
-from math import tan
+from math import tan, sqrt
+
+def getRMS90Resolution(pTH1F, resolution, resolutionError):
+	
+
+#	FLOAT_MAX = sys.float_info.max
+	FLOAT_MAX = 9999.0
+
+	sum = 0.
+	total = 0.
+	sx = 0.
+	sxx = 0.
+	nbins = pTH1F.GetNbinsX()
+
+	for i in range(0,nbins):
+
+		binx = pTH1F.GetBinLowEdge(i) + 0.5 * pTH1F.GetBinWidth(i)
+		yi = pTH1F.GetBinContent(i)
+		sx = sx + yi * binx
+		sxx = sxx + yi * binx * binx
+		total = total+ yi
+    
+
+	rawMean = sx / total
+	rawMeanSquared = sxx / total
+
+	rawRms = sqrt(rawMeanSquared - rawMean * rawMean)
+	print ("rawRms: %f" % (rawRms))
+
+	sum = 0.
+	is0 = 0
+
+    
+	for i in range(0,nbins+1):
+		if (sum < total / 10.):
+			sum += pTH1F.GetBinContent(i)
+			is0 = i
+		else:
+			break
+	print ("sum: %f" % (sum))
+	print ("total: %f" % (total))
+	print ("is0: %d" % (is0))
+
+	rmsmin = FLOAT_MAX
+	sigma = FLOAT_MAX
+	sigmasigma = FLOAT_MAX
+	frac = FLOAT_MAX
+	efrac = FLOAT_MAX
+	mean = FLOAT_MAX
+	low = FLOAT_MAX
+	rms = FLOAT_MAX
+	high = 0.0
+
+	for istart in range(0,is0+1):
+		sumn = 0.
+		csum = 0.
+		sumx = 0.
+		sumxx = 0.
+		iend = 0
+
+		for istart in range(istart,nbins+1):
+			if (csum < 0.9 * total):
+				binx = pTH1F.GetBinLowEdge(i) + (0.5 * pTH1F.GetBinWidth(i))
+				yi = pTH1F.GetBinContent(i)
+				csum = csum + yi
+
+				if (sumn < 0.9 * total):
+					sumn = sumn + yi
+					sumx = sumx + yi * binx
+					sumxx = sumxx + yi * binx * binx
+					iend = i
+			else:
+				break
+
+		print ("iend: %d" % (iend))
+
+		localMean = sumx / sumn
+		localMeanSquared = sumxx / sumn
+		localRms = sqrt(localMeanSquared - localMean * localMean)
+
+        	if (localRms < rmsmin):
+			mean = localMean
+			rms = localRms
+			low = pTH1F.GetBinLowEdge(istart)
+			high = pTH1F.GetBinLowEdge(iend)
+			rmsmin = localRms
+
+		sigma = rms
+		sigmasigma = sigma / sqrt(total)
+    
+	print ("mean: %f" % (mean))
+	print ("rms: %f" % (rms))
+	print ("rmsmin: %f" % (rmsmin))
+
+	resolution = frac
+	resolutionError = efrac
+
+	print ("resolution: %f" % (resolution))
+	print ("resolutionError: %f" % (resolutionError))
 
 def getFiles(dirName, regexString):
 	os.chdir(dirName)
@@ -81,6 +179,10 @@ def getFitResult(inFile):
 	f1 = TF1("f1", "gaus", -50, 50);
 	dEHist.Fit("f1", "Rq");
 	print ("FIT: inFile: %s, par1: %f #pm %f, par2: %f #pm %f" % (inFile.GetName(), f1.GetParameter(1), f1.GetParError(1), f1.GetParameter(2), f1.GetParError(2)))
+	resolution = 0
+	resolutionError = 0
+	getRMS90Resolution(inFile.Get("photonEfficiency/PFO_E"), resolution, resolutionError)
+	print ("RMS90: res: %f #pm %f" % (resolution, resolutionError))
 	return [f1.GetParameter(1),f1.GetParameter(2)]
 
 def createGraphs(inArr, index):

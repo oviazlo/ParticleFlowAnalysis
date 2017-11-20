@@ -16,7 +16,9 @@ vector<string> particleFillCollections = {"MCParticlesSkimmed","PandoraPFOs","Pa
 // 211: 	pi+
 // 2112:	neutron
 // vector<vector<int> > PFOPartTypes = {{},{},{11},{-11},{13},{-13},{22},{-211},{211},{2112},{11,22},{11,-11,13,-13,211,-211},{22,2112}};
-vector<vector<int> > PFOPartTypes = {{},{22},{2112}};
+// vector<vector<int> > PFOPartTypes = {{},{22},{2112}};
+vector<vector<int> > PFOPartTypes = {{},{22},{11,-11,13,-13,211,-211,22,2112}};
+// vector<vector<int> > PFOPartTypes = {{},{22}};
 // int efficiencyPFOType = 11;
 // vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap"[>, "ECalBarrelCollection", "ECalEndcapCollection"<]};
 // vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap","ECalBarrelCollection", "ECalEndcapCollection", "HCALBarrel","HCALEndcap","HCalBarrelCollection", "HCalEndcapCollection"};

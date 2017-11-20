@@ -12,7 +12,8 @@ import yaml # WARNING use this environment ~/env/setupPyTools27.env to enable ya
 
 #  yamlFile = "/afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/python/config/drawComparison/efficiency_vs_energy.yml"
 #  yamlFile = "/afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/python/config/drawComparison/recoTheta_thetaBins.yml"
-yamlFile = "/afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/python/config/drawComparison/efficiency_vs_theta_superimpose.yml"
+#  yamlFile = "/afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/python/config/drawComparison/efficiency_vs_theta_superimpose.yml"
+yamlFile = "/afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/python/config/drawComparison/energy.yml"
 
 if __name__ == "__main__":
 
@@ -50,9 +51,12 @@ if __name__ == "__main__":
 				hist.SetLineColor(histColor[k*len(fileName)+i])
 				hist.SetMarkerColor(histColor[k*len(fileName)+i])
 				hist.SetLineWidth(2)
+				if ("lineWidth" in cfg):
+					hist.SetLineWidth(cfg["lineWidth"])
+				if ("markerSize" in cfg):
+					hist.SetMarkerSize(cfg["markerSize"])
 				if ("legCaptionMode" in cfg):
-					if (cfg["legCaptionMode"]=="entries"):
-						nEntries.append(hist.GetEntries())
+					nEntries.append(hist.GetEntries())
 				if ("histTitle" in cfg):
 					hist.SetTitle(cfg['histTitle'])
 				if ("rebinFactor" in cfg):
@@ -68,12 +72,17 @@ if __name__ == "__main__":
 				hists.append(hist)
 		totalEntries = sum(nEntries)
 
-		c1 = TCanvas( 'c1', 'A Simple Graph Example', 0, 0, 800, 600 )
+		if ("canPos" in cfg):
+			c1 = TCanvas( 'c1', 'A Simple Graph Example',  cfg["canPos"][0],cfg["canPos"][1],cfg["canPos"][2],cfg["canPos"][3])
+		else:
+			c1 = TCanvas( 'c1', 'A Simple Graph Example', 0, 0, 800, 600 )
 		for i in range(0,len(hists)):
 			if ("legPos" in cfg):
 				if ("legCaptionMode" in cfg):
-					if (cfg["legCaptionMode"]=="entries"):
+					if (cfg["legCaptionMode"]=="fraction"):
 						leg.AddEntry(hists[i],"%s (%i%%)" % (legTitle[i], round(100.0*nEntries[i]/totalEntries)),"lp")
+					elif (cfg["legCaptionMode"]=="entries"):
+						leg.AddEntry(hists[i],"%s (%i)" % (legTitle[i], nEntries[i]),"lp")
 					elif (cfg["legCaptionMode"]=="mean"):
 						leg.AddEntry(hists[i],"%s (%.2f GeV)" % (legTitle[i], hists[i].GetMean()),"lp")
 				else:
@@ -91,6 +100,14 @@ if __name__ == "__main__":
 				drawOption = ""
 				if ("drawOption" in cfg):
 					drawOption = cfg['drawOption']
+				if ("gridX" in cfg):
+					c1.SetGridx(cfg['gridX'])
+				if ("gridY" in cfg):
+					c1.SetGridy(cfg['gridY'])
+				if ("logX" in cfg):
+					c1.cd(1).SetLogx(cfg['logX'])
+				if ("logY" in cfg):
+					c1.cd(1).SetLogy(cfg['logY'])
 
 				hists[i].Draw(drawOption)
 			else:

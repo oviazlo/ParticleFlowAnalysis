@@ -1,0 +1,58 @@
+jet_energy_res:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/LCPandoraAnalysis/RUN/
+        fileName:
+                - hist_Zuds91.root
+                - hist_Zuds380.root
+        legTitle:
+                - Zuds 91 GeV
+                - Zuds 380 GeV
+        histName: 
+                - ResVsCosTheta
+        legPos:
+                - 0.12
+                - 0.7
+                - 0.88
+                - 0.9
+        histColor:
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                - 7
+                - 8
+        # xAxisRange:
+        #         - 0
+        #         - 65
+        yAxisRange:
+                - 3
+                - 7.5
+        # histTitle: "K^{0}_{L} gun, E: 50 GeV, Theta: 46-48"
+
+jet_energy:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/LCPandoraAnalysis/RUN/
+        fileName:
+                - hist_Zuds91.root
+                - hist_Zuds380.root
+        legTitle:
+                - "91 GeV (mean: 90.4 GeV, jet res: 4.4 %)"
+                - "380 GeV (mean: 376.4 GeV, jet res: 3.5 %)"
+        histName: 
+                - fPFA_L6A
+        legPos:
+                - 0.32
+                - 0.7
+                - 0.88
+                - 0.9
+        histColor:
+                - 1
+                - 2
+        # legCaptionMode: mean
+        xAxisRange:
+                - 0
+                - 500
+        rebinFactor: 20
+        histTitle: "Total Energy: |cos(#Theta)<0.6|; Energy [GeV]; Counts"
+        # xAxisTitle: Energy [GeV]
+        # yAxisTitle: Counts
