@@ -1,7 +1,7 @@
-photon_100GeV_theta90:
-        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/build/PhotonECAL/FCCee_singleParticle_performace/gamma/nominalEfficiency_nov14/subsample/
+CLIC_photon_100GeV_theta50_130:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/build/PhotonECAL/FCCee_singleParticle_performace/gamma/CLIC_oldCaloCalib/
         fileName:
-                - particleGun_E100_Theta90_Phi0.root
+                - particleGun_E100_Theta50_130.root
         legTitle:
                 # - neutral PFO
                 - 1 PFO in event
@@ -36,6 +36,6 @@ photon_100GeV_theta90:
         yAxisRange:
                 - 0.1
                 - 100
-        histTitle: "Photon gun, E: 100 GeV, 60 < #theta < 120"
+        histTitle: "CLIC, Photon gun, E: 100 GeV, 50 < #theta < 130"
         legCaptionMode: entries
         # logY: 1

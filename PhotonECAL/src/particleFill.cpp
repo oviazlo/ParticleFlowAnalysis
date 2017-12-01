@@ -1,6 +1,6 @@
 #include <particleFill.h>
-
 #include <IMPL/ReconstructedParticleImpl.h>
+// #include <globalConfig.h>
 
 #define nBinsPerGeV 10
 #define nExampleClusterHists 10
@@ -41,6 +41,8 @@ int particleFill::init(){
 
 	if (IsInWord("MCParticle",collectionName)){ 
 		createSingleParticleHists("truthParticle_");
+		TH1I* tmpHist = new TH1I("truthParticle_isDecayedInTracker","Sim. Status; Sim. Status; Counts",35,0,35);
+		histMap["truthParticle_isDecayedInTracker"] = tmpHist;
 	}
 	else if(IsInWord("SiTracks",collectionName)){
 		// add track-related hists. TODO rewrite it with functions
@@ -67,6 +69,7 @@ int particleFill::init(){
 		createSingleParticleHists("signalPFO_thereAreAdditionalPFOs_");
 		createSingleParticleHists("firstEnergeticPartOfWrongType_");
 		createSingleParticleHists("secondEnergeticPart_");
+		createSingleParticleHists("mostEnergeticPFO_noPFOofType_");
 
 		createSingleParticleHists("PFOofType_");
 		createSingleParticleHists("PFOofType_noAdditionalPFOs_");
@@ -74,7 +77,20 @@ int particleFill::init(){
 		createSingleParticleHists("PFOofType_thereAreAdditionalPFOs_withinEnergyCut_");
 		createSingleParticleHists("PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_");
 		createSingleParticleHists("PFONOTofType_thereAreAdditionalPFOs_outsideEnergyCut_");
-		createSingleParticleHists("mostEnergeticPFO_noPFOofType_");
+
+		createSingleParticleHists("noConv_PFOofType_");
+		createSingleParticleHists("noConv_PFOofType_noAdditionalPFOs_");
+		createSingleParticleHists("noConv_PFOofType_thereAreAdditionalPFOs_");
+		createSingleParticleHists("noConv_PFOofType_thereAreAdditionalPFOs_withinEnergyCut_");
+		createSingleParticleHists("noConv_PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_");
+		createSingleParticleHists("noConv_PFONOTofType_thereAreAdditionalPFOs_outsideEnergyCut_");
+
+		createSingleParticleHists("conv_PFOofType_");
+		createSingleParticleHists("conv_PFOofType_noAdditionalPFOs_");
+		createSingleParticleHists("conv_PFOofType_thereAreAdditionalPFOs_");
+		createSingleParticleHists("conv_PFOofType_thereAreAdditionalPFOs_withinEnergyCut_");
+		createSingleParticleHists("conv_PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_");
+		createSingleParticleHists("conv_PFONOTofType_thereAreAdditionalPFOs_outsideEnergyCut_");
 		// truth hists:
 		createSingleParticleHists("truthParticle_onlyOneRecoPFO_");
 		createSingleParticleHists("truthParticle_twoOrMoreRecoPFO_");
@@ -229,11 +245,15 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
       		for(int j=0; j < nElements; j++) {
 			if (collectionType=="MCParticle"){
 				auto part = dynamic_cast<EVENT::MCParticle*>(collection->getElementAt(j));
-				if (debugFlag) dumpTruthPart(part, j);
+				if (debugFlag) 
+					dumpTruthPart(part, j);
 				// dumpTruthPart(part, j);
-				if (part->isCreatedInSimulation()!=0) continue;
-				if (part->getGeneratorStatus()!=1) continue;
+				if (part->isCreatedInSimulation()!=0) 
+					continue;
+				if (part->getGeneratorStatus()!=1) 
+					continue;
 				fillPart(part);
+				histMap["truthParticle_isDecayedInTracker"]->Fill(part->isDecayedInTracker());
 			}
 			else if (collectionType=="Track"){
 				auto track = dynamic_cast<EVENT::Track*>(collection->getElementAt(j));
@@ -256,7 +276,8 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 			}
 			else if (collectionType=="ReconstructedParticle"){
 				auto part = dynamic_cast<EVENT::ReconstructedParticle*>(collection->getElementAt(j));
-				if (debugFlag) dumpReconstructedPart(part, j);
+				if (debugFlag) 
+					dumpReconstructedPart(part, j);
 				if(find(partTypeToSelect.begin(), partTypeToSelect.end(), part->getType()) != partTypeToSelect.end()){
 					fillPart(part,"allPartsOfType_");
 				}
@@ -302,7 +323,8 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 				part->setType(tmpPart->getType());
 
 				for(int j=0; j < nElements; j++) {
-					if (j==intMap["id_firstEnergeticPFO"]) continue;
+					if (j==intMap["id_firstEnergeticPFO"]) 
+						continue;
 					TVector3 v1, v2;
 					const double *partMom1 = part->getMomentum();
 					v1.SetXYZ(partMom1[0],partMom1[1],partMom1[2]);
@@ -323,7 +345,8 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 				fillPart(part,"signalPFO_");
 				for (int iTr=0; iTr<truthParts.size(); iTr++)
 					fillPart(truthParts[iTr],"signalPFO_truthParts_");
-				fillClusterInfo(part,"signalPFO_clusterInfo_");
+				if (config::vm.count("accessCaloHitInfo"))
+					fillClusterInfo(part,"signalPFO_clusterInfo_");
 				// if (nElements>=2 && countE_1!=countE_2){
 				if (intMap["id_secondEnergeticPFO"]>=0){
 					auto part2 = dynamic_cast<EVENT::ReconstructedParticle*>(collection->getElementAt(intMap["id_secondEnergeticPFO"]));
@@ -346,7 +369,8 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 					for (int iTr=0; iTr<truthParts.size(); iTr++)
 						fillPart(truthParts[iTr],"signalPFO_noAdditionalPFOs_truthParts_");
 					fillPart(truthParts[0],"truthParticle_onlyOneRecoPFO_");
-					fillClusterInfo(part,"signalPFO_noAdditionalPFOs_clusterInfo_");
+					if (config::vm.count("accessCaloHitInfo"))
+						fillClusterInfo(part,"signalPFO_noAdditionalPFOs_clusterInfo_");
 					
 				}
 
@@ -355,19 +379,20 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 			else
 				fillPart(part,"firstEnergeticPartOfWrongType_");
 		
+
 			if (intMap["n_PFOofType"]>=1){
 				part = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(intMap["id_mostEnergeticPFOofType"]));
-				fillPart(part,"PFOofType_");
+				fillRecoPhoton(part,truthParts[0],"PFOofType_");
 				if (intMap["n_PFO"]==1)
-					fillPart(part,"PFOofType_noAdditionalPFOs_");
+					fillRecoPhoton(part,truthParts[0],"PFOofType_noAdditionalPFOs_");
 				else{
-					fillPart(part,"PFOofType_thereAreAdditionalPFOs_");
+					fillRecoPhoton(part,truthParts[0],"PFOofType_thereAreAdditionalPFOs_");
 					double truthE = truthParts[0]->getEnergy();
 					// if (abs(part->getEnergy()-truthE)<(2*sqrt(truthE)+0.5))
 					if (abs(part->getEnergy()-truthE)<(0.75*sqrt(truthE)))
-						fillPart(part,"PFOofType_thereAreAdditionalPFOs_withinEnergyCut_");
+						fillRecoPhoton(part,truthParts[0],"PFOofType_thereAreAdditionalPFOs_withinEnergyCut_");
 					else{
-						fillPart(part,"PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_");
+						fillRecoPhoton(part,truthParts[0],"PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_");
 						int tmpId = -1;
 						if (intMap["id_mostEnergeticPFOofType"]==intMap["id_firstEnergeticPFO"])
 							tmpId = intMap["id_secondEnergeticPFO"];
@@ -381,8 +406,10 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 						fillParticleCorrelations(part,truthParts[0],"PFOofType_truthPart_outsideEnergyCut_");
 						fillParticleCorrelations(partTemp,truthParts[0],"secondPFO_truthPart_outsideEnergyCut_");
 
-						fillClusterInfo(part,"PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_clusterInfo_");
-						fillClusterInfo(partTemp,"secondPFO_thereAreAdditionalPFOs_outsideEnergyCut_clusterInfo_");
+						if (config::vm.count("accessCaloHitInfo")){
+							fillClusterInfo(part,"PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_clusterInfo_");
+							fillClusterInfo(partTemp,"secondPFO_thereAreAdditionalPFOs_outsideEnergyCut_clusterInfo_");
+						}
 
 
 					}
@@ -399,6 +426,15 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 		}
 	}
 	return 0;
+}
+
+void particleFill::fillRecoPhoton(const EVENT::ReconstructedParticle* inPart, const EVENT::MCParticle* mcPart, const string prefix){
+	vector<string> prefixExt = {"","conv_","noConv_"};
+	vector<bool> fillFlag = {true, mcPart->isDecayedInTracker(),!mcPart->isDecayedInTracker()};
+	for (unsigned int i=0;i<prefixExt.size();i++) {
+		if (fillFlag[i]) 
+			fillPart(inPart,prefixExt[i]+prefix);
+	}
 }
 
 int particleFill::fillPart (const EVENT::MCParticle* inPart, const string prefix) {
@@ -479,7 +515,7 @@ void particleFill::dumpTruthPart(const EVENT::MCParticle* part, const int counte
 	bool inCal = part->isDecayedInCalorimeter();
 	int genStatus = part->getGeneratorStatus();
 	int pdgId = part->getPDG();
-	cout << "t" << counter << ": pdg: " << pdgId << ": E: " << ((int)(100*part->getEnergy()))/100.0 << " GeV; theta: " << partTheta << "; phi: " << partPhi << "; inTracker: " << inTracker << "; inCal: " << inCal << "; genStatus: " << genStatus << "; pointer: " << part << endl;
+	cout << "t" << counter << ": pdg: " << pdgId << ": E: " << (round(100*part->getEnergy())/100.0) << " GeV; theta: " << partTheta << "; phi: " << partPhi << "; inTracker: " << inTracker << "; inCal: " << inCal << "; genStatus: " << genStatus << "; pointer: " << part << endl;
 
 }
 
@@ -490,7 +526,7 @@ void particleFill::dumpReconstructedPart(const EVENT::ReconstructedParticle* par
 	double partPhi = 180.*v1.Phi()/TMath::Pi();
 	double partTheta = 180.*v1.Theta()/TMath::Pi();
 	int partType= part->getType();
-	cout << "r" << counter << ": E: " << ((int)(100*part->getEnergy()))/100.0 << " GeV; theta: " << partTheta << "; phi: " << partPhi << "; partType: " << partType << endl;
+	cout << "r" << counter << ": E: " << round(100*part->getEnergy())/100.0 << " GeV; theta: " << partTheta << "; phi: " << partPhi << "; partType: " << partType << endl;
 }
 
 int particleFill::fillHist(const double inVal, const string baseString, const string prefix){
@@ -575,7 +611,8 @@ int particleFill::writeToFile(TFile* outFile){
 	for(auto const &it : histMap) {
 		string histName = it.first;
 		vector<string> tmpStrVec = GetSplittedWords(histName,"_");
-		if (tmpStrVec.size()<2) continue;
+		if (tmpStrVec.size()<2) 
+			continue;
 		string prefix = "";
 		for (int i=0; i<tmpStrVec.size()-1; i++){
 			if (i==tmpStrVec.size()-2)

@@ -2,6 +2,7 @@
 #define particleFill_H
 
 #include <objectFill.h>
+#include <globalConfig.h>
 
 struct histStruct{
 	string title;
@@ -45,6 +46,7 @@ class particleFill : public objectFill{
 		void dumpReconstructedPart(const EVENT::ReconstructedParticle* part, const int counter = 0);
 		int fillPart (const EVENT::MCParticle* inPart, const string prefix="truthParticle_");
 		int fillPart (const EVENT::ReconstructedParticle* inPart, const string prefix);
+		void fillRecoPhoton(const EVENT::ReconstructedParticle* inPart, const EVENT::MCParticle* mcPart, const string prefix);
 		int fillParticleCorrelations (const EVENT::ReconstructedParticle* inPart1, const EVENT::ReconstructedParticle* inPart2, const string prefix);
 		int fillParticleCorrelations (const EVENT::ReconstructedParticle* inPart1, const EVENT::MCParticle* inPart2, const string prefix);
 		int fillClusterInfo (const EVENT::ReconstructedParticle* inPart, const string prefix);

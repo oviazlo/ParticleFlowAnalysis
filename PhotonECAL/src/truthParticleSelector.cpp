@@ -77,14 +77,14 @@ void truthParticleSelector::init(){
 		objFillMap[energyFillCollections[i]] = tmpEnergyFill;
 	}
 
-	photonEffCalculator* effCalculator = new photonEffCalculator("photonEfficiency");
-	effCalculator->setPFOCollection(effCollection);
-	effCalculator->setMCTruthCollection(mcTruthCollection);
-	effCalculator->setPFOType(efficiencyPFOType);
-	effCalculator->setEfficiencyOneClusterRequirement(onlyOneRecoClusterPerEvent);
-	if (dPhiMergeValue > 0.0)
-		effCalculator->setDPhiMergeValue(dPhiMergeValue);
-	objFillMap["photonEfficiency"] = effCalculator;
+	// photonEffCalculator* effCalculator = new photonEffCalculator("photonEfficiency");
+	// effCalculator->setPFOCollection(effCollection);
+	// effCalculator->setMCTruthCollection(mcTruthCollection);
+	// effCalculator->setPFOType(efficiencyPFOType);
+	// effCalculator->setEfficiencyOneClusterRequirement(onlyOneRecoClusterPerEvent);
+	// if (dPhiMergeValue > 0.0)
+	//         effCalculator->setDPhiMergeValue(dPhiMergeValue);
+	// objFillMap["photonEfficiency"] = effCalculator;
 
 	for(auto const &mapElement : objFillMap){
 		mapElement.second->init();
@@ -98,3 +98,11 @@ void truthParticleSelector::writeToFile(TFile *outFile){
 	}
 }
 
+string truthParticleSelector::getPostFixString(){
+	string postFix = "E"+DoubToStr((energyRange.first+energyRange.second)/2.0);
+	if (thetaRange != make_pair(-180.0,180.))
+		postFix += "_Theta" + DoubToStr(thetaRange.first)+"_"+DoubToStr(thetaRange.second);
+	if (phiRange != make_pair(-360.0,360.))
+		postFix += "_Phi"+ DoubToStr(phiRange.first)+"_"+DoubToStr(phiRange.second);	
+	return postFix;
+}

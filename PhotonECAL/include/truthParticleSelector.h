@@ -57,8 +57,7 @@ class truthParticleSelector{
 		void setEnergyRange(const double min, const double max){energyRange = make_pair(min,max);}
 		void setThetaRange(const double min, const double max){thetaRange = make_pair(min,max);}
 		void setPhiRange(const double min, const double max){phiRange = make_pair(min,max);}
-		string getPostFixString(){return "E"+DoubToStr((energyRange.first+energyRange.second)/2.0)+"_Theta"+DoubToStr((thetaRange.first+thetaRange.second)/2.0)+"_Phi"+DoubToStr((phiRange.first+phiRange.second)/2.0);  }
-
+		string getPostFixString();
 		bool selectEvent(const EVENT::LCEvent*);
 
 		void writeToFile(TFile *outFile); 

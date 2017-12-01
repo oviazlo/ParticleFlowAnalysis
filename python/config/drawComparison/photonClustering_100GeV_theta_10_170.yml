@@ -1,0 +1,41 @@
+photon_100GeV_theta10_170:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/build/PhotonECAL/FCCee_singleParticle_performace/gamma/nominalEfficiency_nov14/subsample/
+        fileName:
+                - particleGun_E100_Theta10_170_Phi0.root
+        legTitle:
+                # - neutral PFO
+                - 1 PFO in event
+                - 1 photon PFO in event
+                - ">2 PFOs, photon pass energy cut"
+                - ">2 PFOs, photon doesn't pass cut"
+                - no photon PFOs in event
+        histName: 
+                # - PandoraPFOs_2112/signalPFO_noAdditionalPFOs/Energy
+                - PandoraPFOs_11_-11_13_-13_211_-211_22_2112/PFOofType_noAdditionalPFOs/Energy
+                - PandoraPFOs_22/PFOofType_noAdditionalPFOs/Energy
+                - PandoraPFOs_22/PFOofType_thereAreAdditionalPFOs_withinEnergyCut/Energy
+                - PandoraPFOs_22/PFOofType_thereAreAdditionalPFOs_outsideEnergyCut/Energy
+                - PandoraPFOs_22/mostEnergeticPFO_noPFOofType/Energy
+        legPos:
+                - 0.12
+                - 0.7
+                - 0.68
+                - 0.9
+        histColor:
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                - 7
+                - 8
+        xAxisRange:
+                - 0
+                - 120
+        yAxisRange:
+                - 0.1
+                - 100
+        histTitle: "FCC-ee, Photon gun, E: 100 GeV, 10 < #theta < 170"
+        legCaptionMode: entries
+        # logY: 1

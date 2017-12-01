@@ -1,29 +1,31 @@
 //custom libs
-#include <particleFill.h>
-#include <energyFill.h>
-#include <photonEffCalculator.h>
+// #include <particleFill.h>
 #include <truthParticleSelector.h>
 #include <boostServiceFunctions.h>
+// #include <globalConfig.h>
 
 using namespace std;
+using namespace config; 
 
-// COLLECTIONS TO USE
-// vector<string> particleFillCollections = {"SiTracks","MCParticlesSkimmed","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs"};
-vector<string> particleFillCollections = {"MCParticlesSkimmed","PandoraPFOs","PandoraPFOs"};
 // 11:		electron
 // 13:		muon
 // 22:		photon
 // 211: 	pi+
 // 2112:	neutron
+ 
+// COLLECTIONS TO USE
+// vector<string> particleFillCollections = {"SiTracks","MCParticlesSkimmed","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs","PandoraPFOs"};
+// vector<string> particleFillCollections = {"MCParticlesSkimmed","PandoraPFOs","PandoraPFOs"};
 // vector<vector<int> > PFOPartTypes = {{},{},{11},{-11},{13},{-13},{22},{-211},{211},{2112},{11,22},{11,-11,13,-13,211,-211},{22,2112}};
 // vector<vector<int> > PFOPartTypes = {{},{22},{2112}};
-vector<vector<int> > PFOPartTypes = {{},{22},{11,-11,13,-13,211,-211,22,2112}};
-// vector<vector<int> > PFOPartTypes = {{},{22}};
+// vector<vector<int> > PFOPartTypes = {{},{22},{11,-11,13,-13,211,-211,22,2112}};
+vector<string> particleFillCollections = {"MCParticlesSkimmed","PandoraPFOs"};
+vector<vector<int> > PFOPartTypes =      {{},			{22}};
 // int efficiencyPFOType = 11;
 // vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap"[>, "ECalBarrelCollection", "ECalEndcapCollection"<]};
 // vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap","ECalBarrelCollection", "ECalEndcapCollection", "HCALBarrel","HCALEndcap","HCalBarrelCollection", "HCalEndcapCollection"};
 vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap", "HCALBarrel","HCALEndcap"};
-po::variables_map vm;
+// po::variables_map vm;
 
 int main (int argn, char* argv[]) {
 
@@ -47,11 +49,13 @@ int main (int argn, char* argv[]) {
 		("effPfoType", po::value<int>(), "PFO type to use for efficiency calculation")
 		("noFSR", "discard events with FSR (only one truth particle allowed)")
 		("dPhiMerge", po::value<double>(), "dPhi value in degrees to merge clusters")
+		("accessCaloHitInfo", "fill in CaloHitInfo - 2x slower")
 		;
 
 	/// get global input arguments
 	const size_t returnedMessage = parseOptionsWithBoost(vm,argn,argv, desc);
-	if (returnedMessage!=SUCCESS) std::exit(returnedMessage);
+	if (returnedMessage!=SUCCESS) 
+		std::exit(returnedMessage);
 
 	// Read collections
 	std::vector<std::string> m_fileNames = getFilesMatchingPattern(vm["filesTemplate"].as<string>());
@@ -77,6 +81,13 @@ int main (int argn, char* argv[]) {
 		std::cerr << "Error opening files: " << e.what() << std::endl;
 		return 1;
 	}
+	vector<string> collectionsToRead = {};
+	if (!vm.count("accessCaloHitInfo")) {
+		energyFillCollections = {};
+	}
+	collectionsToRead.insert(collectionsToRead.end(),energyFillCollections.begin(),energyFillCollections.end());
+	collectionsToRead.insert(collectionsToRead.end(),particleFillCollections.begin(),particleFillCollections.end());
+	m_reader->setReadCollectionNames(collectionsToRead);
 
 	vector<double> energyRanges = {9.9,10.1};
 	vector<double> thetaRanges = {-180.0,180.0};
@@ -140,21 +151,25 @@ int main (int argn, char* argv[]) {
 
 
 	// LOOP OVER EVENTS
-	EVENT::LCEvent *event = NULL;
+	EVENT::LCEvent *event = m_reader->readNextEvent();
 	int eventCounter = 0;
-	while ( ( event = m_reader->readNextEvent() ) ) {
-		// if (eventCounter>100) break;
-		if (printVerbose) cout << endl << "Event " << eventCounter << ":" << endl;
+	while ( event != NULL ) {
+		// cout << "[DEBUG]\t event:" << eventCounter << endl;
+		// if (eventCounter>1000)
+		//         break;
+		if (printVerbose) 
+			cout << endl << "Event " << eventCounter << ":" << endl;
 		eventCounter++;
 	
 		for(auto i=0; i<selectors.size(); i++){
 			selectors[i]->selectEvent(event);
 		}
+		event = m_reader->readNextEvent();
 	}
 
 	for(auto i=0; i<selectors.size(); i++){
 		TFile *outFile = new TFile(("particleGun_"+ selectors[i]->getPostFixString() +".root").c_str(), "RECREATE");
-		selectors[i]->writeToFile(outFile); 
+		selectors[i]->writeToFile(outFile);
 		outFile->Close();
 	}
 
