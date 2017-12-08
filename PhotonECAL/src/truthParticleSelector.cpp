@@ -12,7 +12,8 @@ bool truthParticleSelector::selectEvent(const EVENT::LCEvent* event){
 	// find primary generated MC particle which is the only findable in the event by definition [particle gun]
 	EVENT::MCParticle* genPart = NULL;
 	int nElements = MCTruthCollection->getNumberOfElements();
-	if (discardFSREvents && nElements!=1) return 0;
+	if (discardFSREvents && nElements!=1) 
+		return 0;
 	for(int j=0; j < nElements; j++) {
 		auto part = dynamic_cast<EVENT::MCParticle*>(MCTruthCollection->getElementAt(j));
 		if (part->getGeneratorStatus()==1){
@@ -20,7 +21,8 @@ bool truthParticleSelector::selectEvent(const EVENT::LCEvent* event){
 			TVector3 v1;
 			v1.SetXYZ(partMom[0],partMom[1],partMom[2]);
 			double partTheta = 180.*v1.Theta()/TMath::Pi();
-			if (partTheta<8 || partTheta>172) return false;
+			if (partTheta<8 || partTheta>172) 
+				return false;
 			genPart = part;
 			double partMomMag = v1.Mag();
 			double partPhi = 180.*v1.Phi()/TMath::Pi();
@@ -76,6 +78,36 @@ void truthParticleSelector::init(){
 		tmpEnergyFill->setCollectionName(energyFillCollections[i]); 
 		objFillMap[energyFillCollections[i]] = tmpEnergyFill;
 	}
+
+	eventHistFiller* eventFill = new eventHistFiller("eventHists");
+	eventFill->setPFOCollection(effCollection);
+	eventFill->setMCTruthCollection(mcTruthCollection);
+	objFillMap["eventHists"] = eventFill;
+
+	eventHistFiller* eventFill2 = new eventHistFiller("eventHists_noConv");
+	eventFill2->setPFOCollection(effCollection);
+	eventFill2->setMCTruthCollection(mcTruthCollection);
+	eventFill2->setDiscardConvertions(true);
+	objFillMap["eventHists_noConv"] = eventFill2;
+
+	eventHistFiller* eventFill3 = new eventHistFiller("eventHists_photonRecl");
+	eventFill3->setPFOCollection(effCollection);
+	eventFill3->setMCTruthCollection(mcTruthCollection);
+	eventFill3->setPhotonReclustering(true);
+	objFillMap["eventHists_photonRecl"] = eventFill3;
+
+	eventHistFiller* eventFill4 = new eventHistFiller("eventHists_photonAndNeutralRecl");
+	eventFill4->setPFOCollection(effCollection);
+	eventFill4->setMCTruthCollection(mcTruthCollection);
+	eventFill4->setPhotonReclustering(true);
+	eventFill4->setNeutralReclustering(true);
+	objFillMap["eventHists_photonAndNeutralRecl"] = eventFill4;
+
+	eventHistFiller* eventFill5 = new eventHistFiller("eventHists_conv");
+	eventFill5->setPFOCollection(effCollection);
+	eventFill5->setMCTruthCollection(mcTruthCollection);
+	eventFill5->setSelectConvertions(true);
+	objFillMap["eventHists_conv"] = eventFill5;
 
 	// photonEffCalculator* effCalculator = new photonEffCalculator("photonEfficiency");
 	// effCalculator->setPFOCollection(effCollection);

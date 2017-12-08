@@ -61,6 +61,10 @@ if __name__ == "__main__":
 					hist.SetTitle(cfg['histTitle'])
 				if ("rebinFactor" in cfg):
 					hist.Rebin(cfg['rebinFactor'])
+				if ("scaleFactor" in cfg):
+					hist.Scale(cfg['scaleFactor'])
+                                        for j in range(0,hist.GetNbinsX()):
+                                            hist.SetBinError(j+1,0)
 				if ("sortXaxisInGraph" in cfg):
 					if (cfg["sortXaxisInGraph"]==True):
 						histPoints = []

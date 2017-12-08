@@ -40,6 +40,7 @@
 #include <particleFill.h>
 #include <photonEffCalculator.h>
 #include <serviceFunctions.h>
+#include <eventHistFiller.h>
 
 class truthParticleSelector{
 	public:

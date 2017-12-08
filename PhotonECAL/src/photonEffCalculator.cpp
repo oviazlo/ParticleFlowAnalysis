@@ -99,8 +99,10 @@ int photonEffCalculator::fillEvent(const EVENT::LCEvent* event){
 			TVector3 v1;
 			v1.SetXYZ(partMom[0],partMom[1],partMom[2]);
 			double partTheta = 180.*v1.Theta()/TMath::Pi();
-			if (partTheta<8 || partTheta>172) return 0;
-			if (part->isDecayedInTracker()) return 0;
+			if (partTheta<8 || partTheta>172) 
+				return 0;
+			if (part->isDecayedInTracker()) 
+				return 0;
 			genPart = part;
 			break;
 		}
@@ -117,7 +119,8 @@ int photonEffCalculator::fillEvent(const EVENT::LCEvent* event){
 
 	vector<EVENT::ReconstructedParticle*> recoPFOs = getObjVecFromCollection(PFOCollection);
 	// cout << "[DEBUG]\trecoPFOs.size():" << recoPFOs.size() << endl;
-	if (recoPFOs.size()==0) return 0; // no reco PFOs
+	if (recoPFOs.size()==0) 
+		return 0; // no reco PFOs
 	// FIXME hardcoded type!!!
 	// if (PFOPartType==22 && onlyOneRecoClusterPerEvent && recoPFOs.size()!=1) return 0;
 	int itMostEnergeticOfType = -1;
