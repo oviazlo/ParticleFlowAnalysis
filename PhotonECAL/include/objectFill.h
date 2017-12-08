@@ -39,7 +39,6 @@
 #include <serviceFunctions.h>
 // #include <globalConfig.h>
 
-map<unsigned int, string> pfoTypeIntStringMap = {{11,"Electron"}, {13,"Muon"},{22,"Photon"},{211,"Pion"},{2112,"NeutralHadron"}};
 
 class objectFill{
 	public:

@@ -12,6 +12,7 @@
 
 namespace config
 {
+	extern std::map<unsigned int, std::string> pfoTypeIntStringMap;
 	extern std::string some_config_string;
 	extern int some_config_int;
 

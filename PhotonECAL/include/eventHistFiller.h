@@ -9,6 +9,7 @@
 #define EVENTHISTFILLER_H
 
 #include <objectFill.h>
+#include <globalConfig.h>
 
 class eventHistFiller : public objectFill{
 	public:

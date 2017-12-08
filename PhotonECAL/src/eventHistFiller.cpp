@@ -27,30 +27,13 @@ int eventHistFiller::init(){
 	tmpHist = new TH1D("nPFOsVsCosTheta","nPFOs vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
 	histMap["nPFOsVsCosTheta"] = tmpHist;
 	
-	tmpHist = new TH1D("nElectronsVsTheta","nElectrons vs Theta; Theta; Counts per Event",180*2,0,180);
-	histMap["nElectronsVsTheta"] = tmpHist;
-	tmpHist = new TH1D("nElectronsVsCosTheta","nElectrons vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
-	histMap["nElectronsVsCosTheta"] = tmpHist;
-	
-	tmpHist = new TH1D("nMuonsVsTheta","nMuons vs Theta; Theta; Counts per Event",180*2,0,180);
-	histMap["nMuonsVsTheta"] = tmpHist;
-	tmpHist = new TH1D("nMuonsVsCosTheta","nMuons vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
-	histMap["nMuonsVsCosTheta"] = tmpHist;
+	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
+		tmpHist = new TH1D(("n"+it->second+"sVsCosTheta").c_str(),("n"+it->second+"s vs Theta; Theta; Counts per Event").c_str(),180*2,0,180);
+		histMap["n"+it->second+"sVsTheta"] = tmpHist;
+		tmpHist = new TH1D(("n"+it->second+"sVsCosTheta").c_str(),("n"+it->second+"s vs Cos(#Theta); Cos(#Theta); Counts per Event").c_str(),180*2,-1,1);
+		histMap["n"+it->second+"sVsCosTheta"] = tmpHist;
 
-	tmpHist = new TH1D("nPhotonsVsTheta","nPhotons vs Theta; Theta; Counts per Event",180*2,0,180);
-	histMap["nPhotonsVsTheta"] = tmpHist;
-	tmpHist = new TH1D("nPhotonsVsCosTheta","nPhotons vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
-	histMap["nPhotonsVsCosTheta"] = tmpHist;
-
-	tmpHist = new TH1D("nNeutralHadronsVsTheta","nNeutrals vs Theta; Theta; Counts per Event",180*2,0,180);
-	histMap["nNeutralHadronsVsTheta"] = tmpHist;
-	tmpHist = new TH1D("nNeutralHadronsVsCosTheta","nNeutrals vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
-	histMap["nNeutralHadronsVsCosTheta"] = tmpHist;
-
-	tmpHist = new TH1D("nPionsVsTheta","nPions vs Theta; Theta; Counts per Event",180*2,0,180);
-	histMap["nPionsVsTheta"] = tmpHist;
-	tmpHist = new TH1D("nPionsVsCosTheta","nPions vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
-	histMap["nPionsVsCosTheta"] = tmpHist;
+	}
 	
 	tmpHist = new TH1D("nTruthPartsVsTheta","nTruthParts vs Theta; Theta; Counts per Event",180*2,0,180);
 	histMap["nTruthPartsVsTheta"] = tmpHist;
@@ -158,32 +141,17 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 		histMap["nPFOsVsTheta"]->Fill(partTheta);
 
 
-		for (auto it = pfoTypeIntStringMap.begin(); it != pfoTypeIntStringMap.end(); it++) {
+		for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
 			if (abs(pfoType)==it->first) {
 				histMap["n"+it->second+"sVsCosTheta"]->Fill(cosPartTheta);
 				histMap["n"+it->second+"sVsTheta"]->Fill(partTheta);
 			}
 		}
 		switch(abs(pfoType)){
-			case 11 : histMap["nElectronsVsCosTheta"]->Fill(cosPartTheta);
-				  histMap["nElectronsVsTheta"]->Fill(partTheta);
-				  break;
-			case 13 : histMap["nMuonsVsCosTheta"]->Fill(cosPartTheta);
-				  histMap["nMuonsVsTheta"]->Fill(partTheta);
-				  break;
-			case 211: histMap["nPionsVsCosTheta"]->Fill(cosPartTheta);
-				  histMap["nPionsVsTheta"]->Fill(partTheta);
-				  break;
-			case 22 : histMap["nPhotonsVsCosTheta"]->Fill(cosPartTheta);
-				  histMap["nPhotonsVsTheta"]->Fill(partTheta);
-				  // histMap["thetaResolution_photon"]->Fill((partTheta-truthTheta)*TMath::Pi()/180.0);
-				  histMap["thetaResolution_photon"]->Fill((partTheta-truthTheta));
+			case 22 : histMap["thetaResolution_photon"]->Fill((partTheta-truthTheta));
 				  histMap["phiResolution_photon"]->Fill((partPhi-truthPhi)*TMath::Pi()/180.0);
 				  break;
-			case 2112:histMap["nNeutralHadronsVsCosTheta"]->Fill(cosPartTheta);
-				  histMap["nNeutralHadronsVsTheta"]->Fill(partTheta);
-				  // histMap["thetaResolution_neutral"]->Fill((partTheta-truthTheta)*TMath::Pi()/180.0);
-				  histMap["thetaResolution_neutral"]->Fill((partTheta-truthTheta));
+			case 2112:histMap["thetaResolution_neutral"]->Fill((partTheta-truthTheta));
 				  histMap["phiResolution_neutral"]->Fill((partPhi-truthPhi)*TMath::Pi()/180.0);
 				  break;
 		}
@@ -232,24 +200,10 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 
 int eventHistFiller::writeToFile(TFile* outFile){
 
-	for (auto it = pfoTypeIntStringMap.begin(); it != pfoTypeIntStringMap.end(); it++) {
-		if (abs(pfoType)==it->first) {
-			histMap["n"+it->second+"sVsCosTheta"]->Divide(histMap["nTruthPartsVsCosTheta"]);
-			histMap["n"+it->second+"sVsTheta"]->Divide(histMap["nTruthPartsVsTheta"]);
-		}
+	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
+		histMap["n"+it->second+"sVsCosTheta"]->Divide(histMap["nTruthPartsVsCosTheta"]);
+		histMap["n"+it->second+"sVsTheta"]->Divide(histMap["nTruthPartsVsTheta"]);
 	}
-	histMap["nPFOsVsCosTheta"]->Divide(histMap["nTruthPartsVsCosTheta"]);
-	histMap["nPFOsVsTheta"]->Divide(histMap["nTruthPartsVsTheta"]);
-	histMap["nElectronsVsCosTheta"]->Divide(histMap["nTruthPartsVsCosTheta"]);
-	histMap["nElectronsVsTheta"]->Divide(histMap["nTruthPartsVsTheta"]);
-	histMap["nMuonsVsCosTheta"]->Divide(histMap["nTruthPartsVsCosTheta"]);
-	histMap["nMuonsVsTheta"]->Divide(histMap["nTruthPartsVsTheta"]);
-	histMap["nPionsVsCosTheta"]->Divide(histMap["nTruthPartsVsCosTheta"]);
-	histMap["nPionsVsTheta"]->Divide(histMap["nTruthPartsVsTheta"]);
-	histMap["nPhotonsVsCosTheta"]->Divide(histMap["nTruthPartsVsCosTheta"]);
-	histMap["nPhotonsVsTheta"]->Divide(histMap["nTruthPartsVsTheta"]);
-	histMap["nNeutralHadronsVsCosTheta"]->Divide(histMap["nTruthPartsVsCosTheta"]);
-	histMap["nNeutralHadronsVsTheta"]->Divide(histMap["nTruthPartsVsTheta"]);
 	
 	histMap["efficiencyVsCosTheta"]->Divide(histMap["nTruthPartsVsCosTheta"]);
 	histMap["efficiencyVsTheta"]->Divide(histMap["nTruthPartsVsTheta"]);
