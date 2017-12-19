@@ -4,18 +4,7 @@
 #include <objectFill.h>
 #include <globalConfig.h>
 
-struct histStruct{
-	string title;
-	unsigned int nBins;
-	double xLow;
-	double xHigh;
-	double yLow;
-	double yHigh;
-	unsigned int ynBins;
-	string histType;
-	histStruct(){}
-	histStruct( string _title, unsigned int _nBins, double _xLow, double _xHigh, string _histType = "TH1D", unsigned int _ynBins = 0, double _yLow = 0.0, double _yHigh = 0.0 ) : title(_title), nBins(_nBins), xLow(_xLow), xHigh(_xHigh), histType(_histType), ynBins(_ynBins), yLow(_yLow), yHigh(_yHigh) {}
-};
+
 
 class particleFill : public objectFill{
 
@@ -39,7 +28,6 @@ class particleFill : public objectFill{
 		void createSingleRecoParticleClustersHists(const string prefix);
 		void createSingleParticleHists(const string prefix);
 		void createTwoParticleCorrelationHists(const string prefix);
-		void createHistsFromMap(const map<string,histStruct> inHistStructMap, const string prefix);
 		int fillHist(const double inVal, const string baseString, const string prefix);
 		int fillHist(const double inVal1, const double inVal2, const string baseString, const string prefix);
 		void dumpTruthPart(const EVENT::MCParticle* part, const int counter = 0);

@@ -2,6 +2,7 @@
 // #include <particleFill.h>
 #include <truthParticleSelector.h>
 #include <boostServiceFunctions.h>
+#include "truthCondition.h"
 // #include <globalConfig.h>
 
 using namespace std;
@@ -19,8 +20,8 @@ using namespace config;
 // vector<vector<int> > PFOPartTypes = {{},{},{11},{-11},{13},{-13},{22},{-211},{211},{2112},{11,22},{11,-11,13,-13,211,-211},{22,2112}};
 // vector<vector<int> > PFOPartTypes = {{},{22},{2112}};
 // vector<vector<int> > PFOPartTypes = {{},{22},{11,-11,13,-13,211,-211,22,2112}};
-vector<string> particleFillCollections = {"MCParticlesSkimmed","PandoraPFOs"};
-vector<vector<int> > PFOPartTypes =      {{},			{22}};
+vector<string> particleFillCollections = {"MCParticlesSkimmed","PandoraPFOs","PandoraPFOs"};
+vector<vector<int> > PFOPartTypes =      {{},			{22},{2112}};
 // int efficiencyPFOType = 11;
 // vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap"[>, "ECalBarrelCollection", "ECalEndcapCollection"<]};
 // vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap","ECalBarrelCollection", "ECalEndcapCollection", "HCALBarrel","HCALEndcap","HCalBarrelCollection", "HCalEndcapCollection"};
@@ -50,6 +51,7 @@ int main (int argn, char* argv[]) {
 		("noFSR", "discard events with FSR (only one truth particle allowed)")
 		("dPhiMerge", po::value<double>(), "dPhi value in degrees to merge clusters")
 		("accessCaloHitInfo", "fill in CaloHitInfo - 2x slower")
+		("debug,d", "debug flag")
 		;
 
 	/// get global input arguments
@@ -153,7 +155,14 @@ int main (int argn, char* argv[]) {
 	// LOOP OVER EVENTS
 	EVENT::LCEvent *event = m_reader->readNextEvent();
 	int eventCounter = 0;
+
+	truthCondition::instance()->setMCTruthCollectionName("MCParticlesSkimmed");
+	if (vm.count("debug"))
+		truthCondition::instance()->setDebugFlag(true);
+
 	while ( event != NULL ) {
+		truthCondition::instance()->setEvent(event);
+		truthCondition::instance()->processEvent();
 		// cout << "[DEBUG]\t event:" << eventCounter << endl;
 		// if (eventCounter>1000)
 		//         break;

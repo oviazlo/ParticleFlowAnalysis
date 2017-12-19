@@ -79,35 +79,50 @@ void truthParticleSelector::init(){
 		objFillMap[energyFillCollections[i]] = tmpEnergyFill;
 	}
 
-	eventHistFiller* eventFill = new eventHistFiller("eventHists");
+	int pfoTypeToUse = 22;
+	eventHistFiller* eventFill = NULL;
+        //
+	eventFill = new eventHistFiller("eventHists",pfoTypeToUse);
 	eventFill->setPFOCollection(effCollection);
 	eventFill->setMCTruthCollection(mcTruthCollection);
 	objFillMap["eventHists"] = eventFill;
-
-	eventHistFiller* eventFill2 = new eventHistFiller("eventHists_noConv");
-	eventFill2->setPFOCollection(effCollection);
-	eventFill2->setMCTruthCollection(mcTruthCollection);
-	eventFill2->setDiscardConvertions(true);
-	objFillMap["eventHists_noConv"] = eventFill2;
-
-	eventHistFiller* eventFill3 = new eventHistFiller("eventHists_photonRecl");
-	eventFill3->setPFOCollection(effCollection);
-	eventFill3->setMCTruthCollection(mcTruthCollection);
-	eventFill3->setPhotonReclustering(true);
-	objFillMap["eventHists_photonRecl"] = eventFill3;
-
-	eventHistFiller* eventFill4 = new eventHistFiller("eventHists_photonAndNeutralRecl");
-	eventFill4->setPFOCollection(effCollection);
-	eventFill4->setMCTruthCollection(mcTruthCollection);
-	eventFill4->setPhotonReclustering(true);
-	eventFill4->setNeutralReclustering(true);
-	objFillMap["eventHists_photonAndNeutralRecl"] = eventFill4;
-
-	eventHistFiller* eventFill5 = new eventHistFiller("eventHists_conv");
-	eventFill5->setPFOCollection(effCollection);
-	eventFill5->setMCTruthCollection(mcTruthCollection);
-	eventFill5->setSelectConvertions(true);
-	objFillMap["eventHists_conv"] = eventFill5;
+        //
+	eventFill = new eventHistFiller("eventHists_noConv",pfoTypeToUse);
+	eventFill->setPFOCollection(effCollection);
+	eventFill->setMCTruthCollection(mcTruthCollection);
+	eventFill->setDiscardConvertions(true);
+	objFillMap["eventHists_noConv"] = eventFill;
+        //
+	eventFill = new eventHistFiller("eventHists_photonRecl",pfoTypeToUse);
+	eventFill->setPFOCollection(effCollection);
+	eventFill->setMCTruthCollection(mcTruthCollection);
+	eventFill->setMergePfoType(22);
+	objFillMap["eventHists_photonRecl"] = eventFill;
+        //
+	eventFill = new eventHistFiller("eventHists_photonAndNeutralRecl",pfoTypeToUse);
+	eventFill->setPFOCollection(effCollection);
+	eventFill->setMCTruthCollection(mcTruthCollection);
+	eventFill->setMergePfoType({22,2112});
+	objFillMap["eventHists_photonAndNeutralRecl"] = eventFill;
+	//
+	eventFill = new eventHistFiller("eventHists_photonAndNeutralRecl_looseThetaCut",pfoTypeToUse);
+	eventFill->setPFOCollection(effCollection);
+	eventFill->setMCTruthCollection(mcTruthCollection);
+	eventFill->setMergePfoType({22,2112});
+	eventFill->setThetaMergingCut(2.0);
+	objFillMap["eventHists_photonAndNeutralRecl_looseThetaCut"] = eventFill;
+        //
+	eventFill = new eventHistFiller("eventHists_conv",pfoTypeToUse);
+	eventFill->setPFOCollection(effCollection);
+	eventFill->setMCTruthCollection(mcTruthCollection);
+	eventFill->setSelectConvertions(true);
+	objFillMap["eventHists_conv"] = eventFill;
+        //
+	eventFill = new eventHistFiller("eventHistsPhotonsAndNeutrals_photonAndNeutralRecl",{22,2112});
+	eventFill->setPFOCollection(effCollection);
+	eventFill->setMCTruthCollection(mcTruthCollection);
+	eventFill->setMergePfoType({22,2112});
+	objFillMap["eventHistsNeutrals_photonAndNeutralRecl"] = eventFill;
 
 	// photonEffCalculator* effCalculator = new photonEffCalculator("photonEfficiency");
 	// effCalculator->setPFOCollection(effCollection);

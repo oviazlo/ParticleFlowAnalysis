@@ -39,6 +39,19 @@
 #include <serviceFunctions.h>
 // #include <globalConfig.h>
 
+struct histStruct{
+	string title;
+	unsigned int nBins;
+	double xLow;
+	double xHigh;
+	double yLow;
+	double yHigh;
+	unsigned int ynBins;
+	string histType;
+	histStruct(){}
+	histStruct( string _title, unsigned int _nBins, double _xLow, double _xHigh, string _histType = "TH1D", unsigned int _ynBins = 0, double _yLow = 0.0, double _yHigh = 0.0 ) : title(_title), nBins(_nBins), xLow(_xLow), xHigh(_xHigh), histType(_histType), ynBins(_ynBins), yLow(_yLow), yHigh(_yHigh) {}
+};
+
 
 class objectFill{
 	public:
@@ -50,6 +63,7 @@ class objectFill{
 		void setDebugFlag(const bool inFlag){debugFlag = inFlag;}
 		// template <class T> vector<T> getObjVecFromCollection(EVENT::LCCollection* inCollection);
 		vector<EVENT::ReconstructedParticle*> getObjVecFromCollection(const EVENT::LCCollection* inCollection);
+		void createHistsFromMap(const map<string,histStruct> inHistStructMap, const string prefix);
 
 	protected:
 		std::map<std::string, TH1*> histMap;

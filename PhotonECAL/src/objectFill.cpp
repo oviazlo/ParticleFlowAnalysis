@@ -43,4 +43,18 @@ vector<EVENT::ReconstructedParticle*> objectFill::getObjVecFromCollection(const 
 //                 outVec.push_back(part);
 //         }
 //         return outVec;
-// }
+
+void objectFill::createHistsFromMap(const map<string,histStruct> inHistStructMap, const string prefix){
+	for(auto const &ent1 : inHistStructMap){
+		TH1* tmpHist;
+		if (ent1.second.histType=="TH1D")
+			tmpHist = new TH1D((prefix+ent1.first).c_str(),ent1.second.title.c_str(),ent1.second.nBins,ent1.second.xLow,ent1.second.xHigh);
+		if (ent1.second.histType=="TH1I")
+			tmpHist = new TH1I((prefix+ent1.first).c_str(),ent1.second.title.c_str(),ent1.second.nBins,ent1.second.xLow,ent1.second.xHigh);
+		if (ent1.second.histType=="TH2D")
+			tmpHist = new TH2D((prefix+ent1.first).c_str(),ent1.second.title.c_str(),ent1.second.nBins,ent1.second.xLow,ent1.second.xHigh,ent1.second.ynBins,ent1.second.yLow,ent1.second.yHigh);
+		histMap[prefix+ent1.first] = tmpHist;
+	}
+	
+}
+

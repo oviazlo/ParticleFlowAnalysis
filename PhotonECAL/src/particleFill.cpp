@@ -15,6 +15,7 @@ void particleFill::initHistStructs(){
 	singleParticleHistStructMap["Type"] = histStruct("Particle Type; Type; Counts",2200,0,2200,"TH1I");
 
 	twoParticleCorrelationHistStructMap["dPhi"] = histStruct("dPhi; Phi; Counts",360,-180,180);
+	twoParticleCorrelationHistStructMap["dTheta"] = histStruct("dTheta; Theta; Counts",360,-18,18);
 	twoParticleCorrelationHistStructMap["dR"] = histStruct("dR; #Delta R; Counts",200,0,2);
 	twoParticleCorrelationHistStructMap["dE"] = histStruct("E_{1}-E_{2}; E_{1}-E_{2}; Counts",100*nBinsPerGeV,0.0,100.0);
 	twoParticleCorrelationHistStructMap["sumE"] = histStruct("E_{1}+E_{2}; E_{1}+E_{2} [GeV] ; Counts",250*nBinsPerGeV,0.0,250.0);
@@ -100,6 +101,10 @@ int particleFill::init(){
 		createTwoParticleCorrelationHists("PFOofType_secondPFO_outsideEnergyCut_");
 		createTwoParticleCorrelationHists("PFOofType_truthPart_outsideEnergyCut_");
 		createTwoParticleCorrelationHists("secondPFO_truthPart_outsideEnergyCut_");
+		createTwoParticleCorrelationHists("firstEnergetic_truthPart_");
+		createTwoParticleCorrelationHists("secondEnergetic_truthPart_");
+		createTwoParticleCorrelationHists("notFirstEnergetic_truthPart_");
+		createTwoParticleCorrelationHists("allPFO_truthPart_");
 
 
 		createSingleRecoParticleClustersHists("signalPFO_clusterInfo_");
@@ -125,6 +130,7 @@ int particleFill::init(){
 
 	dPhiMergeValue = 0;
 	debugFlag = false;
+	// debugFlag = true;
 	collection = NULL;
 
 	return 0;
@@ -141,11 +147,13 @@ int particleFill::fillParticleCorrelations (const EVENT::ReconstructedParticle* 
 	v2.SetXYZ(partMom2[0],partMom2[1],partMom2[2]);
 	double dPhi = v1.DeltaPhi(v2)*180./TMath::Pi();
 	double dR = v1.DeltaR(v2);
+	double dTheta =  180./TMath::Pi()*(v1.Theta()-v2.Theta());
 
 	double dE = inPart1->getEnergy() - inPart2->getEnergy();
 	double sumE = inPart1->getEnergy() + inPart2->getEnergy();
 
 	fillHist(dPhi, "dPhi", prefix);
+	fillHist(dTheta, "dTheta", prefix);
 	fillHist(dR, "dR", prefix);
 	fillHist(dE, "dE", prefix);
 	fillHist(sumE, "sumE", prefix);
@@ -166,10 +174,12 @@ int particleFill::fillParticleCorrelations (const EVENT::ReconstructedParticle* 
 	v2.SetXYZ(partMom2[0],partMom2[1],partMom2[2]);
 	double dPhi = v1.DeltaPhi(v2)*180./TMath::Pi();
 	double dR = v1.DeltaR(v2);
+	double dTheta =  180./TMath::Pi()*(v1.Theta()-v2.Theta());
 
 	double dE = inPart1->getEnergy() - inPart2->getEnergy();
 	double sumE = inPart1->getEnergy() + inPart2->getEnergy();
 
+	fillHist(dTheta, "dTheta", prefix);
 	fillHist(dPhi, "dPhi", prefix);
 	fillHist(dR, "dR", prefix);
 	fillHist(dE, "dE", prefix);
@@ -245,8 +255,10 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
       		for(int j=0; j < nElements; j++) {
 			if (collectionType=="MCParticle"){
 				auto part = dynamic_cast<EVENT::MCParticle*>(collection->getElementAt(j));
-				if (debugFlag) 
+				if (debugFlag){ 
 					dumpTruthPart(part, j);
+					cout << endl;
+				}
 				// dumpTruthPart(part, j);
 				if (part->isCreatedInSimulation()!=0) 
 					continue;
@@ -310,7 +322,21 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 
 
 		if (collectionType=="ReconstructedParticle"){
-			
+			if (nElements>=2) {
+				auto firstEPart = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(intMap["id_firstEnergeticPFO"]));
+				auto secondEPart = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(intMap["id_secondEnergeticPFO"]));
+				fillParticleCorrelations(firstEPart,truthParts[0],"firstEnergetic_truthPart_");
+				fillParticleCorrelations(secondEPart,truthParts[0],"secondEnergetic_truthPart_");
+
+				for(int kk=0; kk < nElements; kk++) {
+					auto tmpPart = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(kk));
+					fillParticleCorrelations(tmpPart,truthParts[0],"allPFO_truthPart_");
+					if (kk==intMap["id_firstEnergeticPFO"])
+						continue;
+					fillParticleCorrelations(tmpPart,truthParts[0],"notFirstEnergetic_truthPart_");
+				}
+			}
+
 			// auto part = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(countE_1));
 			auto part = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(intMap["id_firstEnergeticPFO"]));
 			
@@ -405,6 +431,9 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 
 						fillParticleCorrelations(part,truthParts[0],"PFOofType_truthPart_outsideEnergyCut_");
 						fillParticleCorrelations(partTemp,truthParts[0],"secondPFO_truthPart_outsideEnergyCut_");
+
+						
+						
 
 						if (config::vm.count("accessCaloHitInfo")){
 							fillClusterInfo(part,"PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_clusterInfo_");
@@ -568,19 +597,6 @@ double particleFill::getMeanTheta(){
 	return histMap["allPartsOfType_Theta"]->GetMean();
 }
 
-void particleFill::createHistsFromMap(const map<string,histStruct> inHistStructMap, const string prefix){
-	for(auto const &ent1 : inHistStructMap){
-		TH1* tmpHist;
-		if (ent1.second.histType=="TH1D")
-			tmpHist = new TH1D((prefix+ent1.first).c_str(),ent1.second.title.c_str(),ent1.second.nBins,ent1.second.xLow,ent1.second.xHigh);
-		if (ent1.second.histType=="TH1I")
-			tmpHist = new TH1I((prefix+ent1.first).c_str(),ent1.second.title.c_str(),ent1.second.nBins,ent1.second.xLow,ent1.second.xHigh);
-		if (ent1.second.histType=="TH2D")
-			tmpHist = new TH2D((prefix+ent1.first).c_str(),ent1.second.title.c_str(),ent1.second.nBins,ent1.second.xLow,ent1.second.xHigh,ent1.second.ynBins,ent1.second.yLow,ent1.second.yHigh);
-		histMap[prefix+ent1.first] = tmpHist;
-	}
-	
-}
 
 
 
