@@ -84,12 +84,6 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 		cout << "[ERROR|eventHistFiller]\tCan't find collection: " << PFOCollectionName << endl;
 		return -1;
 	}
-	try {
-		MCTruthCollection = event->getCollection(MCTruthCollectionName);
-	} catch (EVENT::DataNotAvailableException &e) {
-		cout << "[ERROR|eventHistFiller]\tCan't find collection: " << MCTruthCollectionName << endl;
-		return -1;
-	}
 
 	// find primary generated MC particle which is the only findable in the event by definition [particle gun]
 	
@@ -100,35 +94,27 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 	double truthEnergy = -666;
 	bool reclusteringIsDone = false;
 
-	EVENT::MCParticle* genPart = NULL;
-	int nElements = MCTruthCollection->getNumberOfElements();
-	for(int j=0; j < nElements; j++) {
-		auto part = dynamic_cast<EVENT::MCParticle*>(MCTruthCollection->getElementAt(j));
-		if (part->getGeneratorStatus()==1){
-			const double *partMom = part->getMomentum();
-			TVector3 v1;
-			v1.SetXYZ(partMom[0],partMom[1],partMom[2]);
-			double partTheta = 180.*v1.Theta()/TMath::Pi();
-			double cosPartTheta = TMath::Cos(TMath::Pi()*partTheta/180.);
-			truthTheta = partTheta;
-			truthPhi = 180.*v1.Phi()/TMath::Pi();
-			cosTruthTheta = cosPartTheta;
-			if (partTheta<8 || partTheta>172) 
-				return 0;
-			if (part->isDecayedInTracker() && flagDiscardConvertion==true)
-				return 0;
-			if ((!part->isDecayedInTracker()) && flagSelectConvertion==true)
-				return 0;
-			histMap["truthParticle_isDecayedInTracker"]->Fill(part->isDecayedInTracker());
-			genPart = part;
-			nSelectecTruthParticles++;
-			histMap["nTruthPartsVsCosTheta"]->Fill(cosPartTheta);
-			histMap["nTruthPartsVsTheta"]->Fill(partTheta);
-			truthEnergy = part->getEnergy();
-			histMap["nTruthPartsVsEnergy"]->Fill(truthEnergy);
-			break;
-		}
-	}
+	EVENT::MCParticle* genPart = truthCondition::instance()->getGunParticle();
+	const double *partMom = genPart->getMomentum();
+	TVector3 v1;
+	v1.SetXYZ(partMom[0],partMom[1],partMom[2]);
+	double partTheta = 180.*v1.Theta()/TMath::Pi();
+	double cosPartTheta = TMath::Cos(TMath::Pi()*partTheta/180.);
+	truthTheta = partTheta;
+	truthPhi = 180.*v1.Phi()/TMath::Pi();
+	cosTruthTheta = cosPartTheta;
+	if (partTheta<8 || partTheta>172) 
+		return 0;
+	if (genPart->isDecayedInTracker() && flagDiscardConvertion==true)
+		return 0;
+	if ((!genPart->isDecayedInTracker()) && flagSelectConvertion==true)
+		return 0;
+	histMap["truthParticle_isDecayedInTracker"]->Fill(genPart->isDecayedInTracker());
+	nSelectecTruthParticles++;
+	histMap["nTruthPartsVsCosTheta"]->Fill(cosPartTheta);
+	histMap["nTruthPartsVsTheta"]->Fill(partTheta);
+	truthEnergy = genPart->getEnergy();
+	histMap["nTruthPartsVsEnergy"]->Fill(truthEnergy);
 
 	vector<EVENT::ReconstructedParticle*> recoPFOs = getObjVecFromCollection(PFOCollection);
 	histMap["nPFOs"]->Fill(recoPFOs.size());

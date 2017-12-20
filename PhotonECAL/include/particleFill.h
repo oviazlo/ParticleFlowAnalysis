@@ -3,6 +3,7 @@
 
 #include <objectFill.h>
 #include <globalConfig.h>
+#include "truthCondition.h"
 
 
 
@@ -38,8 +39,6 @@ class particleFill : public objectFill{
 		int fillParticleCorrelations (const EVENT::ReconstructedParticle* inPart1, const EVENT::ReconstructedParticle* inPart2, const string prefix);
 		int fillParticleCorrelations (const EVENT::ReconstructedParticle* inPart1, const EVENT::MCParticle* inPart2, const string prefix);
 		int fillClusterInfo (const EVENT::ReconstructedParticle* inPart, const string prefix);
-		// FIXME hardcoded default name of the truth collection
-		vector<EVENT::MCParticle*> getTruthMCParticlesFromCollection(const EVENT::LCEvent* event, const string truthCollectionName = "MCParticlesSkimmed");
 
 		EVENT::LCCollection *collection;
 		string collectionName;

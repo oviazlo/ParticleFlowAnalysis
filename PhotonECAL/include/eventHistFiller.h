@@ -26,7 +26,6 @@ class eventHistFiller : public objectFill{
 		int fillEvent(const EVENT::LCEvent*);
 		int writeToFile(TFile* outFile);
 		void setPFOCollection(const string _collectionName){PFOCollectionName = _collectionName;}
-		void setMCTruthCollection(const string _collectionName){MCTruthCollectionName = _collectionName;}
 		void setDiscardConvertions(bool inFlag){flagDiscardConvertion = inFlag;}
 		void setSelectConvertions(bool inFlag){flagSelectConvertion = inFlag;}
 		// void setPhotonReclustering(bool inFlag){photonReclustering = inFlag;}
@@ -45,9 +44,7 @@ class eventHistFiller : public objectFill{
 		// bool neutralReclustering;
 		unsigned int nSelectecTruthParticles;
 		string PFOCollectionName;
-		string MCTruthCollectionName;
 		EVENT::LCCollection *PFOCollection;
-		EVENT::LCCollection *MCTruthCollection;
 		int checkPfoType(vector<unsigned int> inVec);
 		double thetaMergingCut;
 };

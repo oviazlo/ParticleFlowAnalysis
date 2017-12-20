@@ -192,27 +192,6 @@ int particleFill::fillParticleCorrelations (const EVENT::ReconstructedParticle* 
 
 }
 
-
-vector<EVENT::MCParticle*> particleFill::getTruthMCParticlesFromCollection(const EVENT::LCEvent* event, const string truthCollectionName){
-	// FIXME hardcoding of the collection name
-	vector<EVENT::MCParticle*> outPartVec;
-	EVENT::LCCollection *truthCollection;
-	try {
-		truthCollection = event->getCollection(truthCollectionName);
-	} catch (EVENT::DataNotAvailableException &e) {
-		cout << "[ERROR|particleFill]\tCan't find collection: " << truthCollectionName << endl;
-		return outPartVec;
-	}
-
-	const int nElements = truthCollection->getNumberOfElements();
-	// const int nElements = collection->getNumberOfElements();
-	for(int j=0; j < nElements; j++) {
-		auto part = dynamic_cast<EVENT::MCParticle*>(truthCollection->getElementAt(j));
-		outPartVec.push_back(part);
-	}
-	return outPartVec;
-}
-
 int particleFill::fillEvent(const EVENT::LCEvent* event){
 	try {
 		collection = event->getCollection(collectionName);
@@ -220,12 +199,6 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 		cout << "[ERROR|particleFill]\tCan't find collection: " << collectionName << endl;
 		return -1;
 	}
-
-	auto truthParts = getTruthMCParticlesFromCollection(event);
-	// for (int iTr=0; iTr<truthParts.size(); iTr++){
-	//         cout << iTr << ": " << truthParts[iTr] << endl;
-	// }
-	// cout << "[DEBUG]\tE_truth: " << truthParts[0]->getEnergy() << endl;
 
 	if( collection ) {
 		string collectionType = collection->getTypeName();
@@ -325,15 +298,15 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 			if (nElements>=2) {
 				auto firstEPart = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(intMap["id_firstEnergeticPFO"]));
 				auto secondEPart = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(intMap["id_secondEnergeticPFO"]));
-				fillParticleCorrelations(firstEPart,truthParts[0],"firstEnergetic_truthPart_");
-				fillParticleCorrelations(secondEPart,truthParts[0],"secondEnergetic_truthPart_");
+				fillParticleCorrelations(firstEPart,truthCondition::instance()->getGunParticle(),"firstEnergetic_truthPart_");
+				fillParticleCorrelations(secondEPart,truthCondition::instance()->getGunParticle(),"secondEnergetic_truthPart_");
 
 				for(int kk=0; kk < nElements; kk++) {
 					auto tmpPart = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(kk));
-					fillParticleCorrelations(tmpPart,truthParts[0],"allPFO_truthPart_");
+					fillParticleCorrelations(tmpPart,truthCondition::instance()->getGunParticle(),"allPFO_truthPart_");
 					if (kk==intMap["id_firstEnergeticPFO"])
 						continue;
-					fillParticleCorrelations(tmpPart,truthParts[0],"notFirstEnergetic_truthPart_");
+					fillParticleCorrelations(tmpPart,truthCondition::instance()->getGunParticle(),"notFirstEnergetic_truthPart_");
 				}
 			}
 
@@ -369,8 +342,7 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 			if ( intMap["id_firstEnergeticPFO"] == intMap["id_mostEnergeticPFOofType"]  ){
 
 				fillPart(part,"signalPFO_");
-				for (int iTr=0; iTr<truthParts.size(); iTr++)
-					fillPart(truthParts[iTr],"signalPFO_truthParts_");
+				fillPart(truthCondition::instance()->getGunParticle(),"signalPFO_truthParts_");
 				if (config::vm.count("accessCaloHitInfo"))
 					fillClusterInfo(part,"signalPFO_clusterInfo_");
 				// if (nElements>=2 && countE_1!=countE_2){
@@ -388,13 +360,12 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 
 				if (intMap["n_PFO"]>=2){
 					fillPart(part,"signalPFO_thereAreAdditionalPFOs_");
-					fillPart(truthParts[0],"truthParticle_twoOrMoreRecoPFO_");
+					fillPart(truthCondition::instance()->getGunParticle(),"truthParticle_twoOrMoreRecoPFO_");
 				}
 				else{
 					fillPart(part,"signalPFO_noAdditionalPFOs_");
-					for (int iTr=0; iTr<truthParts.size(); iTr++)
-						fillPart(truthParts[iTr],"signalPFO_noAdditionalPFOs_truthParts_");
-					fillPart(truthParts[0],"truthParticle_onlyOneRecoPFO_");
+					fillPart(truthCondition::instance()->getGunParticle(),"signalPFO_noAdditionalPFOs_truthParts_");
+					fillPart(truthCondition::instance()->getGunParticle(),"truthParticle_onlyOneRecoPFO_");
 					if (config::vm.count("accessCaloHitInfo"))
 						fillClusterInfo(part,"signalPFO_noAdditionalPFOs_clusterInfo_");
 					
@@ -408,17 +379,17 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 
 			if (intMap["n_PFOofType"]>=1){
 				part = dynamic_cast<IMPL::ReconstructedParticleImpl*>(collection->getElementAt(intMap["id_mostEnergeticPFOofType"]));
-				fillRecoPhoton(part,truthParts[0],"PFOofType_");
+				fillRecoPhoton(part,truthCondition::instance()->getGunParticle(),"PFOofType_");
 				if (intMap["n_PFO"]==1)
-					fillRecoPhoton(part,truthParts[0],"PFOofType_noAdditionalPFOs_");
+					fillRecoPhoton(part,truthCondition::instance()->getGunParticle(),"PFOofType_noAdditionalPFOs_");
 				else{
-					fillRecoPhoton(part,truthParts[0],"PFOofType_thereAreAdditionalPFOs_");
-					double truthE = truthParts[0]->getEnergy();
+					fillRecoPhoton(part,truthCondition::instance()->getGunParticle(),"PFOofType_thereAreAdditionalPFOs_");
+					double truthE = truthCondition::instance()->getGunParticle()->getEnergy();
 					// if (abs(part->getEnergy()-truthE)<(2*sqrt(truthE)+0.5))
 					if (abs(part->getEnergy()-truthE)<(0.75*sqrt(truthE)))
-						fillRecoPhoton(part,truthParts[0],"PFOofType_thereAreAdditionalPFOs_withinEnergyCut_");
+						fillRecoPhoton(part,truthCondition::instance()->getGunParticle(),"PFOofType_thereAreAdditionalPFOs_withinEnergyCut_");
 					else{
-						fillRecoPhoton(part,truthParts[0],"PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_");
+						fillRecoPhoton(part,truthCondition::instance()->getGunParticle(),"PFOofType_thereAreAdditionalPFOs_outsideEnergyCut_");
 						int tmpId = -1;
 						if (intMap["id_mostEnergeticPFOofType"]==intMap["id_firstEnergeticPFO"])
 							tmpId = intMap["id_secondEnergeticPFO"];
@@ -429,8 +400,8 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 						fillPart(partTemp,"PFONOTofType_thereAreAdditionalPFOs_outsideEnergyCut_");
 						fillParticleCorrelations(part,partTemp,"PFOofType_secondPFO_outsideEnergyCut_");
 
-						fillParticleCorrelations(part,truthParts[0],"PFOofType_truthPart_outsideEnergyCut_");
-						fillParticleCorrelations(partTemp,truthParts[0],"secondPFO_truthPart_outsideEnergyCut_");
+						fillParticleCorrelations(part,truthCondition::instance()->getGunParticle(),"PFOofType_truthPart_outsideEnergyCut_");
+						fillParticleCorrelations(partTemp,truthCondition::instance()->getGunParticle(),"secondPFO_truthPart_outsideEnergyCut_");
 
 						
 						

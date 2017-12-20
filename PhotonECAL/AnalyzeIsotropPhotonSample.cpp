@@ -130,7 +130,7 @@ int main (int argn, char* argv[]) {
 	for(auto iTheta=0; iTheta<thetaRanges.size()-1;iTheta++){
 	for(auto iPhi=0; iPhi<phiRanges.size()-1;iPhi++){
 		
-		truthParticleSelector *sel1 = new truthParticleSelector("MCParticlesSkimmed");
+		truthParticleSelector *sel1 = new truthParticleSelector();
 		sel1->setEnergyRange(energyRanges[iE],energyRanges[iE+1]);
 		sel1->setThetaRange(thetaRanges[iTheta],thetaRanges[iTheta+1]);
 		sel1->setPhiRange(phiRanges[iPhi],phiRanges[iPhi+1]);

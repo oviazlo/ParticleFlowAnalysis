@@ -41,10 +41,11 @@
 #include <photonEffCalculator.h>
 #include <serviceFunctions.h>
 #include <eventHistFiller.h>
+#include "globalConfig.h"
 
 class truthParticleSelector{
 	public:
-		truthParticleSelector(const string _mcTruthCollection);
+		truthParticleSelector();
 		~truthParticleSelector();
 		
 		void setDebugFlag(const bool inFlag){debugFlag = inFlag;}
@@ -67,7 +68,6 @@ class truthParticleSelector{
 		void setEfficiencyOneClusterRequirement(bool inVal){onlyOneRecoClusterPerEvent = inVal;}
 
 	private:
-		string mcTruthCollection;
 		string effCollection;
 		bool debugFlag;
 		map<string, objectFill*> objFillMap;
