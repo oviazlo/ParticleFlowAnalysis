@@ -45,6 +45,7 @@ public:
 	
 	unsigned int getnTruthParticles(){return nTruthParticles;}
 	int getpartGun_stablePartType(){return partGun_stablePartType;}
+	bool get_simFSRPresent(){return simFSRPresent;}
 
 	// Main functions
 	void processEvent();
