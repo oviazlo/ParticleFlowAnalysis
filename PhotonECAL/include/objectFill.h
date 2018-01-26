@@ -64,6 +64,7 @@ class objectFill{
 		// template <class T> vector<T> getObjVecFromCollection(EVENT::LCCollection* inCollection);
 		vector<EVENT::ReconstructedParticle*> getObjVecFromCollection(const EVENT::LCCollection* inCollection);
 		void createHistsFromMap(const map<string,histStruct> inHistStructMap, const string prefix);
+		TH1* getHistFromMap(string histID);
 
 	protected:
 		std::map<std::string, TH1*> histMap;

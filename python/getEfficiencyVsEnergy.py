@@ -1,6 +1,6 @@
 #!/bin/python
 import glob, os, ROOT, math, sys
-from ROOT import TCanvas, TGraph, TLegend, TF1, TH1, TH1F
+from ROOT import TCanvas, TGraph, TGraphErrors, TLegend, TF1, TH1, TH1F
 from ROOT import gROOT, gStyle
 
 #  numeratorDir = "PandoraPFOs_22_2112"
@@ -8,14 +8,14 @@ from ROOT import gROOT, gStyle
 #  absPath = "/afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/gamma/FCCee_testConvertionDetection/e-/theta10_170/"
 absPath = "./"
 #  rootDir = "eventHists_photonAndNeutralRecl"
-rootDir = ["eventHists","eventHists_photonRecl","eventHists_noConv","eventHists_photonAndNeutralRecl"]
+rootDir = ["eventHists","eventHists_photonRecl","eventHists_noConv","eventHists_photonAndNeutralRecl","eventHists_photonAndNeutralRecl_looseThetaCut","eventHists_noFSR"]
 #  rootDir = "eventHists"
 #  rootDir = "eventHists_noConv"
 #  rootDir = "eventHists_conv"
 histName = "efficiencyVsEnergy"
 fileNamePrefix = "particleGun_E"
 fileNameIndex = ["1","2","5","10","20","50","100"]
-fileNamePostfix = ".root"
+fileNamePostfix = "_Theta9_171.root"
 
 def styleGraph(inGr, iColor):
     inGr.SetMarkerStyle(34)
@@ -31,7 +31,8 @@ if __name__ == "__main__":
         outRootFile = ROOT.TFile.Open(iDir+".root","RECREATE")
 
         #  tmpGr = TGraph(len(fileNameIndex))
-        tmpGr = TGraph(len(fileNameIndex)-1)
+        #  tmpGr = TGraph(len(fileNameIndex)-1)
+        tmpGr = TGraphErrors(len(fileNameIndex)-1)
         tmpGr.SetTitle("")
         tmpGr.GetXaxis().SetTitle("Energy [GeV]")
         tmpGr.GetYaxis().SetTitle("Efficiency")
@@ -43,8 +44,10 @@ if __name__ == "__main__":
             maxBin = iHist.GetMaximumBin()
             energy = iHist.GetBinCenter(maxBin)
             eff = iHist.GetBinContent(maxBin)
+            effErr = iHist.GetBinError(maxBin)
             tmpGr.SetPoint(i,energy,eff)
-            print("E:%f, eff:%f" % (energy, eff))
+            tmpGr.SetPointError(i,0,effErr)
+            print("E:%f, eff:%f +- %f" % (energy, eff, effErr))
 
         
         outRootFile.cd()

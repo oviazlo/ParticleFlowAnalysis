@@ -17,6 +17,7 @@
 #include <EVENT/LCCollection.h>
 #include <EVENT/MCParticle.h>
 #include <Exceptions.h>
+#include <globalConfig.h>
 
 class truthCondition
 {
@@ -45,6 +46,7 @@ public:
 	
 	unsigned int getnTruthParticles(){return nTruthParticles;}
 	int getpartGun_stablePartType(){return partGun_stablePartType;}
+	int get_partGun_isStablePartDecayedInTracker(){return partGun_isStablePartDecayedInTracker;}
 	bool get_simFSRPresent(){return simFSRPresent;}
 
 	// Main functions
@@ -59,7 +61,7 @@ private:
 	truthCondition& operator=(const truthCondition&){};
 	static truthCondition* s_instance;
 
-	void initDefault(){debugFlag = false; simFSRPresent=false;}
+	void initDefault(){debugFlag = config::vm.count("debug"); simFSRPresent=false;}
 
 	const EVENT::LCEvent* event;
 	unsigned int nTruthParticles;

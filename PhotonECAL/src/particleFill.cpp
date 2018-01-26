@@ -129,8 +129,6 @@ int particleFill::init(){
 	}
 
 	dPhiMergeValue = 0;
-	debugFlag = false;
-	// debugFlag = true;
 	collection = NULL;
 
 	return 0;
@@ -199,6 +197,15 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 		cout << "[ERROR|particleFill]\tCan't find collection: " << collectionName << endl;
 		return -1;
 	}
+	// if (config::vm.count("accessCaloHitInfo")){
+	//         string caloHitCollectionName = "ECalBarrelCollection";
+	//         try {
+	//                 EVENT::LCCollection *caloCollection = event->getCollection(caloHitCollectionName);
+	//         } catch (EVENT::DataNotAvailableException &e) {
+	//                 cout << "[ERROR|particleFill]\tCan't find collection: " << caloHitCollectionName << endl;
+	//                 return -1;
+	//         }
+	// }
 
 	if( collection ) {
 		string collectionType = collection->getTypeName();
@@ -228,7 +235,7 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
       		for(int j=0; j < nElements; j++) {
 			if (collectionType=="MCParticle"){
 				auto part = dynamic_cast<EVENT::MCParticle*>(collection->getElementAt(j));
-				if (debugFlag){ 
+				if (config::vm.count("debug")){ 
 					dumpTruthPart(part, j);
 					cout << endl;
 				}
@@ -261,7 +268,7 @@ int particleFill::fillEvent(const EVENT::LCEvent* event){
 			}
 			else if (collectionType=="ReconstructedParticle"){
 				auto part = dynamic_cast<EVENT::ReconstructedParticle*>(collection->getElementAt(j));
-				if (debugFlag) 
+				if (config::vm.count("debug")) 
 					dumpReconstructedPart(part, j);
 				if(find(partTypeToSelect.begin(), partTypeToSelect.end(), part->getType()) != partTypeToSelect.end()){
 					fillPart(part,"allPartsOfType_");
@@ -469,18 +476,34 @@ int particleFill::fillPart (const EVENT::ReconstructedParticle* inPart, const st
 }
 
 int particleFill::fillClusterInfo (const EVENT::ReconstructedParticle* inPart, const string prefix){
+	
+	int debugCounter = 0;
 	vector<EVENT::Cluster*> clusterVec = inPart->getClusters();
+	cout << "[debug_0]" << debugCounter++ << endl;
+	cout << "clusterVec.size(): " << clusterVec.size() << endl;
 	for (int i=0; i<clusterVec.size(); i++){
+		cout << "[debug]" << debugCounter++ << endl;
+		cout << "clusterVec["<<i<<"]: " << clusterVec[i] << endl;
+		if (clusterVec[i]==NULL) continue;
 		const float *pos = clusterVec[i]->getPosition();
+		cout << "[debug]" << debugCounter++ << endl;
 		fillHist(pos[2],sqrt(pos[1]*pos[1]+pos[0]*pos[0]), "clusterPositionZR", prefix);
 		// "ecal", "hcal", "yoke", "lcal", "lhcal", "bcal"
+		cout << "[debug]" << debugCounter++ << endl;
 		vector<float> subdetEnergies = clusterVec[i]->getSubdetectorEnergies();
+		cout << "[debug]" << debugCounter++ << endl;
 		double ratio = subdetEnergies[0]/subdetEnergies[1];
+		cout << "[debug]" << debugCounter++ << endl;
 		fillHist(subdetEnergies[0], "ECALEnergy", prefix);
+		cout << "[debug]" << debugCounter++ << endl;
 		fillHist(subdetEnergies[1], "HCALEnergy", prefix);
+		cout << "[debug]" << debugCounter++ << endl;
 		double testCorrectedEnergy = 1.1191707392*(subdetEnergies[0]/1.02425625854) + 1.18038308419*(subdetEnergies[1]/1.02425625854);
+		cout << "[debug]" << debugCounter++ << endl;
 		fillHist(testCorrectedEnergy, "TestCorrectedEnergy", prefix);
+		cout << "[debug]" << debugCounter++ << endl;
 		fillHist(ratio, "ECALtoHCALRatio", prefix);
+		cout << "[debug]" << debugCounter++ << endl;
 		if (ratio>1)
 			fillHist(pos[2],sqrt(pos[1]*pos[1]+pos[0]*pos[0]), "clusterPositionMoreECALEnergy", prefix);
 		else

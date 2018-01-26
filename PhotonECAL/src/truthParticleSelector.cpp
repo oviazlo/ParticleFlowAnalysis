@@ -23,12 +23,43 @@ void truthParticleSelector::init(){
 	}
 
 	eventHistFiller* eventFill = NULL;
+	string mergeTag = "";
 
 	eventFill = new eventHistFiller("eventHists",effCollection);
 	objFillMap["eventHists"] = eventFill;
 
+	eventFill = new eventHistFiller("eventHists_noConv",effCollection);
+	objFillMap["eventHists_noConv"] = eventFill;
+
+	eventFill = new eventHistFiller("eventHists_conv",effCollection);
+	objFillMap["eventHists_conv"] = eventFill;
+
 	eventFill = new eventHistFiller("eventHists_noFSR",effCollection);
 	objFillMap["eventHists_noFSR"] = eventFill;
+
+	eventFill = new eventHistFiller("eventHists_FSR",effCollection);
+	objFillMap["eventHists_FSR"] = eventFill;
+
+	mergeTag = "photonRecl";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonMerge");
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
+	mergeTag = "photonReclMomDep";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonMergeMomentumDep");
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
+	mergeTag = "photonAndNeutralRecl";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonAndNeutralMerge");
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
+	mergeTag = "photonAndNeutralRecl_looseThetaCut";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonAndNeutralLooseMerge");
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
 	// vector<int> pfoTypeVec = {11,22};
 	// vector<int> pfoTypeVec = {11};
 	// for (int ii=0; ii<pfoTypeVec.size(); ii++){
@@ -107,15 +138,27 @@ bool truthParticleSelector::selectEvent(const EVENT::LCEvent* event){
 		return false;
 	if ((partPhi<phiRange.first) || (partPhi>phiRange.second))
 		return false;
+
+	if (config::vm.count("debug"))
+		cout << "[INFO]\t *****EVENT: " << event->getEventNumber() << " *****" <<endl;
 	
 	for(auto const &mapElement : objFillMap){
 		if (IsInWord(mapElement.first,"_noFSR")){
 			if (truthCondition::instance()->get_simFSRPresent()==false)
 				mapElement.second->fillEvent(event);
 		}
-		// else if (){
-                //
-		// }
+		else if (IsInWord(mapElement.first,"_FSR")){
+			if (truthCondition::instance()->get_simFSRPresent()==true)
+				mapElement.second->fillEvent(event);
+		}
+		else if (IsInWord(mapElement.first,"_conv")){
+			if (truthCondition::instance()->get_partGun_isStablePartDecayedInTracker()==true)
+				mapElement.second->fillEvent(event);
+		}
+		else if (IsInWord(mapElement.first,"_noConv")){
+			if (truthCondition::instance()->get_partGun_isStablePartDecayedInTracker()==false)
+				mapElement.second->fillEvent(event);
+		}
 		else{
 			mapElement.second->fillEvent(event);
 		}

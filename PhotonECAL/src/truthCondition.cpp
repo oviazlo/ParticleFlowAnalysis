@@ -47,6 +47,8 @@ void truthCondition::processEvent(){
 	}
 	if (debugFlag)
 		dumpTruthCondition();
+	// if (simFSRPresent==false && nTruthParticles>1)
+	//         dumpTruthCondition();
 
 }
 

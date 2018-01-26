@@ -21,11 +21,13 @@ using namespace config;
 // vector<vector<int> > PFOPartTypes = {{},{22},{2112}};
 // vector<vector<int> > PFOPartTypes = {{},{22},{11,-11,13,-13,211,-211,22,2112}};
 vector<string> particleFillCollections = {"MCParticlesSkimmed","PandoraPFOs","PandoraPFOs"};
-vector<vector<int> > PFOPartTypes =      {{},			{22},{2112}};
+vector<vector<int> > PFOPartTypes =      {{},			{11},{-211}};
 // int efficiencyPFOType = 11;
 // vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap"[>, "ECalBarrelCollection", "ECalEndcapCollection"<]};
 // vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap","ECalBarrelCollection", "ECalEndcapCollection", "HCALBarrel","HCALEndcap","HCalBarrelCollection", "HCalEndcapCollection"};
-vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap", "HCALBarrel","HCALEndcap"};
+// vector<string> energyFillCollections = {"ECALBarrel","ECALEndcap", "HCALBarrel","HCALEndcap"};
+vector<string> energyFillCollections = {};
+vector<string> additionalCollections = {};
 // po::variables_map vm;
 
 int main (int argn, char* argv[]) {
@@ -87,8 +89,12 @@ int main (int argn, char* argv[]) {
 	if (!vm.count("accessCaloHitInfo")) {
 		energyFillCollections = {};
 	}
+	else{
+		additionalCollections = {"ECALBarrel","ECALEndcap", "HCALBarrel","HCALEndcap","ECalBarrelCollection", "ECalEndcapCollection","HCalBarrelCollection", "HCalEndcapCollection"};
+	}
 	collectionsToRead.insert(collectionsToRead.end(),energyFillCollections.begin(),energyFillCollections.end());
 	collectionsToRead.insert(collectionsToRead.end(),particleFillCollections.begin(),particleFillCollections.end());
+	collectionsToRead.insert(collectionsToRead.end(),additionalCollections.begin(),additionalCollections.end());
 	m_reader->setReadCollectionNames(collectionsToRead);
 
 	vector<double> energyRanges = {9.9,10.1};
@@ -158,7 +164,7 @@ int main (int argn, char* argv[]) {
 
 	truthCondition::instance()->setMCTruthCollectionName("MCParticlesSkimmed");
 	if (vm.count("debug"))
-		truthCondition::instance()->setDebugFlag(true);
+		truthCondition::instance()->setDebugFlag(false);
 
 	while ( event != NULL ) {
 		truthCondition::instance()->setEvent(event);

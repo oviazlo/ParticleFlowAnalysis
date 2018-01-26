@@ -9,14 +9,20 @@ from ROOT import gROOT, gStyle
 from array import array
 from math import tan
 import yaml # WARNING use this environment ~/env/setupPyTools27.env to enable yaml package!!!
+ROOT.gROOT.LoadMacro("CLIC_style/CLICdpStyle/rootstyle/CLICdpStyle.C+")
+ROOT.CLICdpStyle()
 
 #  yamlFile = "/afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/python/config/drawComparison/efficiency_vs_energy.yml"
 #  yamlFile = "/afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/python/config/drawComparison/recoTheta_thetaBins.yml"
 #  yamlFile = "/afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/python/config/drawComparison/efficiency_vs_theta_superimpose.yml"
 yamlFile = "/afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/python/config/drawComparison/energy.yml"
 
+histColor = [ROOT.kBlack, ROOT.kRed-7, ROOT.kBlue, ROOT.kGreen+2, ROOT.kCyan+1, ROOT.kRed+2, ROOT.kOrange, ROOT.kViolet+2, ROOT.kGray]
+markerStyle = [ROOT.kOpenCircle, ROOT.kOpenSquare, ROOT.kOpenTriangleUp, ROOT.kOpenDiamond, ROOT.kOpenCross, ROOT.kOpenCircle, ROOT.kOpenCircle]
+
 if __name__ == "__main__":
 
+        print ("")
 	if (len(sys.argv)>=2):
 		yamlFile = sys.argv[1]
 
@@ -24,6 +30,7 @@ if __name__ == "__main__":
 
 	with open(yamlFile, 'r') as ymlfile:
 		globalCfg = yaml.load(ymlfile)
+                print ("[INFO]\t Read yaml file: %s" % (yamlFile))
 
 	for cfgIterator in globalCfg:
 		cfg = globalCfg[cfgIterator]
@@ -38,6 +45,8 @@ if __name__ == "__main__":
 			histName = cfg['histName']
 		if ("histColor" in cfg):
 			histColor = cfg['histColor']
+		if ("markerStyle" in cfg):
+			markerStyle = cfg['markerStyle']
 		if ("legPos" in cfg):
 			leg = TLegend(cfg["legPos"][0],cfg["legPos"][1],cfg["legPos"][2],cfg["legPos"][3])
 
@@ -45,12 +54,16 @@ if __name__ == "__main__":
 		nEntries = []
 		for i in range(0,len(fileName)):
 			myFile = ROOT.TFile.Open(dirPrefix+fileName[i],"read")
+                        print ("[INFO]\t Open file: %s" % (dirPrefix+fileName[i]))
 			ROOT.SetOwnership(myFile,False)
 			for k in range(0,len(histName)):
 				hist = myFile.Get(histName[k])
+                                print ("[INFO]\t Get hist: %s" % (histName[k]))
 				hist.SetLineColor(histColor[k*len(fileName)+i])
 				hist.SetMarkerColor(histColor[k*len(fileName)+i])
+				hist.SetMarkerStyle(markerStyle[k*len(fileName)+i])
 				hist.SetLineWidth(2)
+                                #  hist.Sumw2()
 				if ("lineWidth" in cfg):
 					hist.SetLineWidth(cfg["lineWidth"])
 				if ("markerSize" in cfg):
@@ -63,23 +76,26 @@ if __name__ == "__main__":
 					hist.Rebin(cfg['rebinFactor'])
 				if ("scaleFactor" in cfg):
 					hist.Scale(cfg['scaleFactor'])
-                                        for j in range(0,hist.GetNbinsX()):
-                                            hist.SetBinError(j+1,0)
+                                #  if ("drawOption" in cfg):
+                                #      if ("HIST" in cfg['drawOption']):
+                                #          for j in range(0,hist.GetNbinsX()):
+                                #              hist.SetBinError(j+1,0)
 				if ("sortXaxisInGraph" in cfg):
 					if (cfg["sortXaxisInGraph"]==True):
 						histPoints = []
 						for j in range(0,hist.GetN()):
-							histPoints.append([hist.GetX()[j],hist.GetY()[j]])
+							histPoints.append([hist.GetX()[j],hist.GetY()[j],hist.GetEX()[j],hist.GetEY()[j]])
 						histPoints = sorted(histPoints, key=lambda x: x[0])
 						for j in range(0,hist.GetN()):
 							hist.SetPoint(j+1,histPoints[j][0],histPoints[j][1])
+							hist.SetPointError(j+1,histPoints[j][2],histPoints[j][3])
 				hists.append(hist)
 		totalEntries = sum(nEntries)
 
 		if ("canPos" in cfg):
 			c1 = TCanvas( 'c1', 'A Simple Graph Example',  cfg["canPos"][0],cfg["canPos"][1],cfg["canPos"][2],cfg["canPos"][3])
 		else:
-			c1 = TCanvas( 'c1', 'A Simple Graph Example', 0, 0, 800, 600 )
+			c1 = TCanvas( 'c1', 'A Simple Graph Example', 0, 0, 800, 700 )
 		for i in range(0,len(hists)):
 			if ("legPos" in cfg):
 				if ("legCaptionMode" in cfg):
@@ -101,9 +117,10 @@ if __name__ == "__main__":
 					hists[i].GetXaxis().SetTitle(cfg['xAxisLabel'])
 				if ("yAxisLabel" in cfg):
 					hists[i].GetYaxis().SetTitle(cfg['yAxisLabel'])
-				drawOption = ""
+                                drawOption = ""
 				if ("drawOption" in cfg):
 					drawOption = cfg['drawOption']
+                                        sameDrawOption = drawOption
 				if ("gridX" in cfg):
 					c1.SetGridx(cfg['gridX'])
 				if ("gridY" in cfg):
@@ -112,14 +129,21 @@ if __name__ == "__main__":
 					c1.cd(1).SetLogx(cfg['logX'])
 				if ("logY" in cfg):
 					c1.cd(1).SetLogy(cfg['logY'])
-
+                                
+                                print ("[INFO]\t drawOption: %s" % (drawOption))
 				hists[i].Draw(drawOption)
 			else:
-				sameDrawOption = ""
+                                sameDrawOption = ""
+				if ("drawOption" in cfg):
+                                        sameDrawOption = cfg['drawOption']
 				if ("sameDrawOption" in cfg):
 					sameDrawOption = cfg['sameDrawOption']
+                                print ("[INFO]\t sameDrawOption: %s" % (sameDrawOption))
 				hists[i].Draw(sameDrawOption+"same")
 		if ("legPos" in cfg):
 			leg.Draw("same")
+                print ("")
+                ROOT.gPad.SetPhi(150);
 		c1.SaveAs("pictures/"+cfgIterator+".png")
 		c1.SaveAs("pictures/"+cfgIterator+".pdf")
+		c1.SaveAs("pictures/"+cfgIterator+".C")
