@@ -25,7 +25,7 @@ int eventHistFiller::init(){
 	
 	tmpHist = new TH1D("nPFOsVsTheta_all","nPFOs vs Theta; Theta; Counts per Event",180*2,0,180);
 	histMap["nPFOsVsTheta_all"] = tmpHist;
-	tmpHist = new TH1D("nPFOsVsCosTheta_all","nPFOs vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
+	tmpHist = new TH1D("nPFOsVsCosTheta_all","nPFOs vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
 	histMap["nPFOsVsCosTheta_all"] = tmpHist;
 
 	tmpHist = new TH1D("totalEnergyVsTheta","Sum of PFOs Energy vs Theta; Theta; Energy [GeV]",180*2,0,180);
@@ -37,40 +37,48 @@ int eventHistFiller::init(){
 	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
 		tmpHist = new TH1D(("nPFOsVsTheta_"+it->second).c_str(),("n"+it->second+"s vs Theta; Theta; Counts per Event").c_str(),180*2,0,180);
 		histMap["nPFOsVsTheta_"+it->second] = tmpHist;
-		tmpHist = new TH1D(("nPFOsVsCosTheta_"+it->second).c_str(),("n"+it->second+"s vs Cos(#Theta); Cos(#Theta); Counts per Event").c_str(),180*2,-1,1);
+		tmpHist = new TH1D(("nPFOsVsCosTheta_"+it->second).c_str(),("n"+it->second+"s vs cos(#theta); cos(#theta); Counts per Event").c_str(),180*2,-1,1);
 		histMap["nPFOsVsCosTheta_"+it->second] = tmpHist;
-		tmpHist = new TH1D(("nPFOsVsCosThetaFailType_"+it->second).c_str(),("n"+it->second+"s vs Cos(#Theta); Cos(#Theta); Counts per Event").c_str(),180*2,-1,1);
+		tmpHist = new TH1D(("nPFOsVsCosThetaFailType_"+it->second).c_str(),("n"+it->second+"s vs cos(#theta); cos(#theta); Counts per Event").c_str(),180*2,-1,1);
 		histMap["nPFOsVsCosThetaFailType_"+it->second] = tmpHist;
 
 	}
 	
 	tmpHist = new TH1D("nTruthPartsVsTheta","nTruthParts vs Theta; Theta; Counts per Event",180*2,0,180);
 	histMap["nTruthPartsVsTheta"] = tmpHist;
-	tmpHist = new TH1D("nTruthPartsVsCosTheta","nTruthParts vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
+	tmpHist = new TH1D("nTruthPartsVsCosTheta","nTruthParts vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
 	histMap["nTruthPartsVsCosTheta"] = tmpHist;
 	tmpHist = new TH1D("nTruthPartsVsEnergy","nTruthParts vs Energy ;Energy [GeV]; Counts per Event",100,0.5,100.5); 
 	histMap["nTruthPartsVsEnergy"] = tmpHist;
 
 	tmpHist = new TH1D("efficiencyVsTheta","efficiency vs Theta; Theta; Counts per Event",180*2,0,180);
 	histMap["efficiencyVsTheta"] = tmpHist;
-	tmpHist = new TH1D("efficiencyVsCosTheta","efficiency vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
+	tmpHist = new TH1D("efficiencyVsCosTheta","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
 	histMap["efficiencyVsCosTheta"] = tmpHist;
 	tmpHist = new TH1D("efficiencyVsEnergy","efficiency vs Energy; Energy [GeV]; Counts per Event",100,0.5,100.5);
 	histMap["efficiencyVsEnergy"] = tmpHist;
+	tmpHist = new TH1D("efficiencyVsEnergy_onlyType","efficiency vs Energy; Energy [GeV]; Counts per Event",100,0.5,100.5);
+	histMap["efficiencyVsEnergy_onlyType"] = tmpHist;
 
 
-	tmpHist = new TH1D("efficiencyVsCosThetaFailType","efficiency vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
-	histMap["efficiencyVsCosThetaFailType"] = tmpHist;
-	tmpHist = new TH1D("efficiencyVsCosThetaFailAngularMatching","efficiency vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
+	tmpHist = new TH1D("efficiencyVsCosThetaFailType_all","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
+	histMap["efficiencyVsCosThetaFailType_all"] = tmpHist;
+	tmpHist = new TH1D("efficiencyVsCosThetaFailType_pion","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
+	histMap["efficiencyVsCosThetaFailType_pion"] = tmpHist;
+	tmpHist = new TH1D("efficiencyVsCosThetaFailType_muon","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
+	histMap["efficiencyVsCosThetaFailType_muon"] = tmpHist;
+	tmpHist = new TH1D("efficiencyVsCosThetaFailType_noChargedParts","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
+	histMap["efficiencyVsCosThetaFailType_noChargedParts"] = tmpHist;
+	tmpHist = new TH1D("efficiencyVsCosThetaFailAngularMatching","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
 	histMap["efficiencyVsCosThetaFailAngularMatching"] = tmpHist;
-	tmpHist = new TH1D("efficiencyVsCosThetaFailEnergyMatching","efficiency vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
+	tmpHist = new TH1D("efficiencyVsCosThetaFailEnergyMatching","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
 	histMap["efficiencyVsCosThetaFailEnergyMatching"] = tmpHist;
 
-	tmpHist = new TH1D("efficiencyVsCosThetaSum","efficiency vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
+	tmpHist = new TH1D("efficiencyVsCosThetaSum","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
 	histMap["efficiencyVsCosThetaSum"] = tmpHist;
 
 	for (int iCount=0; iCount<=9; iCount++){
-		tmpHist = new TH1D(("efficiencyVsCosThetaCat"+DoubToStr(iCount)).c_str(),"efficiency vs Cos(#Theta); Cos(#Theta); Counts per Event",180*2,-1,1);
+		tmpHist = new TH1D(("efficiencyVsCosThetaCat"+DoubToStr(iCount)).c_str(),"efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
 		histMap["efficiencyVsCosThetaCat"+DoubToStr(iCount)] = tmpHist;
 	}
 
@@ -84,6 +92,16 @@ int eventHistFiller::init(){
 	tmpHist = new TH1D("totalRecoEnergy","Total Reconstructed energy; E [GeV]; Counts",1250,0,125);
 	histMap["totalRecoEnergy"] = tmpHist;
 
+	tmpHist = new TH1D("PFO_passed_eff_dTheta","#Delta #theta; Theta [rad]; Counts",1000,-0.025,0.025);
+	histMap["PFO_passed_eff_dTheta"] = tmpHist;
+	tmpHist = new TH1D("PFO_passed_eff_dPhi","#Delta #phi; Phi [rad]; Counts",40000,-0.5,0.5);
+	histMap["PFO_passed_eff_dPhi"] = tmpHist;
+	tmpHist = new TH1D("PFO_passed_eff_dPt","#(Delta pt)/pt; dPt/Pt; Counts",300,-0.15,0.15);
+	histMap["PFO_passed_eff_dPt"] = tmpHist;
+	tmpHist = new TH1D("PFO_passed_eff_dE","#(Delta E)/E; dE/E; Counts",200,-1.0,1.0);
+	histMap["PFO_passed_eff_dE"] = tmpHist;
+	
+
 	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++){
 		tmpHist = new TH1D(("phiResolution_"+it->second).c_str(),(it->second+" Phi resolution; dPhi [rad]; Counts").c_str(),20000,-0.2,0.2);
 		histMap["phiResolution_"+it->second] = tmpHist;
@@ -91,6 +109,12 @@ int eventHistFiller::init(){
 		histMap["thetaResolution_"+it->second] = tmpHist;
 		tmpHist = new TH1D(("energyResolution_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),1250,0,125);
 		histMap["energyResolution_"+it->second] = tmpHist;
+		tmpHist = new TH1D(("energyResolution2_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),2500,0,125);
+		histMap["energyResolution2_"+it->second] = tmpHist;
+		tmpHist = new TH1D(("energyResolution3_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),5000,0,125);
+		histMap["energyResolution3_"+it->second] = tmpHist;
+		tmpHist = new TH1D(("energyResolution4_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),625,0,125);
+		histMap["energyResolution4_"+it->second] = tmpHist;
 	}
 
 	// cout << "debug2" << endl;
@@ -153,6 +177,7 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 	double truthPhi = -666;  
 	double cosTruthTheta = -666; 
 	double truthEnergy = -666;
+	double truthPt = -666;
 	bool reclusteringIsDone = false;
 
 	EVENT::MCParticle* genPart = truthCondition::instance()->getGunParticle();
@@ -164,6 +189,7 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 	truthTheta = partTheta;
 	truthPhi = 180.*v1.Phi()/TMath::Pi();
 	cosTruthTheta = cosPartTheta;
+	truthPt = v1.Pt();
 
 	getHistFromMap("truthParticle_isDecayedInTracker")->Fill(genPart->isDecayedInTracker());
 	nSelectecTruthParticles++;
@@ -172,7 +198,7 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 	truthEnergy = genPart->getEnergy();
 	getHistFromMap("nTruthPartsVsEnergy")->Fill(truthEnergy);
 
-	vector<EVENT::ReconstructedParticle*> recoPFOs = getObjVecFromCollection(PFOCollection);
+	vector<EVENT::ReconstructedParticle*> recoPFOs = getObjVecFromCollection<EVENT::ReconstructedParticle*>(PFOCollection);
 	getHistFromMap("nPFOs")->Fill(recoPFOs.size());
 	if (recoPFOs.size()==0) 
 		return 0; // no reco PFOs
@@ -181,7 +207,13 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++)
 		pfoCounter[it->second] = 0;
 
+	double totalRecoEnergy = 0.0;
 	bool efficiencyHistWasAlreadyFilled = false;
+
+	bool passTypeCut = false;
+	bool passAngularCut = false;
+	bool passEnergyCut = false;
+
 	for (int i=0; i<recoPFOs.size(); i++){
 
 		int pfoType = abs(recoPFOs[i]->getType());
@@ -190,6 +222,7 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 		v1.SetXYZ(partMom[0],partMom[1],partMom[2]);
 		double partTheta = 180.*v1.Theta()/TMath::Pi();
 		double partPhi = 180.*v1.Phi()/TMath::Pi();
+		double partPt = v1.Pt();
 		double cosPartTheta = TMath::Cos(TMath::Pi()*partTheta/180.);
 		double pfoE = recoPFOs[i]->getEnergy();
 		double dPhi = TMath::Pi()*(partPhi-truthPhi)/180.0;
@@ -199,6 +232,7 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 		getHistFromMap("nPFOsVsCosTheta_all")->Fill(cosTruthTheta);
 		getHistFromMap("nPFOsVsTheta_all")->Fill(truthTheta);
 		getHistFromMap("totalEnergyVsTheta")->Fill(truthTheta,recoPFOs[i]->getEnergy());
+		totalRecoEnergy += recoPFOs[i]->getEnergy();
 
 		for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
 			if (abs(pfoType)==it->first) {
@@ -207,18 +241,30 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 				getHistFromMap("thetaResolution_"+it->second)->Fill(dTheta);
 				getHistFromMap("phiResolution_"+it->second)->Fill(dPhi);
 				getHistFromMap("energyResolution_"+it->second)->Fill(pfoE);
+				getHistFromMap("energyResolution2_"+it->second)->Fill(pfoE);
+				getHistFromMap("energyResolution3_"+it->second)->Fill(pfoE);
+				getHistFromMap("energyResolution4_"+it->second)->Fill(pfoE);
 				pfoCounter[it->second]++;
 			}
 		}
 
 		if (efficiencyHistWasAlreadyFilled==false && i==(recoPFOs.size()-1)){ 
 			bool partOfTypeIsPresent = false;
+			bool chargedParticleIsPresent = false;
+			bool pionIsPresent = false;
+			bool muonIsPresent = false;
 			for (int kkk=0; kkk<recoPFOs.size(); kkk++){
 				if (abs(recoPFOs[kkk]->getType())==abs(genPart->getPDG()))
 					partOfTypeIsPresent = true;
+				if (abs(recoPFOs[kkk]->getType())==11 || abs(recoPFOs[kkk]->getType())==13 || abs(recoPFOs[kkk]->getType())==211)
+					chargedParticleIsPresent = true;
+				if (abs(recoPFOs[kkk]->getType())==13)
+					muonIsPresent = true;
+				if (abs(recoPFOs[kkk]->getType())==211)
+					pionIsPresent = true;
 			}
 			if (partOfTypeIsPresent==false){
-				getHistFromMap("efficiencyVsCosThetaFailType")->Fill(cosTruthTheta);
+				// getHistFromMap("efficiencyVsCosThetaFailType_all")->Fill(cosTruthTheta);
 				for (int kkk=0; kkk<recoPFOs.size(); kkk++){
 					for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
 						if (abs(recoPFOs[kkk]->getType())==it->first) {
@@ -226,14 +272,28 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 						}
 					}
 				}
+				if (!chargedParticleIsPresent)
+					getHistFromMap("efficiencyVsCosThetaFailType_noChargedParts")->Fill(cosTruthTheta);
+				else if (muonIsPresent) 
+					getHistFromMap("efficiencyVsCosThetaFailType_muon")->Fill(cosTruthTheta);
+				else if (pionIsPresent) 
+					getHistFromMap("efficiencyVsCosThetaFailType_pion")->Fill(cosTruthTheta);
+
+
 			}
 		}
 
-		if (pfoType!=abs(genPart->getPDG()) || efficiencyHistWasAlreadyFilled==true)
+		if (pfoType!=abs(genPart->getPDG()) || efficiencyHistWasAlreadyFilled==true){
+			if (i==(recoPFOs.size()-1) && (!efficiencyHistWasAlreadyFilled))
+				getHistFromMap("efficiencyVsCosThetaFailType_all")->Fill(cosTruthTheta);
 			continue;
+		}
+
+		getHistFromMap("efficiencyVsEnergy_onlyType")->Fill(truthEnergy);
 
 		// cout << "PFOmergeMap["<<mergeTag<<"].size(): " << PFOmergeMap[mergeTag].size() << endl;
-		if (PFOmergeMap[mergeTag].size()>0) {
+		if (PFOmergeMap[mergeTag].size()>0 && (genPart->getPDG()==22 || abs(genPart->getPDG())==11 ) ) { // WARNING TODO FIXME hardcoded value (22 - photons)
+		// if (PFOmergeMap[mergeTag].size()>0 && (genPart->getPDG()==22)){ // WARNING TODO FIXME hardcoded value (22 - photons)
 			for (int j=0; j<recoPFOs.size(); j++){
 				if (i==j) 
 					continue;
@@ -271,47 +331,93 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 				}
 			}
 		}
-		if (abs(pfoE-truthEnergy)<0.75*sqrt(truthEnergy)) {
-			// WARNING OLD angular requirements:
-			// if (recoPFOs.size()==1 && (abs(dPhi)>0.004 || abs(dTheta)>0.002)) {
-			// WARNING NEW angular requirements:
-			if (recoPFOs.size()==1 && (abs(dPhi)>0.02 || abs(dTheta)>0.01)) {
-				getHistFromMap("efficiencyVsCosThetaFailAngularMatching")->Fill(cosTruthTheta);
-				continue;
+		// if (genPart->getPDG()==22 || abs(genPart->getPDG())==11){
+		if (genPart->getPDG()==22){
+			// if ((genPart->getPDG()==22 && abs(pfoE-truthEnergy)<0.75*sqrt(truthEnergy))|| (genPart->getPDG()==22 && (abs(truthPt-partPt)<0.5*truthPt) ) ) {
+			if (abs(pfoE-truthEnergy)<0.75*sqrt(truthEnergy))  {
+			// if ((abs(genPart->getPDG())==11 && abs(pfoE-truthEnergy)<0.75*sqrt(truthEnergy))|| (genPart->getPDG()==22 && (abs(truthPt-partPt)<0.5*truthPt) ) ) {
+				// WARNING OLD angular requirements:
+				// if (recoPFOs.size()==1 && (abs(dPhi)>0.004 || abs(dTheta)>0.002)) {
+				// WARNING NEW angular requirements:
+				if (recoPFOs.size()==1 && (abs(dPhi)>0.02 || abs(dTheta)>0.01) ) {
+					getHistFromMap("efficiencyVsCosThetaFailAngularMatching")->Fill(cosTruthTheta);
+					continue;
+				}
+				getHistFromMap("efficiencyVsTheta")->Fill(truthTheta);
+				getHistFromMap("efficiencyVsCosTheta")->Fill(cosTruthTheta);
+				getHistFromMap("efficiencyVsEnergy")->Fill(truthEnergy);
+				// getHistFromMap("matchedEnergyVsTheta"]->Fill(truthTheta,pfoE);
+				efficiencyHistWasAlreadyFilled=true;
+				if (config::vm.count("debug")){
+					cout << "[INFO]	eventHistFiller::fillEvent(" << event->getEventNumber() << ") eff filled with energy: " << pfoE << " GeV" << endl;
+				}
+				getHistFromMap("mergedEnergy")->Fill(pfoE);
+				getHistFromMap("PFO_passed_eff_dE")->Fill((pfoE-truthEnergy)/truthEnergy);
 			}
-			getHistFromMap("efficiencyVsTheta")->Fill(truthTheta);
-			getHistFromMap("efficiencyVsCosTheta")->Fill(cosTruthTheta);
-			getHistFromMap("efficiencyVsEnergy")->Fill(truthEnergy);
-			// getHistFromMap("matchedEnergyVsTheta"]->Fill(truthTheta,pfoE);
-			efficiencyHistWasAlreadyFilled=true;
-			if (config::vm.count("debug")){
-				cout << "[INFO]	eventHistFiller::fillEvent(" << event->getEventNumber() << ") eff filled with energy: " << pfoE << " GeV" << endl;
-			}
-			getHistFromMap("mergedEnergy")->Fill(pfoE);
+			else
+				getHistFromMap("efficiencyVsCosThetaFailEnergyMatching")->Fill(cosTruthTheta);
 		}
-		else
-			getHistFromMap("efficiencyVsCosThetaFailEnergyMatching")->Fill(cosTruthTheta);
+		else{
+			// if ( (abs(truthPt-partPt)<0.1*truthPt) && (abs(dPhi)<0.02) && (abs(dTheta)<0.01)) {
+			if (abs(pfoType)==abs(genPart->getPDG())){
+				passTypeCut = true;
+				if ((abs(dPhi)<0.02) && (abs(dTheta)<0.01)) {
+					passAngularCut = true;
+					if (abs(truthPt-partPt)<0.05*truthPt){
+						passEnergyCut = true;
+						getHistFromMap("efficiencyVsEnergy")->Fill(truthEnergy);
+						getHistFromMap("efficiencyVsTheta")->Fill(truthTheta);
+						getHistFromMap("efficiencyVsCosTheta")->Fill(cosTruthTheta);
+						efficiencyHistWasAlreadyFilled=true;
+						if (config::vm.count("debug")){
+							cout << "[INFO]	eventHistFiller::fillEvent(" << event->getEventNumber() << ") eff filled with energy: " << pfoE << " GeV" << endl;
+						}
+						getHistFromMap("PFO_passed_eff_dPt")->Fill((truthPt-partPt)/truthPt);
+						getHistFromMap("PFO_passed_eff_dTheta")->Fill(dTheta);
+						getHistFromMap("PFO_passed_eff_dPhi")->Fill(dPhi);
+					}
+				}
+			}
+			if (i==(recoPFOs.size()-1)){
+				if (passTypeCut==false){
+					// getHistFromMap("efficiencyVsCosThetaFailType_all")->Fill(cosTruthTheta);
+				}
+				else if (passAngularCut==false){
+					getHistFromMap("efficiencyVsCosThetaFailAngularMatching")->Fill(cosTruthTheta);
+				}
+				else if (passEnergyCut==false){
+					getHistFromMap("efficiencyVsCosThetaFailEnergyMatching")->Fill(cosTruthTheta);
+				}
+			}
+		}
 	}
 
+	getHistFromMap("totalRecoEnergy")->Fill(totalRecoEnergy);
+
 	// std::map<unsigned int, std::string> pfoTypeIntStringMap = {{11,"Electron"}, {13,"Muon"},{22,"Photon"},{211,"Pion"},{2112,"NeutralHadron"}};
-	if (pfoCounter["Electron"]==1 && pfoCounter["Photon"]==0 && pfoCounter["Pion"]==0 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
+	if (pfoCounter["Electron"]==0 && pfoCounter["Pion"]==0)
 		getHistFromMap("efficiencyVsCosThetaCat1")->Fill(cosTruthTheta);
-	else if (pfoCounter["Electron"]==1 && pfoCounter["Photon"]==1 && pfoCounter["Pion"]==0 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
+	else if (pfoCounter["Electron"]==1 && pfoCounter["Pion"]==0)
 		getHistFromMap("efficiencyVsCosThetaCat2")->Fill(cosTruthTheta);
-	else if (pfoCounter["Electron"]==1 && pfoCounter["Photon"]>=2 && pfoCounter["Pion"]==0 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
+	else if (pfoCounter["Pion"]==1 && pfoCounter["Electron"]==0)
 		getHistFromMap("efficiencyVsCosThetaCat3")->Fill(cosTruthTheta);
-	else if (pfoCounter["Electron"]==0 && pfoCounter["Photon"]==0 && pfoCounter["Pion"]==1 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
+	else
 		getHistFromMap("efficiencyVsCosThetaCat4")->Fill(cosTruthTheta);
-	else if (pfoCounter["Electron"]==0 && pfoCounter["Photon"]==1 && pfoCounter["Pion"]==1 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
+	if (pfoCounter["Electron"]==1 && pfoCounter["Pion"]==0)
 		getHistFromMap("efficiencyVsCosThetaCat5")->Fill(cosTruthTheta);
-	else if (pfoCounter["Electron"]==0 && pfoCounter["Photon"]>=2 && pfoCounter["Pion"]==1 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
-		getHistFromMap("efficiencyVsCosThetaCat6")->Fill(cosTruthTheta);
-	else if (pfoCounter["Electron"]==0 && pfoCounter["Photon"]==1 && pfoCounter["Pion"]==0 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
-		getHistFromMap("efficiencyVsCosThetaCat7")->Fill(cosTruthTheta);
-	else if (pfoCounter["Electron"]==0 && pfoCounter["Photon"]>=2 && pfoCounter["Pion"]==0 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
-		getHistFromMap("efficiencyVsCosThetaCat8")->Fill(cosTruthTheta);
-	else if (pfoCounter["NeutralHadron"]>=1)
-		getHistFromMap("efficiencyVsCosThetaCat9")->Fill(cosTruthTheta);
+
+	// else if (pfoCounter["Electron"]==0 && pfoCounter["Photon"]==0)
+	//         getHistFromMap("efficiencyVsCosThetaCat4")->Fill(cosTruthTheta);
+	// else if (pfoCounter["Electron"]==0 && pfoCounter["Photon"]==1 && pfoCounter["Pion"]==1 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
+	//         getHistFromMap("efficiencyVsCosThetaCat5")->Fill(cosTruthTheta);
+	// else if (pfoCounter["Electron"]==0 && pfoCounter["Photon"]>=2 && pfoCounter["Pion"]==1 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
+	//         getHistFromMap("efficiencyVsCosThetaCat6")->Fill(cosTruthTheta);
+	// else if (pfoCounter["Electron"]==0 && pfoCounter["Photon"]==1 && pfoCounter["Pion"]==0 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
+	//         getHistFromMap("efficiencyVsCosThetaCat7")->Fill(cosTruthTheta);
+	// else if (pfoCounter["Electron"]==0 && pfoCounter["Photon"]>=2 && pfoCounter["Pion"]==0 && pfoCounter["NeutralHadron"]==0 && pfoCounter["Muon"]==0)
+	//         getHistFromMap("efficiencyVsCosThetaCat8")->Fill(cosTruthTheta);
+	// else if (pfoCounter["NeutralHadron"]>=1)
+	//         getHistFromMap("efficiencyVsCosThetaCat9")->Fill(cosTruthTheta);
 		
 
 
@@ -347,31 +453,63 @@ int eventHistFiller::writeToFile(TFile* outFile){
 	getHistFromMap("efficiencyVsCosTheta")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
 	getHistFromMap("efficiencyVsEnergy")->Sumw2();
 	getHistFromMap("efficiencyVsEnergy")->Divide(getHistFromMap("nTruthPartsVsEnergy"));
+	getHistFromMap("efficiencyVsEnergy_onlyType")->Sumw2();
+	getHistFromMap("efficiencyVsEnergy_onlyType")->Divide(getHistFromMap("nTruthPartsVsEnergy"));
 
-	getHistFromMap("efficiencyVsCosThetaFailType")->Sumw2();
-	getHistFromMap("efficiencyVsCosThetaFailType")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+	// getHistFromMap("efficiencyVsCosThetaFailType_all")->Sumw2();
+	// getHistFromMap("efficiencyVsCosThetaFailType_all")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+	// getHistFromMap("efficiencyVsCosThetaFailType_noChargedParts")->Sumw2();
+	// getHistFromMap("efficiencyVsCosThetaFailType_noChargedParts")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+	// getHistFromMap("efficiencyVsCosThetaFailType_pion")->Sumw2();
+	// getHistFromMap("efficiencyVsCosThetaFailType_pion")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+	// getHistFromMap("efficiencyVsCosThetaFailType_muon")->Sumw2();
+	// getHistFromMap("efficiencyVsCosThetaFailType_muon")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+	// getHistFromMap("efficiencyVsCosThetaFailEnergyMatching")->Sumw2();
+	// getHistFromMap("efficiencyVsCosThetaFailEnergyMatching")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+	// getHistFromMap("efficiencyVsCosThetaFailAngularMatching")->Sumw2();
+	// getHistFromMap("efficiencyVsCosThetaFailAngularMatching")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+	//
+	// getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosTheta"));
+	// getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosThetaFailType_all"));
+	// getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosThetaFailEnergyMatching"));
+	// getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosThetaFailAngularMatching"));
+
+	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
+		getHistFromMap("nPFOsVsCosThetaFailType_"+it->second)->Sumw2();
+	}
+
+	getHistFromMap("efficiencyVsCosThetaFailType_all")->Sumw2();
+	getHistFromMap("efficiencyVsCosThetaFailType_all")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+	getHistFromMap("efficiencyVsCosThetaFailType_noChargedParts")->Sumw2();
+	getHistFromMap("efficiencyVsCosThetaFailType_noChargedParts")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+	getHistFromMap("efficiencyVsCosThetaFailType_pion")->Sumw2();
+	getHistFromMap("efficiencyVsCosThetaFailType_pion")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+	getHistFromMap("efficiencyVsCosThetaFailType_muon")->Sumw2();
+	getHistFromMap("efficiencyVsCosThetaFailType_muon")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
 	getHistFromMap("efficiencyVsCosThetaFailEnergyMatching")->Sumw2();
 	getHistFromMap("efficiencyVsCosThetaFailEnergyMatching")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
 	getHistFromMap("efficiencyVsCosThetaFailAngularMatching")->Sumw2();
 	getHistFromMap("efficiencyVsCosThetaFailAngularMatching")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
 	
 	getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosTheta"));
-	getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosThetaFailType"));
+	getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosThetaFailType_all"));
 	getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosThetaFailEnergyMatching"));
 	getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosThetaFailAngularMatching"));
 
 	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
 		getHistFromMap("nPFOsVsCosThetaFailType_"+it->second)->Sumw2();
 		getHistFromMap("nPFOsVsCosThetaFailType_"+it->second)->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
-		getHistFromMap("nPFOsVsCosThetaFailType_"+it->second)->Divide(getHistFromMap("efficiencyVsCosThetaFailType"));
+		getHistFromMap("nPFOsVsCosThetaFailType_"+it->second)->Divide(getHistFromMap("efficiencyVsCosThetaFailType_all"));
 	}
 
 
-	for (int iCount=1; iCount<=9; iCount++){
+	for (int iCount=1; iCount<=4; iCount++){
 		getHistFromMap("efficiencyVsCosThetaCat"+DoubToStr(iCount))->Sumw2();
 		getHistFromMap("efficiencyVsCosThetaCat"+DoubToStr(iCount))->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
 		getHistFromMap("efficiencyVsCosThetaCat0")->Add(getHistFromMap("efficiencyVsCosThetaCat"+DoubToStr(iCount)));
 	}
+	getHistFromMap("efficiencyVsCosThetaCat5")->Sumw2();
+	getHistFromMap("efficiencyVsCosThetaCat5")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
 
 	if (!outFile->IsOpen()){
 		cout << "[ERROR|writeToFile]\tno output file is found!" << endl;

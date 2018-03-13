@@ -25,24 +25,17 @@ int objectFill::writeToFile(TFile* outFile){
 	return 0;
 }
 
-vector<EVENT::ReconstructedParticle*> objectFill::getObjVecFromCollection(const EVENT::LCCollection* inCollection){
-	int nElements = inCollection->getNumberOfElements();
-	vector<EVENT::ReconstructedParticle*> outVec;
-	for(int j=0; j < nElements; j++) {
-		auto part = dynamic_cast<EVENT::ReconstructedParticle*>(inCollection->getElementAt(j));
-		outVec.push_back(part);
-	}
-	return outVec;
-}
-
-// template <class T> vector<T> objectFill::getObjVecFromCollection(EVENT::LCCollection* inCollection){
+// vector<EVENT::ReconstructedParticle*> objectFill::getObjVecFromCollection(const EVENT::LCCollection* inCollection){
 //         int nElements = inCollection->getNumberOfElements();
-//         vector<T> outVec;
+//         vector<EVENT::ReconstructedParticle*> outVec;
 //         for(int j=0; j < nElements; j++) {
-//                 auto part = dynamic_cast<T>(inCollection->getElementAt(j));
+//                 auto part = dynamic_cast<EVENT::ReconstructedParticle*>(inCollection->getElementAt(j));
 //                 outVec.push_back(part);
 //         }
 //         return outVec;
+// }
+
+
 
 void objectFill::createHistsFromMap(const map<string,histStruct> inHistStructMap, const string prefix){
 	for(auto const &ent1 : inHistStructMap){

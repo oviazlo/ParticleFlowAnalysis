@@ -117,7 +117,7 @@ int photonEffCalculator::fillEvent(const EVENT::LCEvent* event){
 		cout << "[INFO]\t[photonEffCalculator] Efficiency PFO type is assigned to: " << PFOPartType << endl;
 	}
 
-	vector<EVENT::ReconstructedParticle*> recoPFOs = getObjVecFromCollection(PFOCollection);
+	vector<EVENT::ReconstructedParticle*> recoPFOs = getObjVecFromCollection<EVENT::ReconstructedParticle*>(PFOCollection);
 	// cout << "[DEBUG]\trecoPFOs.size():" << recoPFOs.size() << endl;
 	if (recoPFOs.size()==0) 
 		return 0; // no reco PFOs

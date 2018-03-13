@@ -4,25 +4,26 @@ void truthParticleSelector::init(){
 	discardFSREvents = false;
 	dPhiMergeValue = 0;
 	onlyOneRecoClusterPerEvent = false;
-	for (int i; i<particleFillCollections.size(); i++){
-		particleFill* tmpPartFill = new particleFill(particleFillCollections[i]);
-		tmpPartFill->setCollectionName(particleFillCollections[i]);
-		tmpPartFill->setReconstructedParticleType(PFOTypes[i]);
-		string postfixRootDirName = "";
-		for (auto j=0; j<PFOTypes[i].size(); j++)
-			postfixRootDirName += "_" + DoubToStr(PFOTypes[i][j]);
-		tmpPartFill->updateRootDirName(particleFillCollections[i]+postfixRootDirName);
-		if (dPhiMergeValue > 0.0)
-			tmpPartFill->setDPhiMergeValue(dPhiMergeValue);
-		objFillMap[particleFillCollections[i]+postfixRootDirName] = tmpPartFill;
-	}
-	for (int i; i<energyFillCollections.size(); i++){
-		energyFill* tmpEnergyFill = new energyFill(energyFillCollections[i]);
-		tmpEnergyFill->setCollectionName(energyFillCollections[i]); 
-		objFillMap[energyFillCollections[i]] = tmpEnergyFill;
-	}
+	// for (int i; i<particleFillCollections.size(); i++){
+	//         particleFill* tmpPartFill = new particleFill(particleFillCollections[i]);
+	//         tmpPartFill->setCollectionName(particleFillCollections[i]);
+	//         tmpPartFill->setReconstructedParticleType(PFOTypes[i]);
+	//         string postfixRootDirName = "";
+	//         for (auto j=0; j<PFOTypes[i].size(); j++)
+	//                 postfixRootDirName += "_" + DoubToStr(PFOTypes[i][j]);
+	//         tmpPartFill->updateRootDirName(particleFillCollections[i]+postfixRootDirName);
+	//         if (dPhiMergeValue > 0.0)
+	//                 tmpPartFill->setDPhiMergeValue(dPhiMergeValue);
+	//         objFillMap[particleFillCollections[i]+postfixRootDirName] = tmpPartFill;
+	// }
+	// for (int i; i<energyFillCollections.size(); i++){
+	//         energyFill* tmpEnergyFill = new energyFill(energyFillCollections[i]);
+	//         tmpEnergyFill->setCollectionName(energyFillCollections[i]);
+	//         objFillMap[energyFillCollections[i]] = tmpEnergyFill;
+	// }
 
 	eventHistFiller* eventFill = NULL;
+	objectFill* objFill = NULL;
 	string mergeTag = "";
 
 	eventFill = new eventHistFiller("eventHists",effCollection);
@@ -39,17 +40,17 @@ void truthParticleSelector::init(){
 
 	eventFill = new eventHistFiller("eventHists_FSR",effCollection);
 	objFillMap["eventHists_FSR"] = eventFill;
-
+        //
 	mergeTag = "photonRecl";
 	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
 	eventFill->setClusterMerging("photonMerge");
 	objFillMap["eventHists_"+mergeTag] = eventFill;
-
-	mergeTag = "photonReclMomDep";
-	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
-	eventFill->setClusterMerging("photonMergeMomentumDep");
-	objFillMap["eventHists_"+mergeTag] = eventFill;
-
+        //
+	// mergeTag = "photonReclMomDep";
+	// eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	// eventFill->setClusterMerging("photonMergeMomentumDep");
+	// objFillMap["eventHists_"+mergeTag] = eventFill;
+        //
 	mergeTag = "photonAndNeutralRecl";
 	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
 	eventFill->setClusterMerging("photonAndNeutralMerge");
@@ -59,6 +60,19 @@ void truthParticleSelector::init(){
 	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
 	eventFill->setClusterMerging("photonAndNeutralLooseMerge");
 	objFillMap["eventHists_"+mergeTag] = eventFill;
+       
+
+	// ELECTRON STUDY
+	objFill = new electronStudy("electronStudy",effCollection);
+	objFillMap["electronStudy"] = objFill;
+
+	objFill = new electronStudy("electronStudy_noFSR",effCollection);
+	objFillMap["electronStudy_noFSR"] = objFill;
+
+	objFill = new electronStudy("electronStudy_FSR",effCollection);
+	objFillMap["electronStudy_FSR"] = objFill;
+	 
+	
 
 	// vector<int> pfoTypeVec = {11,22};
 	// vector<int> pfoTypeVec = {11};

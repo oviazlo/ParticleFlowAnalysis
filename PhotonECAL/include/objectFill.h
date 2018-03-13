@@ -61,10 +61,20 @@ class objectFill{
 		virtual int init(){return 0;}
 		virtual int fillEvent(const EVENT::LCEvent*){return 0;}
 		void setDebugFlag(const bool inFlag){debugFlag = inFlag;}
-		// template <class T> vector<T> getObjVecFromCollection(EVENT::LCCollection* inCollection);
-		vector<EVENT::ReconstructedParticle*> getObjVecFromCollection(const EVENT::LCCollection* inCollection);
+		// vector<EVENT::ReconstructedParticle*> getObjVecFromCollection(const EVENT::LCCollection* inCollection);
 		void createHistsFromMap(const map<string,histStruct> inHistStructMap, const string prefix);
 		TH1* getHistFromMap(string histID);
+
+		// template <class T> vector<T> getObjVecFromCollection(EVENT::LCCollection* inCollection);
+		template <class T> vector<T> getObjVecFromCollection(EVENT::LCCollection* inCollection){
+			int nElements = inCollection->getNumberOfElements();
+			vector<T> outVec;
+			for(int j=0; j < nElements; j++) {
+				auto part = dynamic_cast<T>(inCollection->getElementAt(j));
+				outVec.push_back(part);
+			}
+			return outVec;
+		}
 
 	protected:
 		std::map<std::string, TH1*> histMap;

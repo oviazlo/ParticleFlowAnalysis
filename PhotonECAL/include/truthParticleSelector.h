@@ -41,6 +41,7 @@
 #include <photonEffCalculator.h>
 #include <serviceFunctions.h>
 #include <eventHistFiller.h>
+#include <electronStudy.h>
 #include "globalConfig.h"
 
 class truthParticleSelector{
