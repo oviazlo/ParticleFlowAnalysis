@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
 	with open(yamlFile, 'r') as ymlfile:
 		globalCfg = yaml.load(ymlfile)
-                print ("[INFO]\t Read yaml file: %s" % (yamlFile))
+                print ("[info]\t Read yaml file: \n\t\t%s" % (yamlFile))
 
         defaultCfg = None
         if (globalCfg.get("default") is not None):
@@ -73,20 +73,27 @@ if __name__ == "__main__":
 
 		hists = []
 		nEntries = []
+                histCounter = -1
 		for i in range(0,len(fileName)):
 			myFile = ROOT.TFile.Open(dirPrefix+fileName[i],"read")
-                        print ("[INFO]\t Open file: %s" % (dirPrefix+fileName[i]))
+                        print ("[info]\t Open file: \n\t\t%s" % (dirPrefix+fileName[i]))
 			ROOT.SetOwnership(myFile,False)
 			for k in range(0,len(histName)):
-				hist = myFile.Get(histName[k])
-                                if hist is None:
-                                    print ('[ERROR]\tHist "%s" is not found in file "%s"! Terminating...' % (histName[k],fileName[i]))
+                                print ("[info]\t Getting hist: \n\t\t%s" % (histName[k]))
+                                if not myFile.Get(histName[k]):
+                                    print ('[ERROR]\t Hist "%s" is not found in file "%s"!' % (histName[k],fileName[i]))
+                                    if ("skipMissingHists" in cfg):
+                                        continue
+                                    else:
+                                        print ('[FATAL]\t Terminating...')
+                                        sys.exit()
+                                hist = myFile.Get(histName[k])
+                                histCounter = histCounter + 1
                                 #  print (hist)
-                                print ("[INFO]\t Get hist: %s" % (histName[k]))
                                 #  print ("i: %i, k: %i; k*len(fileName)+i: %i" % (i,k,k*len(fileName)+i))
-				hist.SetLineColor(histColor[k*len(fileName)+i])
-				hist.SetMarkerColor(histColor[k*len(fileName)+i])
-				hist.SetMarkerStyle(markerStyle[k*len(fileName)+i])
+				hist.SetLineColor(histColor[histCounter])
+				hist.SetMarkerColor(histColor[histCounter])
+				hist.SetMarkerStyle(markerStyle[histCounter])
 				hist.SetLineWidth(2)
                                 #  hist.Sumw2()
 				if ("lineWidth" in cfg):
@@ -155,7 +162,7 @@ if __name__ == "__main__":
 				if ("logY" in cfg):
 					c1.cd(1).SetLogy(cfg['logY'])
                                 
-                                print ("[INFO]\t drawOption: %s" % (drawOption))
+                                print ("[info]\t drawOption: \n\t\t%s" % (drawOption))
 				hists[i].Draw(drawOption)
 			else:
                                 sameDrawOption = ""
@@ -163,7 +170,7 @@ if __name__ == "__main__":
                                         sameDrawOption = cfg['drawOption']
 				if ("sameDrawOption" in cfg):
 					sameDrawOption = cfg['sameDrawOption']
-                                print ("[INFO]\t sameDrawOption: %s" % (sameDrawOption))
+                                print ("[info]\t sameDrawOption: \n\t\t%s" % (sameDrawOption))
 				hists[i].Draw(sameDrawOption+"same")
 		if ("legPos" in cfg):
 			leg.Draw("same")
