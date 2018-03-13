@@ -1,0 +1,52 @@
+tmp:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/e-/codeTest_jan16/ 
+        fileName:
+                - particleGun_E10.root
+        legTitle:
+                - "sum (validation)"
+                - "1 electron"
+                - "1 electron, 1 photon"
+                - "1 electron, 2+ photons"
+                - "1 pion"
+                - "1 pion, 1 photon"
+                - "1 pion, 2+ photons"
+                # - "1 photon"
+                - "2+ photons"
+                - "1 neutral, everything else"
+        histName:
+                - eventHists/efficiencyVsCosThetaCat0
+                - eventHists/efficiencyVsCosThetaCat1
+                - eventHists/efficiencyVsCosThetaCat2
+                # - eventHists/efficiencyVsCosThetaCat3
+                # - eventHists/efficiencyVsCosThetaCat4
+                # - eventHists/efficiencyVsCosThetaCat5
+                # - eventHists/efficiencyVsCosThetaCat6
+                # - eventHists/efficiencyVsCosThetaCat7
+                # - eventHists/efficiencyVsCosThetaCat8
+                # - eventHists/efficiencyVsCosThetaCat9
+        legPos:
+                - 0.3
+                - 0.57
+                - 0.8
+                - 0.77
+        yAxisRange:
+                - 0.0
+                - 1.1
+        rebinFactor: 8
+        scaleFactor: 0.125
+        drawOption: HIST
+        # sameDrawOption: HIST
+        yAxisLabel: Efficiency
+        markerStyle:
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+

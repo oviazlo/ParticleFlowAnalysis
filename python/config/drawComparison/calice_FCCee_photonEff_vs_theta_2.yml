@@ -1,0 +1,36 @@
+calice_photonConv_plot333:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/ 
+        legTitle:
+                - "all photons"
+                - "unconverted photons"
+                # - "converted photons"
+                # - "photon merging"
+                - "photon+neutral merging"
+        histName:
+                - eventHists/efficiencyVsCosTheta
+                - eventHists_noConv/efficiencyVsCosTheta
+                # - eventHists_conv/efficiencyVsCosTheta
+                # - eventHists_photonRecl/efficiencyVsCosTheta
+                - eventHists_photonAndNeutralRecl_looseThetaCut/efficiencyVsCosTheta
+        legPos:
+                - 0.3
+                - 0.18
+                - 0.8
+                - 0.35
+        yAxisRange:
+                - 0.0
+                - 1.1
+        drawOption: HIST
+        yAxisLabel: Efficiency
+        markerStyle:
+                - 0
+                - 0
+                - 0
+                - 0
+        rebinFactor: 2
+        scaleFactor: 0.5
+
+        fileName:
+                # - CLIC_o3_v14/photons/particleGun_E50_Theta9_171.root
+                - FCCee_o1_v02/photons/particleGun_E50_Theta9_171.root
+

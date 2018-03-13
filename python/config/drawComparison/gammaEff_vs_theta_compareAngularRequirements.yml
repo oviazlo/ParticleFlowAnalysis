@@ -1,0 +1,70 @@
+eff_photon_compareAngulraReq:
+        # dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/gamma/FCCee_testConvertionDetection/fullTheta2/
+        # dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/gamma/codeTest_jan11/
+        # dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/e-/codeTest_jan16/
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/FCCee_o1_v02/gamma/
+        fileName:
+                # - oldAngularRequirements/particleGun_E100_Theta9_171.root
+                - newAngularRequirements/particleGun_E100_Theta9_171.root
+                # - oldAngularRequirements/particleGun_E20_Theta9_171.root
+                # - newAngularRequirements/particleGun_E20_Theta9_171.root
+                # - oldAngularRequirements/particleGun_E5_Theta9_171.root
+                # - newAngularRequirements/particleGun_E5_Theta9_171.root
+                # - oldAngularRequirements/particleGun_E1_Theta9_171.root
+                # - newAngularRequirements/particleGun_E1_Theta9_171.root
+        legTitle:
+                # - "noConv, old Angular, E100"
+                # - "noConv, new Angular, E100"
+                # - "noConv, old Angular, E20"
+                # - "noConv, new Angular, E20"
+                # - "noConv, old Angular, E5"
+                # - "noConv, new Angular, E5"
+                # - "noConv, old Angular, E1"
+                # - "noConv, new Angular, E1"
+                - "nominal efficiency"
+                # - "convertion events included"
+                # - "convertion events excluded"
+                # - "convertion events required"
+                # - "photon reclustering"
+                # - "photon+neutral reclustering"
+                # - "photon+neutral reclustering (looser theta cut)"
+                # - "mom-dep photon reclustering (11.5 + 60/p deg)"
+        histName: 
+                # - eventHists/efficiencyVsCosTheta
+                # - eventHists_noConv/efficiencyVsCosTheta
+                # - eventHists_conv/efficiencyVsCosTheta
+                # - eventHists_photonRecl/efficiencyVsCosTheta
+                # - eventHists_photonAndNeutralRecl/efficiencyVsCosTheta
+                - eventHists_photonAndNeutralRecl_looseThetaCut/efficiencyVsCosTheta
+                # - eventHists_noFSR/efficiencyVsCosTheta
+                # - eventHists_photonMerge/efficiencyVsCosTheta
+                # - eventHists_photonAndNeutralLooseMerge/efficiencyVsCosTheta
+                # - eventHists_photonReclMomDep/efficiencyVsCosTheta
+        legPos:
+                - 0.12
+                - 0.7
+                - 0.68
+                - 0.9
+        # xAxisRange:
+        #         - 0
+        #         - 120
+        yAxisRange:
+                - 0.0
+                - 1.5
+        histTitle: "E_{e}=100 GeV"
+        # legCaptionMode: entries
+        # logY: 1
+        rebinFactor: 4
+        scaleFactor: 0.25
+        drawOption: HIST
+        yAxisLabel: Efficiency
+        markerStyle:
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0

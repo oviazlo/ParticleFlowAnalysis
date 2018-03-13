@@ -1,0 +1,60 @@
+trackerCoverage_nHitsVsPhi:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/drawNHits/build/test/ 
+        fileName:
+                - subdet0_plots.root
+                - subdet1_plots.root
+                - subdet2_plots.root
+                - subdet3_plots.root
+                - subdet4_plots.root
+                - subdet5_plots.root
+                - subdet6_plots.root
+        legTitle:
+                - "Total"
+                - "Vertex Barrel"
+                - "Vertex Disks"
+                - "Inner Tracker Barrel"
+                - "Inner Tracker Disks"
+                - "Outer Tracker Barrel"
+                - "Outer Tracker Disks"
+        histName: 
+                - "thetaHistVec"
+        legPos:
+                - 0.4
+                - 0.67
+                - 0.7
+                - 0.9
+        # histColor:
+        #         - 1
+        #         - 2
+        #         - 3
+        #         - 4
+        #         - 5
+        #         - 6
+        #         - 7
+        #         - 8
+        #         - 8
+        #         - 8
+        #         - 8
+        # xAxisRange:
+        #         - 0
+        #         - 120
+        # yAxisRange:
+        #         - 0.0
+        #         - 2
+        # histTitle: "E_{#gamma}=100 GeV"
+        # legCaptionMode: entries
+        # logY: 1
+        xAxisLabel: "#theta [#circ]"
+        yAxisLabel: "Number of hits"
+        rebinFactor: 10
+        scaleFactor: 0.1
+        markerStyle:
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+

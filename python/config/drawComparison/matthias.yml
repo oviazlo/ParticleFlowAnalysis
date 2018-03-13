@@ -1,0 +1,39 @@
+default:
+        fileName:
+                - Zuds_TT_vs_CT_Old_VT_180302Fix_finalhistos_DR_Studies.root
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/Matthias/
+        markerStyle:
+                - 0
+                - 0
+                - 0
+        legPos:
+                - 0.2
+                - 0.6
+                - 0.85
+                - 0.9
+
+matthias_jer_3000:
+        legTitle:
+                - JER_RMS90VsCosTheta_CT_Old_3000_DR500 
+                - JER_RMS90VsCosTheta_CT_Fix_3000_DR500
+                - JER_RMS90VsCosTheta_TT_3000_DR500
+        histName:
+                - JER_RMS90VsCosTheta_CT_Old_3000_DR500 
+                - JER_RMS90VsCosTheta_CT_Fix_3000_DR500
+                - JER_RMS90VsCosTheta_TT_3000_DR500
+        yAxisRange:
+                - 3
+                - 25
+matthias_jer_1500:
+        legTitle:
+                - JER_RMS90VsCosTheta_CT_Old_1500_DR500 
+                - JER_RMS90VsCosTheta_CT_Fix_1500_DR500
+                - JER_RMS90VsCosTheta_TT_1500_DR500
+        histName:
+                - JER_RMS90VsCosTheta_CT_Old_1500_DR500 
+                - JER_RMS90VsCosTheta_CT_Fix_1500_DR500
+                - JER_RMS90VsCosTheta_TT_1500_DR500
+        yAxisRange:
+                - 3
+                - 25
+

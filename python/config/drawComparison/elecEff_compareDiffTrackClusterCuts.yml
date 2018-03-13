@@ -1,0 +1,76 @@
+TrackClusterDistanceCut_failTypeInefficiency:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/FCCee_o1_v02/ 
+        fileName:
+                - e-_modTrackClusterCut/particleGun_E10_Theta9_171.root 
+                - e-/particleGun_E10_Theta9_171.root
+        legTitle:
+                - "Mod cut (20mm, 20mm)"
+                - "Nominal cut (3mm, 10mm)"
+        histName: 
+                - eventHists/efficiencyVsCosThetaFailType 
+        legPos:
+                - 0.3
+                - 0.6
+                - 0.68
+                - 0.8
+        yAxisRange:
+                - 0
+                - 0.4
+        drawOption: HIST
+        markerStyle:
+                - 0
+                - 0
+        rebinFactor: 10
+        scaleFactor: 0.1
+        yAxisLabel: "Inefficiency (no electron) [%]"
+
+TrackClusterDistanceCut_nPions:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/FCCee_o1_v02/ 
+        fileName:
+                - e-_modTrackClusterCut/particleGun_E10_Theta9_171.root 
+                - e-/particleGun_E10_Theta9_171.root
+        legTitle:
+                - "Mod cut (20mm, 20mm)"
+                - "Nominal cut (3mm, 10mm)"
+        histName: 
+                - eventHists/nPFOsVsCosThetaFailType/Pion 
+        legPos:
+                - 0.3
+                - 0.6
+                - 0.68
+                - 0.8
+        yAxisRange:
+                - 0
+                - 1
+        drawOption: HIST
+        markerStyle:
+                - 0
+                - 0
+        rebinFactor: 10
+        scaleFactor: 0.1
+
+TrackClusterDistanceCut_nPhotons:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/FCCee_o1_v02/ 
+        fileName:
+                - e-_modTrackClusterCut/particleGun_E10_Theta9_171.root 
+                - e-/particleGun_E10_Theta9_171.root
+        legTitle:
+                - "Mod cut (20mm, 20mm)"
+                - "Nominal cut (3mm, 10mm)"
+        histName: 
+                - eventHists/nPFOsVsCosThetaFailType/Photon
+        legPos:
+                - 0.3
+                - 0.6
+                - 0.68
+                - 0.8
+        yAxisRange:
+                - 0
+                - 3
+        drawOption: HIST
+        markerStyle:
+                - 0
+                - 0
+        rebinFactor: 10
+        scaleFactor: 0.1
+

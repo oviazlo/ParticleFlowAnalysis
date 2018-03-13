@@ -1,0 +1,11 @@
+kaonRes_vs_energy:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/kaon0L/nominalEfficiency_nov1/out/ 
+        fileName:
+                - outFile.root 
+        histName: 
+                - energy_energyResolution
+        yAxisRange:
+                - 0
+                - 25
+        yAxisLabel: "#sigma(E_{K^{0}_{L}})/E_{K^{0}_{L}} [%]"
+

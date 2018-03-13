@@ -1,0 +1,30 @@
+materialBudget:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/materialScan/dataFiles/ 
+        fileName:
+                - fcc_ECAL.root
+                - fcc_HCAL.root
+                - fcc_FullCAL.root
+                - fcc_solenoid.root
+        histName: 
+                - hist_-1 
+        legTitle:
+                - "ECAL"
+                - "HCAL"
+                - "Full Calorimetry"
+                - "Coil"
+        legPos:
+                - 0.6
+                - 0.7
+                - 0.9
+                - 0.9
+        yAxisLabel: "Material Budget [#lambda_{I}]"
+        xAxisLabel: "#theta [^{o}]"
+        # scaleFactor: 100
+        yAxisRange:
+                - 0
+                - 11
+        markerStyle:
+                - 0
+                - 0
+                - 0
+                - 0

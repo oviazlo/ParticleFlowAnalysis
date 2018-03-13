@@ -1,0 +1,56 @@
+default:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_o1_v02/electrons/
+        fileName:
+                - 50mm_trackClusterDistanceCut/particleGun_E10_Theta9_171.root
+                # - 20mm_trackClusterDistanceCut/particleGun_E10_Theta9_171.root
+                - nominal_withCaloInfo/particleGun_E10_Theta9_171.root
+        legTitle:
+                - "Mod cut (50mm, 50mm)"
+                # - "Mod cut (20mm, 20mm)"
+                - "Nominal cut (3mm, 10mm)"
+        drawOption: HIST
+        markerStyle:
+                - 0
+                - 0
+                - 0
+
+TrackClusterDistanceCut_totalEnergyVsCosTheta:
+        histName: 
+                - eventHists/totalEnergyVsTheta
+        # yAxisLabel: ""
+        yAxisRange:
+                - 8
+                - 12
+        rebinFactor: 2
+        scaleFactor: 0.5
+        legPos:
+                - 0.3
+                - 0.3
+                - 0.68
+                - 0.5
+
+
+TrackClusterDistanceCut_totalEnergy_logy:
+        histName: 
+                - eventHists/totalRecoEnergy
+        legPos:
+                - 0.7
+                - 0.7
+                - 0.9
+                - 0.9
+        xAxisRange:
+                - 0
+                - 25
+        logY: true
+
+TrackClusterDistanceCut_totalEnergy:
+        histName: 
+                - eventHists/totalRecoEnergy
+        legPos:
+                - 0.7
+                - 0.7
+                - 0.9
+                - 0.9
+        xAxisRange:
+                - 0
+                - 25

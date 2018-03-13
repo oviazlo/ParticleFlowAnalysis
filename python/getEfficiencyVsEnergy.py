@@ -8,14 +8,21 @@ from ROOT import gROOT, gStyle
 #  absPath = "/afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/gamma/FCCee_testConvertionDetection/e-/theta10_170/"
 absPath = "./"
 #  rootDir = "eventHists_photonAndNeutralRecl"
-rootDir = ["eventHists","eventHists_photonRecl","eventHists_noConv","eventHists_photonAndNeutralRecl","eventHists_photonAndNeutralRecl_looseThetaCut","eventHists_noFSR"]
+#  rootDir = ["eventHists","eventHists_photonRecl","eventHists_noConv","eventHists_photonAndNeutralRecl","eventHists_photonAndNeutralRecl_looseThetaCut","eventHists_noFSR"]
+#  rootDir = ["eventHists", "eventHists_photonRecl", "eventHists_photonAndNeutralRecl_looseThetaCut"]
+rootDir = ["eventHists"]
+#  rootDir = ["eventHists_noFSR"]
 #  rootDir = "eventHists"
 #  rootDir = "eventHists_noConv"
 #  rootDir = "eventHists_conv"
+#  histName = "efficiencyVsEnergy_onlyType"
 histName = "efficiencyVsEnergy"
 fileNamePrefix = "particleGun_E"
-fileNameIndex = ["1","2","5","10","20","50","100"]
+fileNameIndex = ["5","10","20","50","100"]
+#  fileNameIndex = ["10","20","50","100"]
+#  fileNameIndex = ["1","2","5","10","20","50"]
 fileNamePostfix = "_Theta9_171.root"
+#  fileNamePostfix = "_Theta60_120.root"
 
 def styleGraph(inGr, iColor):
     inGr.SetMarkerStyle(34)
@@ -55,7 +62,7 @@ if __name__ == "__main__":
         outRootFile.Close()
         c1 = TCanvas( 'c1', 'A Simple Graph Example', 0, 0, 800, 600 )
         c1.cd()
-        tmpGr.Draw("ALP")
-        c1.SaveAs(iDir+".png")
+        #  tmpGr.Draw("ALP")
+        #  c1.SaveAs(iDir+".png")
                                
 

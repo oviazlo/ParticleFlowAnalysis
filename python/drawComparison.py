@@ -48,8 +48,8 @@ if __name__ == "__main__":
                 cfg = globalCfg[cfgIterator]
                 if (cfg == defaultCfg):
                     continue
-                print (cfgIterator)
-                print (cfg)
+                #  print (cfgIterator)
+                #  print (cfg)
 
 	for cfgIterator in globalCfg:
 		cfg = globalCfg[cfgIterator]
@@ -81,9 +81,9 @@ if __name__ == "__main__":
 				hist = myFile.Get(histName[k])
                                 if hist is None:
                                     print ('[ERROR]\tHist "%s" is not found in file "%s"! Terminating...' % (histName[k],fileName[i]))
-                                print (hist)
+                                #  print (hist)
                                 print ("[INFO]\t Get hist: %s" % (histName[k]))
-                                print ("i: %i, k: %i; k*len(fileName)+i: %i" % (i,k,k*len(fileName)+i))
+                                #  print ("i: %i, k: %i; k*len(fileName)+i: %i" % (i,k,k*len(fileName)+i))
 				hist.SetLineColor(histColor[k*len(fileName)+i])
 				hist.SetMarkerColor(histColor[k*len(fileName)+i])
 				hist.SetMarkerStyle(markerStyle[k*len(fileName)+i])

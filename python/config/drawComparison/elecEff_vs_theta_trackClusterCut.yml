@@ -1,0 +1,51 @@
+pion_eff_theta_E100:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_singleParticle_performace/FCCee_o1_v02/e-_modTrackClusterDisCut/ 
+        fileName:
+                # - particleGun_E5_Theta9_171.root
+                # - particleGun_E10_Theta9_171.root
+                # - particleGun_E20_Theta9_171.root
+                - 10mm/particleGun_E10.root
+                - 100mm/particleGun_E10.root
+        legTitle:
+                # - "5 GeV"
+                # - "10 GeV"
+                # - "20 GeV"
+                # - "pion efficiency"
+                - "10 mm"
+                - "100 mm"
+        histName: 
+                - eventHists/efficiencyVsCosTheta
+        legPos:
+                - 0.3
+                - 0.2
+                - 0.68
+                - 0.4
+        histColor:
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                - 7
+                - 8
+        # xAxisRange:
+        #         - 0
+        #         - 120
+        yAxisRange:
+                - 0.5
+                - 1.0
+        histTitle: "E_{e}=10 GeV"
+        # legCaptionMode: entries
+        # logY: 1
+        rebinFactor: 4
+        scaleFactor: 0.25
+        drawOption: HIST
+        yAxisLabel: Efficiency
+        markerStyle:
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+

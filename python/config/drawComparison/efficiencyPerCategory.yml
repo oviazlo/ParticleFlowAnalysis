@@ -1,0 +1,56 @@
+default:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_o1_v02/electrons/ 
+        legTitle:
+                - "sum (validation)"
+                - "0 electrons, 0 pions"
+                - "1 electron, 0 pions"
+                - "0 electrons, 1 pion"
+                - "everything else"
+                # - "1 pion, 1 photon"
+                # - "1 pion, 2+ photons"
+                # - "1 photon"
+                # - "2+ photons"
+                # - "1 neutral, everything else"
+        histName:
+                - eventHists/efficiencyVsCosThetaCat0
+                - eventHists/efficiencyVsCosThetaCat1
+                - eventHists/efficiencyVsCosThetaCat2
+                - eventHists/efficiencyVsCosThetaCat3
+                - eventHists/efficiencyVsCosThetaCat4
+                # - eventHists/efficiencyVsCosThetaCat5
+                # - eventHists/efficiencyVsCosThetaCat6
+                # - eventHists/efficiencyVsCosThetaCat7
+                # - eventHists/efficiencyVsCosThetaCat8
+                # - eventHists/efficiencyVsCosThetaCat9
+        legPos:
+                - 0.3
+                - 0.57
+                - 0.8
+                - 0.77
+        yAxisRange:
+                - 0.0
+                - 1.1
+        rebinFactor: 8
+        scaleFactor: 0.125
+        drawOption: HIST
+        yAxisLabel: Efficiency
+        markerStyle:
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+
+efficiencyPerCategory_50mm:
+        fileName:
+                - 50mm_trackClusterDistanceCut/particleGun_E10_Theta9_171.root
+
+efficiencyPerCategory_nominal:
+        fileName:
+                - nominal_withCaloInfo/particleGun_E10_Theta9_171.root
