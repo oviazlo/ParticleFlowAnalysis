@@ -1,0 +1,55 @@
+default:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/
+        legTitle:
+                - "CLIC"
+                - "CLD"
+                - "CLD: extended ECAL endcap"
+        histName: 
+                - eventHists/efficiencyVsCosTheta
+        legPos:
+                - 0.3
+                - 0.2
+                - 0.68
+                - 0.4
+        histColor:
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                - 7
+                - 8
+        # xAxisRange:
+        #         - 0
+        #         - 120
+        yAxisRange:
+                - 0.5
+                - 1.0
+        # legCaptionMode: entries
+        # logY: 1
+        rebinFactor: 2
+        scaleFactor: 0.5
+        drawOption: HIST
+        yAxisLabel: Efficiency
+        markerStyle:
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+
+photon_eff_vs_theta_E100:
+        fileName:
+                - CLIC_o3_v14/photons/particleGun_E100_Theta9_171.root
+                - FCCee_o1_v02/photons/particleGun_E100_Theta9_171.root
+                - FCCee_o1_v02/photons/extendedEcalEndcap/particleGun_E100_Theta9_171.root
+        histTitle: "E_{e}=100 GeV"
+
+photon_eff_vs_theta_E50:
+        fileName:
+                - CLIC_o3_v14/photons/particleGun_E50_Theta9_171.root
+                - FCCee_o1_v02/photons/particleGun_E50_Theta9_171.root
+                - FCCee_o1_v02/photons/extendedEcalEndcap/particleGun_E50_Theta9_171.root
+        histTitle: "E_{e}=50 GeV"
+       

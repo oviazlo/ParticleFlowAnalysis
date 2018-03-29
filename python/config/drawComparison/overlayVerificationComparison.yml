@@ -1,0 +1,121 @@
+default:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/LCPandoraAnalysis/OVERLAY_TEST/ 
+        fileName:
+                - hist_woOverlay_Zuds91.root
+                - hist_overlay_Zuds91.root
+        legTitle:
+                - "wo Overlay"
+                - "with Overlay"
+        legPos:
+                - 0.6
+                - 0.7
+                - 0.9
+                - 0.9
+        # scaleFactor: 100
+        # yAxisRange:
+        #         - 0
+        #         - 11
+        markerStyle:
+                - 0
+                - 0
+
+
+hist_nPfoTargetsTotal:
+        histName:
+                - hist_nPfoTargetsTotal
+hist_nPfoTargetsNeutralHadrons:
+        histName:
+                - hist_nPfoTargetsNeutralHadrons
+hist_nPfoTargetsPhotons:
+        histName:
+                - hist_nPfoTargetsPhotons
+hist_nPfoTargetsTracks:
+        histName:
+                - hist_nPfoTargetsTracks
+hist_nPfosTotal:
+        histName:
+                - hist_nPfosTotal
+hist_nPfosNeutralHadrons:
+        histName:
+                - hist_nPfosNeutralHadrons
+hist_nPfosPhotons:
+        histName:
+                - hist_nPfosPhotons
+hist_nPfosTracks:
+        histName:
+                - hist_nPfosTracks
+hist_pfoEnergyTotal:
+        histName:
+                - hist_pfoEnergyTotal
+hist_pfoEnergyNeutralHadrons:
+        histName:
+                - hist_pfoEnergyNeutralHadrons
+hist_pfoEnergyPhotons:
+        histName:
+                - hist_pfoEnergyPhotons
+hist_pfoEnergyTracks:
+        histName:
+                - hist_pfoEnergyTracks
+hist_pfoECalToEmEnergy:
+        histName:
+                - hist_pfoECalToEmEnergy
+hist_pfoECalToHadEnergy:
+        histName:
+                - hist_pfoECalToHadEnergy
+hist_pfoHCalToEmEnergy:
+        histName:
+                - hist_pfoHCalToEmEnergy
+hist_pfoHCalToHadEnergy:
+        histName:
+                - hist_pfoHCalToHadEnergy
+hist_pfoOtherEnergy:
+        histName:
+                - hist_pfoOtherEnergy
+hist_pfoMuonToEnergy:
+        histName:
+                - hist_pfoMuonToEnergy
+hist_pfoMassTotal:
+        histName:
+                - hist_pfoMassTotal
+hist_pfoTargetsEnergyTotal:
+        histName:
+                - hist_pfoTargetsEnergyTotal
+hist_pfoTargetsEnergyNeutralHadrons:
+        histName:
+                - hist_pfoTargetsEnergyNeutralHadrons
+hist_pfoTargetsEnergyPhotons:
+        histName:
+                - hist_pfoTargetsEnergyPhotons
+hist_pfoTargetsEnergyTracks:
+        histName:
+                - hist_pfoTargetsEnergyTracks
+hist_mcEnergyENu:
+        histName:
+                - hist_mcEnergyENu
+hist_mcEnergyFwd:
+        histName:
+                - hist_mcEnergyFwd
+hist_eQQ:
+        histName:
+                - hist_eQQ
+hist_eQ1:
+        histName:
+                - hist_eQ1
+hist_eQ2:
+        histName:
+                - hist_eQ2
+hist_costQQ:
+        histName:
+                - hist_costQQ
+hist_costQ1:
+        histName:
+                - hist_costQ1
+hist_costQ2:
+        histName:
+                - hist_costQ2
+hist_mQQ:
+        histName:
+                - hist_mQQ
+hist_thrust:
+        histName:
+                - hist_thrust

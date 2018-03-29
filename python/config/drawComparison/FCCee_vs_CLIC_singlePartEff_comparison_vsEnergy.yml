@@ -1,27 +1,36 @@
-calice_CLIC_vs_FCCee_effVsEnergy_pions:
+default:
         dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/ 
         legTitle:
-                - "CLICdet"
                 - "CLD"
-        fileName:
-                - CLIC_o3_v14/pions/eventHists.root
-                - FCCee_o1_v02/pions/eventHists.root
         histName: 
                 - Graph 
         legPos:
                 - 0.5
                 - 0.2
                 - 0.9
-                - 0.4
+                - 0.35
         xAxisRange:
                 - 0
                 - 120
         yAxisRange:
-                - 0.6
+                - 0.8
                 - 1.0
         drawOption: ALP
         sameDrawOption: LP
         xAxisLabel: "Energy [GeV]"
         yAxisLabel: "Efficiency [%]"
+        histColor:
+                - 2
+
+CLD_pion_eff:
+        fileName:
+                - FCCee_o1_v02/pions/eventHists.root
 
 
+CLD_muon_eff:
+        fileName:
+                - FCCee_o1_v02/muons/eventHists.root
+
+CLD_electron_eff:
+        fileName:
+                - FCCee_o1_v02/electrons/nominal_withCaloInfo/eventHists.root

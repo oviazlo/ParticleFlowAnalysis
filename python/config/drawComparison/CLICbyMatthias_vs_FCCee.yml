@@ -1,0 +1,59 @@
+default:
+        legTitle:
+                - "Nominal cut (3mm, 10mm)"
+        dirPrefix: /afs/cern.ch/ 
+        markerStyle:
+                - 0
+                - 0
+                - 0
+                - 0
+        legTitle:
+                - "FCCee"
+                - "CLIC"
+        legPos:
+                - 0.2
+                - 0.6
+                - 0.85
+                - 0.9
+        skipMissingHists: 1
+
+CLICbyMatthias_vs_FCCee_Zuds380:
+        fileName:
+                - work/v/viazlo/analysis/LCPandoraAnalysis/RUN/nominal_trackClusterDistance/hist_Zuds380.root
+                - user/v/viazlo/Downloads/Matthias/Zuds_TT_vs_CT_Old_VT_180302Fix_finalhistos_DR_Studies.root
+        histName:
+                - ResVsCosTheta
+                - JER_RMS90VsCosTheta_TT_380
+        yAxisRange:
+                - 0
+                - 10
+
+CLICbyMatthias_vs_FCCee_Zuds91_extendedEcalEndcap:
+        fileName:
+                - work/v/viazlo/analysis/LCPandoraAnalysis/RUN/nominal_trackClusterDistance/hist_Zuds91.root
+                - work/v/viazlo/analysis/LCPandoraAnalysis/RUN/FCCee_extendedEcalEndcap/hist_Zuds91.root
+                - user/v/viazlo/Downloads/Matthias/Zuds_TT_vs_CT_Old_VT_180302Fix_finalhistos_DR_Studies.root
+        histName:
+                - ResVsCosTheta
+                - JER_RMS90VsCosTheta_TT_91
+        yAxisRange:
+                - 0
+                - 10
+        legTitle:
+                - "FCCee"
+                - "FCCee: extended ECAL endcap"
+                - "CLIC"
+
+CLICbyMatthias_vs_FCCee_Zuds91:
+        fileName:
+                - work/v/viazlo/analysis/LCPandoraAnalysis/RUN/nominal_trackClusterDistance/hist_Zuds91.root
+                - user/v/viazlo/Downloads/Matthias/Zuds_TT_vs_CT_Old_VT_180302Fix_finalhistos_DR_Studies.root
+        histName:
+                - ResVsCosTheta
+                - JER_RMS90VsCosTheta_TT_91
+        yAxisRange:
+                - 0
+                - 10
+        legTitle:
+                - "FCCee"
+                - "CLIC"

@@ -1,8 +1,10 @@
 materialBudget:
         dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/materialScan/dataFiles/ 
         fileName:
-                - fcc_ECAL.root
-                - fcc_HCAL.root
+                # - fcc_ECAL.root
+                # - fcc_HCAL.root
+                - fccee_ECAL_extendedEcalEndcap.root
+                - fccee_HCAL_extendedEcalEndcap.root
                 - fcc_FullCAL.root
                 - fcc_solenoid.root
         histName: 
