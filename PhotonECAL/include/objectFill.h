@@ -77,6 +77,7 @@ class objectFill{
 			}
 			return outVec;
 		}
+		void DeleteHists();
 
 	protected:
 		std::map<std::string, TH1*> histMap;

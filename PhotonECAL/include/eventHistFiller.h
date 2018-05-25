@@ -82,21 +82,25 @@ class eventHistFiller : public objectFill{
 		void fillPfoCounterAndFillGeneralPfoInfo(unsigned int partId);
 		void initTruthInfoAndFillIt();
 
+
 		void createTH1I(string histName, string histTitle, unsigned int nBins, double leftRange, double rightRange){
-			delete gROOT->FindObject((outDirName+"_"+histName).c_str());
-			TH1I* tmpHist = new TH1I((outDirName+"_"+histName).c_str(),histTitle.c_str(),nBins,leftRange,rightRange);
-			histMap[outDirName+"_"+histName] = tmpHist;
-			// cout << "[DEBUG_rmMe] create hist: " << outDirName+"_"+histName << endl;
+			// string finalHistName = outDirName+"-"+histName;
+			string finalHistName = histName;
+			delete gROOT->FindObject(finalHistName.c_str());
+			TH1I* tmpHist = new TH1I(finalHistName.c_str(),histTitle.c_str(),nBins,leftRange,rightRange);
+			tmpHist->SetDirectory(0);
+			histMap[finalHistName] = tmpHist;
 		}
 		void createTH1D(string histName, string histTitle, unsigned int nBins, double leftRange, double rightRange){
-			delete gROOT->FindObject((outDirName+"_"+histName).c_str());
-			TH1D* tmpHist = new TH1D((outDirName+"_"+histName).c_str(),histTitle.c_str(),nBins,leftRange,rightRange);
-			histMap[outDirName+"_"+histName] = tmpHist;
-			// cout << "[DEBUG_rmMe] create hist: " << outDirName+"_"+histName << endl;
+			string finalHistName = histName;
+			delete gROOT->FindObject(finalHistName.c_str());
+			TH1D* tmpHist = new TH1D(finalHistName.c_str(),histTitle.c_str(),nBins,leftRange,rightRange);
+			tmpHist->SetDirectory(0);
+			histMap[finalHistName] = tmpHist;
 		}
 
 		TH1* getHistFromMap(string _histID){
-			string histID = outDirName+"_"+_histID;
+			string histID = _histID;
 			if (histMap[histID]==NULL)
 				cout << "[ERROR]\teventHistFiller::getHistFromMap(" << histID << ") no hist in the histMap with name <" << histID << ">" << endl;
 			return histMap[histID];

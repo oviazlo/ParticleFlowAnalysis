@@ -51,6 +51,11 @@ void objectFill::createHistsFromMap(const map<string,histStruct> inHistStructMap
 	
 }
 
+void objectFill::DeleteHists(){
+	for(auto const &mapElement : histMap)
+		delete mapElement.second;
+}
+
 TH1* objectFill::getHistFromMap(string histID){
 	if (histMap[histID]==NULL)
 		cout << "[ERROR]\tobjectFill::getHistFromMap(" << histID << ") no hist in the histMap with name <" << histID << ">" << endl;

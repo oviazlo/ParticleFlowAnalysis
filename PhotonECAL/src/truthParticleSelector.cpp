@@ -253,6 +253,7 @@ truthParticleSelector::truthParticleSelector(){
 
 truthParticleSelector::~truthParticleSelector(){
 	for(auto const &mapElement : objFillMap){
+		mapElement.second->DeleteHists();
 		delete mapElement.second;
 	} 
 }
