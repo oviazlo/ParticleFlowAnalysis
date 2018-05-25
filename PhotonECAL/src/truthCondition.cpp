@@ -27,9 +27,11 @@ void truthCondition::processEvent(){
 	}
 
 	nTruthParticles = MCTruthCollection->getNumberOfElements();
+	if (config::vm.count("debug"))
+		std::cout << "Truth particles:" << std::endl;
 	for(int j=0; j < nTruthParticles; j++) {
 		auto part = static_cast<EVENT::MCParticle*>(MCTruthCollection->getElementAt(j));
-		if (debugFlag)
+		if (config::vm.count("debug"))
 			dumpTruthPart(part,j);
 		if (part->getGeneratorStatus()==1){
 			nStableGenParticles++;
@@ -45,8 +47,8 @@ void truthCondition::processEvent(){
 				simFSRPresent = true;
 		}
 	}
-	if (debugFlag)
-		dumpTruthCondition();
+	// if (config::vm.count("debug"))
+	//         dumpTruthCondition();
 	// if (simFSRPresent==false && nTruthParticles>1)
 	//         dumpTruthCondition();
 
@@ -72,7 +74,7 @@ void truthCondition::dumpTruthPart(const EVENT::MCParticle* part, const int coun
 	const double *vertexPos = part->getVertex();
 	double vertexR = sqrt(vertexPos[0]*vertexPos[0]+vertexPos[1]*vertexPos[1]);
 	double vertexZ = vertexPos[2];
-	std::cout << "t" << counter << ": pdg: " << pdgId << ": E: " << (round(100*part->getEnergy())/100.0) << " GeV; theta: " << partTheta << "; phi: " << partPhi << "; inTracker: " << inTracker << "; inCal: " << inCal << "; genStatus: " << genStatus << "; isRadiation: " << vertexIsNotEndpointOfParent << "; vertexR: " << vertexR << "; vertexZ: " << vertexZ << "; pointer: " << part << std::endl;
+	std::cout << "t" << counter << ": pdg: " << std::setw(5) << pdgId << ": E: " << std::setw(6) << (round(100*part->getEnergy())/100.0) << ": pT: " << std::setw(6) << (round(100*v1.Pt())/100.0) << "; theta: " << std::setw(6) << round(100*partTheta)/100.0 << "; phi: " << std::setw(6) << round(100*partPhi)/100.0 << "; inTracker: " << inTracker << "; inCal: " << inCal << "; genStatus: " << genStatus << "; isRadiation: " << vertexIsNotEndpointOfParent << "; vertexR: " << vertexR << "; vertexZ: " << vertexZ << std::endl;
 }
 /*===========================================================================*/
 /*===============================[ implementation ]===============================*/

@@ -1,8 +1,8 @@
 default:
-        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/LCPandoraAnalysis/OVERLAY_TEST/ 
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/LCPandoraAnalysis/OVERLAY_TEST/largeStatistics/ 
         fileName:
-                - hist_woOverlay_Zuds91.root
-                - hist_overlay_Zuds91.root
+                - hist_FCCee_woOverlay_Zuds91_5k.root
+                - hist_FCCee_overlay_Zuds91_5k.root
         legTitle:
                 - "wo Overlay"
                 - "with Overlay"

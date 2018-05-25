@@ -1,0 +1,27 @@
+default:
+        fileName:
+                - FCCee_overlay/hist_Zuds91.root
+                - FCCee_extendedEcalEndcap/hist_Zuds91.root
+        legTitle:
+                - "with Overlay"
+                - "w/o Overlay"
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/LCPandoraAnalysis/RUN/ 
+        markerStyle:
+                - 0
+                - 0
+                - 0
+
+
+
+TrackClusterDistanceCut_resolutionVsCosTheta_Zuds380_nomVs20:
+        histName:
+                - ResVsCosTheta
+        legPos:
+                - 0.2
+                - 0.75
+                - 0.85
+                - 0.9
+        yAxisRange:
+                - 0
+                - 7
+

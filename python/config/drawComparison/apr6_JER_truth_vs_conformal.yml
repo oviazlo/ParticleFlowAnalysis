@@ -1,0 +1,30 @@
+default:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/LCPandoraAnalysis/RUN/
+        legTitle:
+                - conformal 
+                - truth
+        histName: 
+                - ResVsCosTheta
+        legPos:
+                - 0.2
+                - 0.7
+                - 0.58
+                - 0.9
+        # xAxisRange:
+        #         - 0
+        #         - 65
+        yAxisRange:
+                - 3
+                - 7.5
+        # histTitle: "K^{0}_{L} gun, E: 50 GeV, Theta: 46-48"
+
+jer_truth_vs_conformal_Zuds91:
+        fileName:
+                - FCCee_conformalTracking/hist_Zuds91.root
+                - nominal_trackClusterDistance/hist_Zuds91.root
+
+jer_truth_vs_conformal_Zuds380:
+        fileName:
+                - FCCee_conformalTracking/hist_Zuds380.root
+                - nominal_trackClusterDistance/hist_Zuds380.root
+

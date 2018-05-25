@@ -7,10 +7,12 @@ calice_photonEff_vs_energy_reclustering_FCCee:
                 # - "photon cluster merging"
                 # - "photon+neutral cluster merging"
                 - "CLD"
+                # - "no convertion"
         fileName:
                 # - eventHists.root
                 # - eventHists_photonRecl.root
                 - eventHists_photonAndNeutralRecl_looseThetaCut.root
+                # - eventHists_noConv.root
         histName: 
                 - Graph 
         legPos:
@@ -22,12 +24,12 @@ calice_photonEff_vs_energy_reclustering_FCCee:
                 - 0
                 - 120
         yAxisRange:
-                - 0.8
+                - 0.6
                 - 1.0
         drawOption: ALP
         sameDrawOption: LP
         xAxisLabel: "Energy [GeV]"
-        yAxisLabel: "Efficiency [%]"
+        yAxisLabel: "Efficiency"
         histColor:
                 - 2
 

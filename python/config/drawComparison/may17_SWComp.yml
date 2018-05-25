@@ -1,0 +1,46 @@
+default:
+        dirPrefix: /ssd/viazlo/data/Zuds_SWC_noSWC_MHHE/ 
+        legPos:
+                - 0.2
+                - 0.7
+                - 0.58
+                - 0.9
+        yAxisRange:
+                - 2.5
+                - 7.5
+        yAxisTitleOffset: 0.95
+        histName: 
+                - ResVsCosTheta
+
+JER_SWC_ON_and_OFF_conformal_Zuds91:
+        fileName:
+                - FCCee_o1_v03/hist_myPandoraAnalysis_Zuds_ZudsSample_E91_ConformalTr.root
+                - FCCee_o1_v03/hist_myPandoraAnalysis_Zuds_SWC_isOFF_ZudsSample_E91_ConformalTr.root
+        legTitle:
+                - with Software Compensation
+                - w/o Software Compensation
+
+JER_SWC_ON_and_OFF_conformal_Zuds100:
+        fileName:
+                - hist_myPandoraAnalysis_Zuds_ZudsSample_E100_ConformalTr.root
+                - hist_myPandoraAnalysis_Zuds_SWC_isOFF_ZudsSample_E100_ConformalTr.root
+        legTitle:
+                - with Software Compensation
+                - w/o Software Compensation
+
+JER_SWC_ON_and_OFF_conformal_Zuds200:
+        fileName:
+                - hist_myPandoraAnalysis_Zuds_ZudsSample_E200_ConformalTr.root
+                - hist_myPandoraAnalysis_Zuds_SWC_isOFF_ZudsSample_E200_ConformalTr.root
+        legTitle:
+                - with Software Compensation
+                - w/o Software Compensation
+
+JER_SWC_ON_and_OFF_conformal_Zuds380:
+        fileName:
+                - hist_myPandoraAnalysis_Zuds_ZudsSample_E380_ConformalTr.root
+                - hist_myPandoraAnalysis_Zuds_SWC_isOFF_ZudsSample_E380_ConformalTr.root
+        legTitle:
+                - with Software Compensation
+                - w/o Software Compensation
+

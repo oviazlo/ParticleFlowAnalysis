@@ -1,0 +1,40 @@
+default:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/LCPandoraAnalysis/RUN/4Tvs2T/ 
+        histName: 
+                - ResVsCosTheta
+        legPos:
+                - 0.2
+                - 0.7
+                - 0.9
+                - 0.9
+        # xAxisRange:
+        #         - 0
+        #         - 65
+        # histTitle: "K^{0}_{L} gun, E: 50 GeV, Theta: 46-48"
+        yAxisTitleOffset: 0.95
+
+
+jet_energy_res_2Tvs4T_Zuds91:
+        fileName:
+                - hist_Zuds91_2T.root
+                - hist_Zuds91_4T.root 
+        legTitle:
+                - 2T magnetic filed
+                - 4T magnetic field, no calo recalibration
+                # - 2T, 45.5 GeV Jets
+                # - 4T, 45.5 GeV Jets
+        yAxisRange:
+                - 3
+                - 7.5
+
+jet_energy_res_2Tvs4T_Zuds380:
+        fileName:
+                - hist_Zuds380_2T.root
+                - hist_Zuds380_4T.root 
+        legTitle:
+                - 2T magnetic filed
+                - 4T magnetic field, no calo recalibration
+        yAxisRange:
+                - 2.5
+                - 7.5
+

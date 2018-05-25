@@ -4,7 +4,7 @@
 
 #!/bin/python
 import glob, os, ROOT, math, sys
-from ROOT import TCanvas, TGraph, TLegend, TF1, TH1, TH1F
+from ROOT import TCanvas, TGraph, TLegend, TF1, TH1, TH1F, TLatex
 from ROOT import gROOT, gStyle
 from array import array
 from math import tan
@@ -104,6 +104,10 @@ if __name__ == "__main__":
 					nEntries.append(hist.GetEntries())
 				if ("histTitle" in cfg):
 					hist.SetTitle(cfg['histTitle'])
+				if ("xAxisTitleOffset" in cfg):
+					hist.GetXaxis().SetTitleOffset(cfg['xAxisTitleOffset'])
+				if ("yAxisTitleOffset" in cfg):
+					hist.GetYaxis().SetTitleOffset(cfg['yAxisTitleOffset'])
 				if ("rebinFactor" in cfg):
 					hist.Rebin(cfg['rebinFactor'])
 				if ("scaleFactor" in cfg):
@@ -174,6 +178,17 @@ if __name__ == "__main__":
 				hists[i].Draw(sameDrawOption+"same")
 		if ("legPos" in cfg):
 			leg.Draw("same")
+		if ("additionalLabel" in cfg):
+			l = ROOT.TLatex()
+			l.SetNDC()
+			l.SetTextFont(42)
+			l.SetTextColor(ROOT.kBlack)
+			l.SetTextSize(0.045)
+			label = cfg['additionalLabel']
+			x = 0.17
+			y = 0.932
+			l.DrawLatex(x,y,label);
+
                 print ("")
                 ROOT.gPad.SetPhi(150);
 		c1.SaveAs("pictures/"+cfgIterator+".png")

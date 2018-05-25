@@ -1,0 +1,53 @@
+default:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_o1_v02_extendedEndcap/electron/conformal_iLCSoft_2017_12_21/ 
+        legTitle:
+                - "nominal efficiency"
+                - "no energy matching"
+                - "type mismatch"
+                # - "mismatch as muon"
+        histName: 
+                - eventHists_photonAndNeutralRecl_looseThetaCut/efficiencyVsCosTheta
+                - eventHists_photonRecl_noEnergyMatching/efficiencyVsCosTheta
+                - eventHists_photonRecl_noEnergyMatching/efficiencyVsCosThetaFailType/all
+                # - eventHists_photonRecl_noEnergyMatching/efficiencyVsCosThetaFailType/muon
+        legPos:
+                - 0.3
+                - 0.4
+                - 0.68
+                - 0.6
+        histColor:
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                - 7
+                - 8
+        # xAxisRange:
+        #         - 0
+        #         - 120
+        yAxisRange:
+                - 0.0
+                - 1.0
+        # legCaptionMode: entries
+        # logY: 1
+        rebinFactor: 4
+        scaleFactor: 0.25
+        drawOption: HIST
+        yAxisLabel: Efficiency
+        markerStyle:
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+
+electron_eff_vs_theta_E100:
+        fileName:
+                - particleGun_E100_Theta9_171.root
+        histTitle: "E_{e}=100 GeV"
+electron_eff_vs_theta_E20:
+        fileName:
+                - particleGun_E20_Theta9_171.root
+        histTitle: "E_{e}=20 GeV"

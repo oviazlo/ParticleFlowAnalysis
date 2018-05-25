@@ -23,6 +23,7 @@
 #include <EVENT/SimCalorimeterHit.h>
 #include <EVENT/MCParticle.h>
 #include <EVENT/ReconstructedParticle.h>
+#include <IMPL/ReconstructedParticleImpl.h>
 #include <EVENT/Cluster.h>
 #include <Exceptions.h>
 
@@ -64,6 +65,7 @@ class objectFill{
 		// vector<EVENT::ReconstructedParticle*> getObjVecFromCollection(const EVENT::LCCollection* inCollection);
 		void createHistsFromMap(const map<string,histStruct> inHistStructMap, const string prefix);
 		TH1* getHistFromMap(string histID);
+		IMPL::ReconstructedParticleImpl* CopyReconstructedParticle (const EVENT::ReconstructedParticle* const pfo_orig );
 
 		// template <class T> vector<T> getObjVecFromCollection(EVENT::LCCollection* inCollection);
 		template <class T> vector<T> getObjVecFromCollection(EVENT::LCCollection* inCollection){

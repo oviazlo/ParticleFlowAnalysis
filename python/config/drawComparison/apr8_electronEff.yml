@@ -1,6 +1,7 @@
 default:
         dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/ 
         legTitle:
+                # - "no Brem"
                 - "CLD"
         histName: 
                 - Graph 
@@ -22,16 +23,9 @@ default:
         histColor:
                 - 2
 
-CLD_pion_eff:
-        fileName:
-                - FCCee_o1_v02/pions/eventHists.root
-
-
-CLD_muon_eff:
-        fileName:
-                - FCCee_o1_v02/muons/eventHists.root
-
 CLD_electron_eff:
         fileName:
-                - FCCee_o1_v02/electrons/20mm_trackClusterDistanceCut/temp/eventHists.root
+                # - FCCee_o1_v02/electrons/50mm_trackClusterDistanceCut/noConv/eventHists_noFSR.root
+                # - FCCee_o1_v02/electrons/50mm_trackClusterDistanceCut/fullSample/eventHists.root
                 # - FCCee_o1_v02/electrons/nominal_withCaloInfo/eventHists.root
+                - FCCee_o1_v02_extendedEndcap/electron/conformal_iLCSoft_2017_12_21/eventHists_photonAndNeutralRecl_looseThetaCut.root

@@ -55,7 +55,7 @@ class truthParticleSelector{
 		void setParticleFillCollections(const vector<string> _particleFillCollections){particleFillCollections = _particleFillCollections;}
 		void setPFOTypes(const vector<vector<int> > inVec){PFOTypes = inVec;}
 		void setEnergyFillCollections(const vector<string> _energyFillCollections){energyFillCollections = _energyFillCollections;}
-		void init(); 
+		int init(); 
 	
 		void setEnergyRange(const double min, const double max){energyRange = make_pair(min,max);}
 		void setThetaRange(const double min, const double max){thetaRange = make_pair(min,max);}

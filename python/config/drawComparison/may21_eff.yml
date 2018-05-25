@@ -1,0 +1,68 @@
+default:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/ 
+        legTitle:
+                # - "conformal"
+                # - "truth"
+                - CLD
+        histName: 
+                - Graph 
+        legPos:
+                - 0.5
+                - 0.2
+                - 0.9
+                - 0.35
+        xAxisRange:
+                - 0
+                - 120
+        yAxisRange:
+                - 0.6
+                - 1.0
+        drawOption: ALP
+        sameDrawOption: LP
+        xAxisLabel: "Energy [GeV]"
+        yAxisLabel: "Efficiency"
+        # histColor:
+        #         - 2
+
+may21_pions_eff:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/
+        fileName:
+                - FCCee_o1_v02_extendedEndcap/pion/conformal_iLCSoft_2017_12_21/eventHists.root
+                - CLIC_o3_v14/pions/eventHists.root
+        legTitle:
+                - "CLD (FCCee)"
+                - "CLICdet"
+may21_muons_eff:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/
+        fileName:
+                - FCCee_o1_v02_extendedEndcap/muon/conformal_iLCSoft_2017_12_21/eventHists.root
+                - CLIC_o3_v14/muons/eventHists.root
+        legTitle:
+                - "CLD (FCCee)"
+                - "CLICdet"
+
+may21_photon_eff:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/
+        fileName:
+                - FCCee_o1_v03/photons/eventHists_photonAndNeutralRecl_looseThetaCut.root
+                - CLIC_o3_v14/photons/eventHists_photonAndNeutralRecl_looseThetaCut.root
+        legTitle:
+                - "CLD (FCCee)"
+                - "CLICdet"
+
+may21_electron_eff:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/
+        fileName:
+                - FCCee_o1_v03/electrons/eventHists_photonAndNeutralRecl_looseThetaCut_caloEMatching_clusterE.root
+                - CLIC_o3_v14_may21/electrons/eventHists_photonAndNeutralRecl_looseThetaCut_caloEMatching_clusterE.root
+        legTitle:
+                - "CLD (FCCee)"
+                - "CLICdet"
+
+# CLD_muons_eff_truth_vs_conformal:
+#         fileName:
+#                 - FCCee_o1_v02_extendedEndcap/muon/conformal_iLCSoft_2017_12_21/eventHists.root
+#                 # - FCCee_o1_v02/muons/eventHists.root
+#         yAxisRange:
+#                 - 0.6
+#                 - 1.0

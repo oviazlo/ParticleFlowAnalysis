@@ -19,7 +19,7 @@ vector<string> particleFillCollections = {"MCParticle","PandoraPFOs"};
 vector<vector<int> > PFOPartTypes =      {{},			{11}};
 vector<string> energyFillCollections = {};
 // vector<string> additionalCollections = {"SiTracks"};
-vector<string> additionalCollections = {"SiTracks_Refitted","LCRelation","RecoMCTruthLink"};
+vector<string> additionalCollections = {"SiTracks_Refitted","LCRelation","RecoMCTruthLink","PandoraClusters"};
 
 int main (int argn, char* argv[]) {
 
@@ -173,10 +173,10 @@ int main (int argn, char* argv[]) {
 		truthCondition::instance()->setDebugFlag(true);
 
 	while ( event != NULL ) {
+		if (vm.count("debug")) 
+			cout << endl << "[INFO]\t *****EVENT: " << event->getEventNumber() << " *****" <<endl;
 		truthCondition::instance()->setEvent(event);
 		truthCondition::instance()->processEvent();
-		if (vm.count("debug")) 
-			cout << endl << "Event " << eventCounter << ":" << endl;
 		eventCounter++;
 	
 		for(auto i=0; i<selectors.size(); i++){

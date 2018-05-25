@@ -1,0 +1,46 @@
+default:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/ 
+        legPos:
+                - 0.2
+                - 0.2
+                - 0.9
+                - 0.35
+        yAxisRange:
+                - 0.8
+                - 1.0
+        drawOption: ALP
+        sameDrawOption: LP
+        xAxisLabel: "Energy [GeV]"
+        yAxisLabel: "Efficiency"
+        # histColor:
+        #         - 2
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_o1_v02_extendedEndcap/pion/conformal_iLCSoft_2017_12_21/
+
+CLD_pions_eff_vs_energy_additionalPlots:
+        xAxisRange:
+                - 0
+                - 120
+        fileName:
+                - eventHists.root
+                # - eventHists_photonRecl_noAngularMatching.root
+                # - eventHists_photonRecl_noEnergyMatching.root
+                - eventHists_onlyType.root
+        histName: 
+                - Graph 
+        legTitle:
+                - "regular eff. criteria"
+                # - "type and energy matching only"
+                # - "type and angular matching only"
+                - "only type matching"
+# CLD_pions_eff_vs_thetaAt100_additionalPlots:
+#         rebinFactor: 10
+#         scaleFactor: 0.1
+#         fileName:
+#                 - particleGun_E100_Theta9_171.root
+#         histName:
+#                 - eventHists/efficiencyVsCosTheta
+#                 - eventHists_photonRecl_noAngularMatching/efficiencyVsCosTheta
+#                 - eventHists_photonRecl_noEnergyMatching/efficiencyVsCosTheta
+#         legTitle:
+#                 - "regular eff. criteria"
+#                 - "type matching only"

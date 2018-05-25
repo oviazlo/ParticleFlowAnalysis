@@ -1,6 +1,7 @@
 #include <truthParticleSelector.h>
 
-void truthParticleSelector::init(){
+int truthParticleSelector::init(){
+	TH1::SetDefaultSumw2();
 	discardFSREvents = false;
 	dPhiMergeValue = 0;
 	onlyOneRecoClusterPerEvent = false;
@@ -26,12 +27,31 @@ void truthParticleSelector::init(){
 	objectFill* objFill = NULL;
 	string mergeTag = "";
 
+	if (config::vm.count("debug")){
+		// mergeTag = "photonAndNeutralRecl_looseThetaCut";
+		// eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+		// eventFill->setClusterMerging("photonAndNeutralLooseMerge");
+		// objFillMap["eventHists_"+mergeTag] = eventFill;
+		// objFillMap["eventHists_"+mergeTag]->init();
+
+
+		mergeTag = "photonRecl_noAngularMatching_caloE";
+		eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+		eventFill->setClusterMerging("photonMerge");
+		eventFill->SetApplyAngularMatching(false);
+		eventFill->SetUseCaloInfoForEnergyMerging(true);
+		objFillMap["eventHists_"+mergeTag] = eventFill;
+		objFillMap["eventHists_"+mergeTag]->init();
+
+		return 0;
+	}
+
 	eventFill = new eventHistFiller("eventHists",effCollection);
 	objFillMap["eventHists"] = eventFill;
-
+        
 	eventFill = new eventHistFiller("eventHists_noConv",effCollection);
 	objFillMap["eventHists_noConv"] = eventFill;
-
+        
 	eventFill = new eventHistFiller("eventHists_conv",effCollection);
 	objFillMap["eventHists_conv"] = eventFill;
 
@@ -40,7 +60,7 @@ void truthParticleSelector::init(){
 
 	eventFill = new eventHistFiller("eventHists_FSR",effCollection);
 	objFillMap["eventHists_FSR"] = eventFill;
-        //
+
 	mergeTag = "photonRecl";
 	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
 	eventFill->setClusterMerging("photonMerge");
@@ -51,26 +71,70 @@ void truthParticleSelector::init(){
 	// eventFill->setClusterMerging("photonMergeMomentumDep");
 	// objFillMap["eventHists_"+mergeTag] = eventFill;
         //
-	mergeTag = "photonAndNeutralRecl";
-	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
-	eventFill->setClusterMerging("photonAndNeutralMerge");
-	objFillMap["eventHists_"+mergeTag] = eventFill;
+	// mergeTag = "photonAndNeutralRecl";
+	// eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	// eventFill->setClusterMerging("photonAndNeutralMerge");
+	// objFillMap["eventHists_"+mergeTag] = eventFill;
 
 	mergeTag = "photonAndNeutralRecl_looseThetaCut";
 	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
 	eventFill->setClusterMerging("photonAndNeutralLooseMerge");
 	objFillMap["eventHists_"+mergeTag] = eventFill;
-       
+
+	mergeTag = "photonAndNeutralRecl_looseThetaCut_caloEMatching_clusterE";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonAndNeutralLooseMerge");
+	eventFill->SetUseCaloInfoForEnergyMerging(true);
+	eventFill->SetUseCaloCutInsteadMomentum(true);
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
+       	mergeTag = "photonAndNeutralRecl_looseThetaCut_clusterE";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonAndNeutralLooseMerge");
+	eventFill->SetUseCaloInfoForEnergyMerging(true);
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
+       	mergeTag = "photonAndNeutralRecl_looseThetaCut_caloEMatchin";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonAndNeutralLooseMerge");
+	eventFill->SetUseCaloCutInsteadMomentum(true);
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
+	mergeTag = "photonRecl_noAngularMatching";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonMerge");
+	eventFill->SetApplyAngularMatching(false);
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
+	mergeTag = "photonRecl_noEnergyMatching";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonMerge");
+	eventFill->SetApplyEnergyMatching(false);
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
+	mergeTag = "photonRecl_noAngularMatching_caloE";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonMerge");
+	eventFill->SetApplyAngularMatching(false);
+	eventFill->SetUseCaloInfoForEnergyMerging(true);
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
+	mergeTag = "photonRecl_noEnergyMatching_caloE";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonMerge");
+	eventFill->SetApplyEnergyMatching(false);
+	eventFill->SetUseCaloInfoForEnergyMerging(true);
+	objFillMap["eventHists_"+mergeTag] = eventFill;
 
 	// ELECTRON STUDY
-	objFill = new electronStudy("electronStudy",effCollection);
-	objFillMap["electronStudy"] = objFill;
-
-	objFill = new electronStudy("electronStudy_noFSR",effCollection);
-	objFillMap["electronStudy_noFSR"] = objFill;
-
-	objFill = new electronStudy("electronStudy_FSR",effCollection);
-	objFillMap["electronStudy_FSR"] = objFill;
+	// objFill = new electronStudy("electronStudy",effCollection);
+	// objFillMap["electronStudy"] = objFill;
+        //
+	// objFill = new electronStudy("electronStudy_noFSR",effCollection);
+	// objFillMap["electronStudy_noFSR"] = objFill;
+        //
+	// objFill = new electronStudy("electronStudy_FSR",effCollection);
+	// objFillMap["electronStudy_FSR"] = objFill;
 	 
 	
 
@@ -153,8 +217,6 @@ bool truthParticleSelector::selectEvent(const EVENT::LCEvent* event){
 	if ((partPhi<phiRange.first) || (partPhi>phiRange.second))
 		return false;
 
-	if (config::vm.count("debug"))
-		cout << "[INFO]\t *****EVENT: " << event->getEventNumber() << " *****" <<endl;
 	
 	for(auto const &mapElement : objFillMap){
 		if (IsInWord(mapElement.first,"_noFSR")){

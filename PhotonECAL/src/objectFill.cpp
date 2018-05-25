@@ -56,3 +56,18 @@ TH1* objectFill::getHistFromMap(string histID){
 		cout << "[ERROR]\tobjectFill::getHistFromMap(" << histID << ") no hist in the histMap with name <" << histID << ">" << endl;
 	return histMap[histID];
 }
+
+IMPL::ReconstructedParticleImpl* objectFill::CopyReconstructedParticle (const EVENT::ReconstructedParticle* const pfo_orig ) {
+	// copy this in an ugly fashion to be modifiable - a versatile copy constructor would be much better!
+	IMPL::ReconstructedParticleImpl* pfo = new IMPL::ReconstructedParticleImpl();
+	pfo->setMomentum(pfo_orig->getMomentum());
+	pfo->setEnergy(pfo_orig->getEnergy());
+	pfo->setType(pfo_orig->getType());
+	pfo->setCovMatrix(pfo_orig->getCovMatrix());
+	pfo->setMass(pfo_orig->getMass());
+	pfo->setCharge(pfo_orig->getCharge());
+	pfo->setParticleIDUsed(pfo_orig->getParticleIDUsed());
+	pfo->setGoodnessOfPID(pfo_orig->getGoodnessOfPID());
+	pfo->setStartVertex(pfo_orig->getStartVertex());
+	return pfo;
+}
