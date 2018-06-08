@@ -1,0 +1,37 @@
+default:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/ 
+        # legTitle:
+                # - "conformal"
+                # - "truth"
+                # - CLD
+        histName: 
+                - Graph 
+        legPos:
+                - 0.3
+                - 0.2
+                - 0.9
+                - 0.35
+        xAxisRange:
+                - 0
+                - 120
+        yAxisRange:
+                - 0.85
+                - 1.0
+        drawOption: ALP
+        sameDrawOption: LP
+        xAxisLabel: "Energy [GeV]"
+        yAxisLabel: "Efficiency"
+        # histColor:
+        #         - 2
+
+may30_pions_eff:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/
+        fileName:
+                - FCCee_o1_v02_extendedEndcap/pion/conformal_iLCSoft_2017_12_21/eventHists.root
+                - CLIC_o3_v14/pions/eventHists.root
+                - FCCee_o1_v03/pions/pionMuonMisReco/muonReco_15hits/eventHists.root
+        legTitle:
+                - "CLD (FCCee)"
+                - "CLICdet"
+                - "CLD: more tight muon reco requirement (max 15 hits)"
+

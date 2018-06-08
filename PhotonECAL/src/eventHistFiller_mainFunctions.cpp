@@ -44,7 +44,9 @@ void eventHistFiller::fillPfoCounterAndFillGeneralPfoInfo(unsigned int partId){
 			getHistFromMap("thetaResolution_"+it->second)->Fill(dThetaPartTruth);
 			getHistFromMap("phiResolution_"+it->second)->Fill(dPhiPartTruth);
 			getHistFromMap("energyResolution_"+it->second)->Fill(partEnergy);
-			// getHistFromMap("energyResolution2_"+it->second)->Fill(partEnergy);
+
+			if(PFOCollection->getNumberOfElements()==1)
+				getHistFromMap("energyResolution2_"+it->second)->Fill(partEnergy);
 			// getHistFromMap("energyResolution3_"+it->second)->Fill(partEnergy);
 			// getHistFromMap("energyResolution4_"+it->second)->Fill(partEnergy);
 			pfoCounter[it->second]++;
@@ -64,6 +66,7 @@ void eventHistFiller::fillEventsFailedSelection(){
 			}
 		}
 	}
+	getHistFromMap("efficiencyVsCosThetaFailType_all")->Fill(cosTruthTheta);
 	if (pfoCounter["Electron"]==0 && pfoCounter["Muon"]==0 && pfoCounter["Pion"]==0)
 		getHistFromMap("efficiencyVsCosThetaFailType_noChargedParts")->Fill(cosTruthTheta);
 	else if (pfoCounter["Electron"]==0 && pfoCounter["Muon"]>0 && pfoCounter["Pion"]==0)
@@ -79,6 +82,16 @@ void eventHistFiller::fillEventsFailedSelection(){
 
 vector <unsigned int> eventHistFiller::mergeClusters(){
 	vector<unsigned int> idOfMergedParticles;
+	if (config::vm.count("debug")){
+		cout << "[DEBUG]\tpartCandidate pointer: " << partCandidate << endl;
+		cout << "[DEBUG]\tpartCandidate->getClusters().size(): " << partCandidate->getClusters().size() << endl;
+	}
+
+	if (partCandidate->getClusters().size()==0){
+		cout << "[ERROR]\tin eventHistFiller::mergeClusters(): partCandidate->getClusters().size()==0" << endl;
+		return idOfMergedParticles;
+	}
+
 	double tmpPartCandidateClusterEnergy = partCandidate->getClusters()[0]->getEnergy();
 
 	if (config::vm.count("debug"))

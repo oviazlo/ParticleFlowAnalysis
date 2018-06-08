@@ -174,6 +174,8 @@ int eventHistFiller::writeToFile(TFile* outFile){
 	getHistFromMap("efficiencyVsCosThetaFailType_noChargedParts")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
 	getHistFromMap("efficiencyVsCosThetaFailType_onlyPion")->Sumw2();
 	getHistFromMap("efficiencyVsCosThetaFailType_onlyPion")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+	getHistFromMap("efficiencyVsCosThetaFailType_onlyElectron")->Sumw2();
+	getHistFromMap("efficiencyVsCosThetaFailType_onlyElectron")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
 	getHistFromMap("efficiencyVsCosThetaFailType_onlyMuon")->Sumw2();
 	getHistFromMap("efficiencyVsCosThetaFailType_onlyMuon")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
 	getHistFromMap("efficiencyVsCosThetaFailEnergyMatching")->Sumw2();

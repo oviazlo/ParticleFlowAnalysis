@@ -1,0 +1,50 @@
+default:
+        dirPrefix: /afs/cern.ch/work/v/viazlo/analysis/PFAAnalysis/outData/FCCee_o1_v03/pions/pionMuonMisReco/muonReco_15hits/ 
+        legTitle:
+                - "pion sample"
+                - "muon sample"
+        fileName:
+                - pionSample/muonRecoMisID_E99_101.root
+                - muonSample/muonRecoMisID_E99_101.root
+        legCaptionMode: mean
+        rebinFactor: 10
+        legPos:
+                - 0.3
+                - 0.6
+                - 0.9
+                - 0.9
+        # xAxisRange:
+        #         - 0
+        #         - 120
+        yAxisRange:
+                - 0.
+                - 0.1
+        drawOption: HIST
+        sameDrawOption: HIST
+        # xAxisLabel: "Energy [GeV]"
+        # yAxisLabel: "Efficiency"
+        # histColor:
+        #         - 2
+        normalize: true
+
+RhitMean:
+        histName: 
+                - eventHists/cluster/RhitMean 
+
+RhitRMS:
+        histName: 
+                - eventHists/cluster/RhitRMS 
+
+depth:
+        histName: 
+                - eventHists/cluster/depth 
+
+xt90:
+        histName: 
+                - eventHists/cluster/xt90 
+        yAxisRange:
+                - 0.
+                - 0.2
+        xAxisRange:
+                - 0
+                - 120

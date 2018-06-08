@@ -104,14 +104,13 @@ if __name__ == "__main__":
 					nEntries.append(hist.GetEntries())
 				if ("histTitle" in cfg):
 					hist.SetTitle(cfg['histTitle'])
-				if ("xAxisTitleOffset" in cfg):
-					hist.GetXaxis().SetTitleOffset(cfg['xAxisTitleOffset'])
-				if ("yAxisTitleOffset" in cfg):
-					hist.GetYaxis().SetTitleOffset(cfg['yAxisTitleOffset'])
 				if ("rebinFactor" in cfg):
 					hist.Rebin(cfg['rebinFactor'])
 				if ("scaleFactor" in cfg):
 					hist.Scale(cfg['scaleFactor'])
+				if ("normalize" in cfg):
+					hist.Scale(1.0/hist.Integral())
+
                                 #  if ("drawOption" in cfg):
                                 #      if ("HIST" in cfg['drawOption']):
                                 #          for j in range(0,hist.GetNbinsX()):
@@ -153,6 +152,11 @@ if __name__ == "__main__":
 					hists[i].GetXaxis().SetTitle(cfg['xAxisLabel'])
 				if ("yAxisLabel" in cfg):
 					hists[i].GetYaxis().SetTitle(cfg['yAxisLabel'])
+				if ("xAxisTitleOffset" in cfg):
+					hists[i].GetXaxis().SetTitleOffset(float(cfg['xAxisTitleOffset']))
+				if ("yAxisTitleOffset" in cfg):
+                                        #  print ("yAxisOffset %f" % (float(cfg['yAxisTitleOffset'])))
+					hists[i].GetYaxis().SetTitleOffset(float(cfg['yAxisTitleOffset']))
                                 drawOption = ""
 				if ("drawOption" in cfg):
 					drawOption = cfg['drawOption']
