@@ -133,15 +133,18 @@ if __name__ == "__main__":
 			c1 = TCanvas( 'c1', 'A Simple Graph Example', 0, 0, 800, 700 )
 		for i in range(0,len(hists)):
 			if ("legPos" in cfg):
+                                legDrawOption = "lp"
+				if ("legDrawOption" in cfg):
+                                        legDrawOption = cfg["legDrawOption"]
 				if ("legCaptionMode" in cfg):
 					if (cfg["legCaptionMode"]=="fraction"):
-						leg.AddEntry(hists[i],"%s (%i%%)" % (legTitle[i], round(100.0*nEntries[i]/totalEntries)),"lp")
+						leg.AddEntry(hists[i],"%s (%i%%)" % (legTitle[i], round(100.0*nEntries[i]/totalEntries)),legDrawOption)
 					elif (cfg["legCaptionMode"]=="entries"):
-						leg.AddEntry(hists[i],"%s (%i)" % (legTitle[i], nEntries[i]),"lp")
+						leg.AddEntry(hists[i],"%s (%i)" % (legTitle[i], nEntries[i]),legDrawOption)
 					elif (cfg["legCaptionMode"]=="mean"):
-						leg.AddEntry(hists[i],"%s (%.2f GeV)" % (legTitle[i], hists[i].GetMean()),"lp")
+                                            leg.AddEntry(hists[i],"%s (mean: %.2f)" % (legTitle[i], hists[i].GetMean()),legDrawOption)
 				else:
-					leg.AddEntry(hists[i],"%s" % (legTitle[i]),"lp")
+					leg.AddEntry(hists[i],"%s" % (legTitle[i]),legDrawOption)
 
 			if (i==0):
 				if ("xAxisRange" in cfg):

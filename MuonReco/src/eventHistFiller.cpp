@@ -27,11 +27,13 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 	
 	}
 	nPFOs = PFOCollection->getNumberOfElements();
+	// cout << "nPFOs: " << nPFOs << endl;
 
 	// if (config::vm.count("debug"))
 	//         cout << "[INFO]	eventHistFiller::fillEvent: " << event->getEventNumber() << endl;
 
 	initTruthInfoAndFillIt();
+	// return 0;
 
 	vector<EVENT::ReconstructedParticle*> recoPFOs = getObjVecFromCollection<EVENT::ReconstructedParticle*>(PFOCollection);
 	getHistFromMap("nPFOs")->Fill(recoPFOs.size());
@@ -77,15 +79,12 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 
 		//##### Cluster merging
 		vector<unsigned int> mergedParticleIds = mergeClusters();
-		isMergedCandidate = (mergedParticleIds.size()>0);
 
-		if (config::vm.count("debug")){
+
+		bool isMergedCandidate = (mergedParticleIds.size()>0);
+
+		if (config::vm.count("debug"))
 			std::cout << endl << "Main Truth and Reconstructed Candidates:" << endl << "t:  pdg: " << std::setw(5) << truthType << ": E: " << std::setw(6) << (round(100*truthEnergy)/100.0) << ": pT: " << std::setw(6) << (round(100*truthPt)/100.0) << "; theta: " << std::setw(6) << round(100*truthTheta)/100.0 << "; phi: " << std::setw(6) << round(100*truthPhi)/100.0 << std::endl;
-			cout << endl << "Merged particles: "; 
-			for(auto const& value: mergedParticleIds) 
-			     std::cout << value << " ";
-			cout << endl << endl;
-		}
 
 		//##### Angular and energy matching
 		angularAndEnergyMatching();
@@ -94,8 +93,16 @@ int eventHistFiller::fillEvent(const EVENT::LCEvent* event){
 		fillOtherHists();
 
 
+		if (config::vm.count("debug")){
+			cout << endl << "Merged particles: "; 
+			for(auto const& value: mergedParticleIds) 
+			     std::cout << value << " ";
+			cout << endl << endl;
+		}
+
 	}
 
 }
+
 
 

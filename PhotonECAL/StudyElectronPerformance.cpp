@@ -172,9 +172,17 @@ int main (int argn, char* argv[]) {
 	if (vm.count("debug"))
 		truthCondition::instance()->setDebugFlag(true);
 
+	unsigned int nEvents = m_reader->getNumberOfEvents() * m_fileNames.size();
+	cout << "[INFO]\nNumber of events to process: " << nEvents << endl;
+
 	while ( event != NULL ) {
-		if (vm.count("debug")) 
+		if (eventCounter % 1000 == 0)
+			cout << "[INFO]\tProcess " << eventCounter << " events; Done: " << round(100*eventCounter/nEvents) << "%" << endl;
+		if (vm.count("debug")){
 			cout << endl << "[INFO]\t *****EVENT: " << event->getEventNumber() << " *****" <<endl;
+			// if (eventCounter==1000)
+			//         break;
+		}
 		truthCondition::instance()->setEvent(event);
 		truthCondition::instance()->processEvent();
 		eventCounter++;

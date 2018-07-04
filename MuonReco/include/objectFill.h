@@ -15,6 +15,7 @@
 #include <TMath.h>
 #include <TVector3.h>
 #include <TVectorD.h>
+#include <TEfficiency.h>
 
 //LCIO
 #include <IOIMPL/LCFactory.h>
@@ -78,12 +79,15 @@ class objectFill{
 			return outVec;
 		}
 		void DeleteHists();
+		void createTH1I(string histName, string histTitle, unsigned int nBins, double leftRange, double rightRange); 
+		void createTH1D(string histName, string histTitle, unsigned int nBins, double leftRange, double rightRange);
 
 	protected:
 		std::map<std::string, TH1*> histMap;
+		std::map<std::string, TEfficiency*> tEffMap;
 		string outDirName;
 		bool debugFlag;
-		double get_dPhi(double phi_reco, double phi_truth);
+		string className = "objectFill";
 };
 
 #endif

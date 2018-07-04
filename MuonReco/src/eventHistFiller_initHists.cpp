@@ -4,6 +4,8 @@ vector<string> typeOfCutFails = {"FailType","FailAngularMatching","FailEnergyMat
 
 int eventHistFiller::init(){
 
+	className = "eventHistFiller";
+
 	if (config::vm.count("debug")){
 		cout << "[INFO]\teventHistFiller::init(); outDirName: " << outDirName << endl;
 	}
@@ -53,7 +55,6 @@ int eventHistFiller::init(){
 	}
 
 	createTH1I("truthParticle_isDecayedInTracker","isDecayedInTracker; isDecayedInTracker flag; Counts",2,-0.5,1.5);
-	createTH1D("truthParticle_convRadius","convRadius; convRadius; Counts",250,0,2500);
 
 	// cout << "debug1" << endl;
 
@@ -71,9 +72,9 @@ int eventHistFiller::init(){
 	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++){
 		createTH1D(("phiResolution_"+it->second).c_str(),(it->second+" Phi resolution; dPhi [rad]; Counts").c_str(),20000,-0.2,0.2);
 		createTH1D(("thetaResolution_"+it->second).c_str(),(it->second+" Theta resolution; dTheta [rad]; Counts").c_str(),400,-0.01,0.01);
-		createTH1D(("energyResolution_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),625,0,125);
-		createTH1D(("energyResolution2_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),625,0,125);
-		createTH1D(("energyResolution3_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),625,0,125);
+		createTH1D(("energyResolution_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),1250,0,125);
+		createTH1D(("energyResolution2_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),2500,0,125);
+		createTH1D(("energyResolution3_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),5000,0,125);
 		createTH1D(("energyResolution4_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),625,0,125);
 	}
 
@@ -146,25 +147,7 @@ int eventHistFiller::writeToFile(TFile* outFile){
 	getHistFromMap("efficiencyVsEnergy")->Divide(getHistFromMap("nTruthPartsVsEnergy"));
 	getHistFromMap("efficiencyVsEnergy_onlyType")->Sumw2();
 	getHistFromMap("efficiencyVsEnergy_onlyType")->Divide(getHistFromMap("nTruthPartsVsEnergy"));
-
-	// getHistFromMap("efficiencyVsCosThetaFailType_all")->Sumw2();
-	// getHistFromMap("efficiencyVsCosThetaFailType_all")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
-	// getHistFromMap("efficiencyVsCosThetaFailType_noChargedParts")->Sumw2();
-	// getHistFromMap("efficiencyVsCosThetaFailType_noChargedParts")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
-	// getHistFromMap("efficiencyVsCosThetaFailType_pion")->Sumw2();
-	// getHistFromMap("efficiencyVsCosThetaFailType_pion")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
-	// getHistFromMap("efficiencyVsCosThetaFailType_muon")->Sumw2();
-	// getHistFromMap("efficiencyVsCosThetaFailType_muon")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
-	// getHistFromMap("efficiencyVsCosThetaFailEnergyMatching")->Sumw2();
-	// getHistFromMap("efficiencyVsCosThetaFailEnergyMatching")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
-	// getHistFromMap("efficiencyVsCosThetaFailAngularMatching")->Sumw2();
-	// getHistFromMap("efficiencyVsCosThetaFailAngularMatching")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
-	//
-	// getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosTheta"));
-	// getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosThetaFailType_all"));
-	// getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosThetaFailEnergyMatching"));
-	// getHistFromMap("efficiencyVsCosThetaSum")->Add(getHistFromMap("efficiencyVsCosThetaFailAngularMatching"));
-
+	
 	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
 		getHistFromMap("nPFOsVsCosThetaFailType_"+it->second)->Sumw2();
 	}
@@ -204,56 +187,7 @@ int eventHistFiller::writeToFile(TFile* outFile){
 	getHistFromMap("efficiencyVsCosThetaCat5")->Sumw2();
 	getHistFromMap("efficiencyVsCosThetaCat5")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
 
-	if (!outFile->IsOpen()){
-		cout << "[ERROR|writeToFile]\tno output file is found!" << endl;
-		return -1;
-	}
-	outFile->cd();
-	TDirectory *mainDir = outFile->mkdir(outDirName.c_str());
-	mainDir->cd();
-
-	map<string,unsigned int> prefixCounter;
-	map<string,string> namePrefixMap;
-	map<string,bool> isPrefixSubdirCreated;
-	map<string,string> nameWithoutPrefixMap;
-	for(auto const &it : histMap) {
-		string histName = it.first;
-		vector<string> tmpStrVec = GetSplittedWords(histName,"_");
-		if (tmpStrVec.size()<2) 
-			continue;
-		string prefix = "";
-		for (int i=0; i<tmpStrVec.size()-1; i++){
-			if (i==tmpStrVec.size()-2)
-				prefix += tmpStrVec[i];
-			else
-				prefix += tmpStrVec[i] + "_";
-		}
-		nameWithoutPrefixMap[histName] = tmpStrVec[tmpStrVec.size()-1];
-		prefixCounter[prefix] += 1;
-		isPrefixSubdirCreated[prefix] = false;
-		namePrefixMap[histName] = prefix;
-	}
-	
-
-	for(auto const &it : histMap) {
-		string histName = it.first;
-		string prefix = namePrefixMap[histName];
-		if (prefixCounter[prefix]<2){
-			mainDir->cd();
-			it.second->Write();
-		}
-		else{
-			if (isPrefixSubdirCreated[prefix]==false){
-				mainDir->mkdir(prefix.c_str());
-				isPrefixSubdirCreated[prefix]=true;
-			}
-			mainDir->cd(prefix.c_str());
-			it.second->SetName(nameWithoutPrefixMap[histName].c_str());
-			it.second->Write();
-			mainDir->cd();
-		}
-	}
-	outFile->cd();
+	objectFill::writeToFile(outFile);
 	return 0;
 
 

@@ -13,29 +13,22 @@ void eventHistFiller::initTruthInfoAndFillIt(){
 	truthEnergy = genPart->getEnergy();
 
 	getHistFromMap("truthParticle_isDecayedInTracker")->Fill(genPart->isDecayedInTracker());
-	if (genPart->isDecayedInTracker()){
-		const double *endPoint = genPart->getEndpoint();
-		double decayRadius = sqrt(endPoint[0]*endPoint[0]+endPoint[1]*endPoint[1]);
-		getHistFromMap("truthParticle_convRadius")->Fill(decayRadius);
-	}
 	getHistFromMap("nTruthPartsVsCosTheta")->Fill(cosTruthTheta);
 	getHistFromMap("nTruthPartsVsTheta")->Fill(truthTheta);
 	getHistFromMap("nTruthPartsVsEnergy")->Fill(truthEnergy);
-} 
-
-
+}
 
 void eventHistFiller::fillPfoCounterAndFillGeneralPfoInfo(unsigned int partId){
 	EVENT::ReconstructedParticle* recoPart = static_cast<IMPL::ReconstructedParticleImpl*>(PFOCollection->getElementAt(partId));
 
-	const int pfoType = fabs(recoPart->getType());
+	const int pfoType = abs(recoPart->getType());
 	const double *partMom = recoPart->getMomentum();
 	TVector3 vPartMom(partMom[0],partMom[1],partMom[2]);
 	const double partTheta = vPartMom.Theta()*TMath::RadToDeg();
 	const double partPhi = vPartMom.Phi()*TMath::RadToDeg();
 	const double cosPartTheta = TMath::Cos(partTheta*TMath::DegToRad());
 	const double partEnergy = recoPart->getEnergy();
-	const double dPhiPartTruth = get_dPhi(partPhi,truthPhi)*TMath::DegToRad();
+	const double dPhiPartTruth = (partPhi-truthPhi)*TMath::DegToRad();
 	const double dThetaPartTruth = (partTheta-truthTheta)*TMath::DegToRad();
 
 	getHistFromMap("PFOType")->Fill(pfoType);
@@ -45,22 +38,12 @@ void eventHistFiller::fillPfoCounterAndFillGeneralPfoInfo(unsigned int partId){
 	totalRecoEnergy += recoPart->getEnergy();
 
 	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
-		if (fabs(pfoType)==it->first) {
+		if (abs(pfoType)==it->first) {
 			getHistFromMap("nPFOsVsCosTheta_"+it->second)->Fill(cosTruthTheta);
 			getHistFromMap("nPFOsVsTheta_"+it->second)->Fill(truthTheta);
 			getHistFromMap("thetaResolution_"+it->second)->Fill(dThetaPartTruth);
 			getHistFromMap("phiResolution_"+it->second)->Fill(dPhiPartTruth);
 			getHistFromMap("energyResolution_"+it->second)->Fill(partEnergy);
-
-			if(PFOCollection->getNumberOfElements()==1){
-				getHistFromMap("energyResolution2_"+it->second)->Fill(partEnergy);
-				if (dThetaPartTruth<0.1 && dPhiPartTruth<0.1)
-					getHistFromMap("energyResolution3_"+it->second)->Fill(partEnergy);
-				if (dThetaPartTruth<0.2 && dPhiPartTruth<0.2)
-					getHistFromMap("energyResolution4_"+it->second)->Fill(partEnergy);
-			}
-			// getHistFromMap("energyResolution3_"+it->second)->Fill(partEnergy);
-			// getHistFromMap("energyResolution4_"+it->second)->Fill(partEnergy);
 			pfoCounter[it->second]++;
 		}
 	}
@@ -73,7 +56,7 @@ void eventHistFiller::fillEventsFailedSelection(){
 
 	for (int kkk=0; kkk<nPFOs; kkk++){
 		for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
-			if (fabs(static_cast<EVENT::ReconstructedParticle*>(PFOCollection->getElementAt(kkk))->getType())==it->first) {
+			if (abs(static_cast<EVENT::ReconstructedParticle*>(PFOCollection->getElementAt(kkk))->getType())==it->first) {
 				getHistFromMap("nPFOsVsCosThetaFailType_"+it->second)->Fill(cosTruthTheta);
 			}
 		}
@@ -95,7 +78,6 @@ void eventHistFiller::fillEventsFailedSelection(){
 vector <unsigned int> eventHistFiller::mergeClusters(){
 	vector<unsigned int> idOfMergedParticles;
 	if (config::vm.count("debug")){
-		cout << "[DEBUG]\tINFO FROM eventHistFiller::mergeClusters(): START" << endl;
 		cout << "[DEBUG]\tpartCandidate pointer: " << partCandidate << endl;
 		cout << "[DEBUG]\tpartCandidate->getClusters().size(): " << partCandidate->getClusters().size() << endl;
 	}
@@ -143,15 +125,14 @@ vector <unsigned int> eventHistFiller::mergeClusters(){
 
 			for (int iMerge=0; iMerge<PFOmergeMap[mergeTag].size(); iMerge++){
 				PFOMergeSettings mergeSettings = PFOmergeMap[mergeTag][iMerge];
-				if (fabs(partTypeLoop)!=mergeSettings.pfoTypeToMerge)
+				if (abs(partTypeLoop)!=mergeSettings.pfoTypeToMerge)
 					continue;
 
-				double dPhi = get_dPhi(partPhiLoop,candPhi);
-				bool passTheta = fabs(candTheta-partThetaLoop)<mergeSettings.thetaCone;
-				bool passPhi = fabs(dPhi)<mergeSettings.phiCone; 
+				bool passTheta = abs(candTheta-partThetaLoop)<mergeSettings.thetaCone;
+				bool passPhi = abs(candPhi-partPhiLoop)<mergeSettings.phiCone;
 			
 				if (config::vm.count("debug"))
-					cout << "[INFO] passTheta: " << passTheta << "; passPhi: " << passPhi << "; E: " << partEnergyLoop << " GeV; thetaCone: " << mergeSettings.thetaCone << "; dTheta: " << fabs(candTheta-partThetaLoop) << "; phiCone: " << mergeSettings.phiCone << "; dPhi: " << fabs(dPhi) << endl;
+					cout << "[INFO] passTheta: " << passTheta << "; passPhi: " << passPhi << "; E: " << partEnergyLoop << " GeV; thetaCone: " << mergeSettings.thetaCone << "; dTheta: " << abs(candTheta-partThetaLoop) << "; phiCone: " << mergeSettings.phiCone << "; dPhi: " << abs(candPhi-partPhiLoop) << endl;
 
 				if (passTheta && passPhi) {
 				
@@ -187,23 +168,19 @@ vector <unsigned int> eventHistFiller::mergeClusters(){
 		}
 	}
 
-	if (config::vm.count("debug"))
-		cout << "[DEBUG]\tINFO FROM eventHistFiller::mergeClusters(): END" << endl;
 	return idOfMergedParticles;
 }
 
 void eventHistFiller::angularAndEnergyMatching(){
 
 	// Here we already have most energetic candidate of the type
-
 	bool passAngularMatching = false;
 	bool passTransMomMatching = false;
 	bool passEnergyMatching = false;
 	double dPhi_angularMatchingCut = 0.02;
 	double dTheta_angularMatchingCut = 0.01;
 	double caloCut_energyMatching = 0.75;
-	// double transMomCut_energyMatching = 0.05;
-	double transMomCut_energyMatching = 0.1;
+	double transMomCut_energyMatching = 0.05;
 
 	const double *partMom = partCandidate->getMomentum();
 	TVector3 vPartMom(partMom[0],partMom[1],partMom[2]);
@@ -212,29 +189,26 @@ void eventHistFiller::angularAndEnergyMatching(){
 	const double cosPartTheta = TMath::Cos(partTheta*TMath::DegToRad());
 	const double partEnergy = partCandidate->getEnergy();
 	const double partPt = vPartMom.Pt();
-	const double dPhiPartTruth = get_dPhi(partPhi,truthPhi)*TMath::DegToRad();
+	const double dPhiPartTruth = (partPhi-truthPhi)*TMath::DegToRad();
 	const double dThetaPartTruth = (partTheta-truthTheta)*TMath::DegToRad();
 
-	if ( fabs(dPhiPartTruth)<dPhi_angularMatchingCut  && fabs(dThetaPartTruth)<dTheta_angularMatchingCut)
+	if (abs(dPhiPartTruth)<dPhi_angularMatchingCut && abs(dThetaPartTruth)<dTheta_angularMatchingCut)
 		passAngularMatching = true;
 
-	if (fabs(partEnergy-truthEnergy)<caloCut_energyMatching*sqrt(truthEnergy))
+	if (abs(partEnergy-truthEnergy)<caloCut_energyMatching*sqrt(truthEnergy))
 		passEnergyMatching = true;
 
-	if ((fabs(truthPt-partPt))<transMomCut_energyMatching*truthPt)
+	if ((abs(truthPt-partPt))<transMomCut_energyMatching*truthPt)
 		passTransMomMatching = true;
 
-	passAngularMatching = passAngularMatching || (!applyAngularMatching) || (isMergedCandidate && noAngularMatchingForMergedCandidates);
+	passAngularMatching = passAngularMatching || (!applyAngularMatching);
 	passEnergyMatching = passEnergyMatching || (!applyEnergyMatching);
 	passTransMomMatching = passTransMomMatching || (!applyEnergyMatching);
 
-	bool passFinalEnergyMomMatching = ((passEnergyMatching && (truthType==22 || useCaloCutInsteadMomentum || (useCaloCutInsteadMomentumForMergedCandidates && isMergedCandidate))) || (passTransMomMatching==true && truthType!=22));
+	bool passFinalEnergyMomMatching = ((passEnergyMatching && (truthType==22 || useCaloCutInsteadMomentum==true)) || (passTransMomMatching==true && truthType!=22));
 
-	if (config::vm.count("debug")){
+	if (config::vm.count("debug"))
 		std::cout << "r:  pdg: " << std::setw(5) << partCandidate->getType()  << ": E: " << std::setw(6) << (round(100*partEnergy)/100.0) << ": pT: " << std::setw(6) << (round(100*partPt)/100.0) << "; theta: " << std::setw(6) << round(100*partTheta)/100.0 << "; phi: " << std::setw(6) << round(100*partPhi)/100.0 << "; AngularMatching: " << passAngularMatching << "; EnergyMatching: " << passEnergyMatching << "; TransMomMatching: " << passTransMomMatching << "; passFinalEnMom: " << passFinalEnergyMomMatching << std::endl;
-		std::cout << "fabs(dPhiPartTruth): " << fabs(dPhiPartTruth) << "; dPhi_angularMatchingCut: " << dPhi_angularMatchingCut << "; fabs(dThetaPartTruth): " << fabs(dThetaPartTruth) << "; dTheta_angularMatchingCut: " << dTheta_angularMatchingCut << std::endl;
-	}
-		
 
 	if (passFinalEnergyMomMatching == true && passAngularMatching == true){
 		getHistFromMap("efficiencyVsTheta")->Fill(truthTheta);
@@ -245,7 +219,6 @@ void eventHistFiller::angularAndEnergyMatching(){
 		getHistFromMap("PFO_passed_eff_Pt")->Fill(partPt);
 		getHistFromMap("PFO_passed_eff_dE")->Fill((partEnergy-truthEnergy)/truthEnergy);
 		getHistFromMap("PFO_passed_eff_dPt")->Fill((truthPt-partPt)/truthPt);
-		// WARNING TODO proper dPhi and dTheta
 		getHistFromMap("PFO_passed_eff_dTheta")->Fill(dThetaPartTruth);
 		getHistFromMap("PFO_passed_eff_dPhi")->Fill(dPhiPartTruth);
 
@@ -263,7 +236,6 @@ void eventHistFiller::fillOtherHists(){
 
 	getHistFromMap("totalRecoEnergy")->Fill(totalRecoEnergy);
 
-	// std::map<unsigned int, std::string> pfoTypeIntStringMap = {{11,"Electron"}, {13,"Muon"},{22,"Photon"},{211,"Pion"},{2112,"NeutralHadron"}};
 	if (pfoCounter["Electron"]==0 && pfoCounter["Pion"]==0)
 		getHistFromMap("efficiencyVsCosThetaCat1")->Fill(cosTruthTheta);
 	else if (pfoCounter["Electron"]==1 && pfoCounter["Pion"]==0)
@@ -280,7 +252,9 @@ void eventHistFiller::fillOtherHists(){
 
 void eventHistFiller::setClusterMerging(string _mergeTag){
 	if (!IsInVector<string>(_mergeTag,effType))
-		cout << "[eventHistFiller::setClusterMerging]\tERROR mergeTag <" << _mergeTag << "> is not supported!!!" << endl;
+		cout << "[eventHistFiller::setClusterMerging]\tERROR mergeTag <" << _mergeTag << "> is not supported!!!" << endl; 
 	else
 		mergeTag = _mergeTag;
 }
+
+

@@ -12,6 +12,28 @@
 #include <globalConfig.h>
 #include "truthCondition.h"
 
+#include <cmath>
+// #include <gsl/gsl_sf_gamma.h>
+#include <vector>
+
+// #include <marlin/Global.h>
+// #include <GeometryUtil.h>
+
+// #include <DD4hep/DD4hepUnits.h>
+// #include <DD4hep/DetType.h>
+// #include <DD4hep/DetectorSelector.h>
+// #include <DD4hep/Detector.h>
+// #include <DDRec/DetectorData.h>
+
+#include "EVENT/ReconstructedParticle.h"
+#include "EVENT/Cluster.h"
+#include <lcio.h>
+
+// #include <EVENT/CalorimeterHit.h>
+// #include "CalorimeterHitType.h"
+//
+// #include <ClusterShapes.h>
+
 struct PFOMergeSettings{
 	unsigned int pfoTypeToMerge;
 	double thetaCone;
@@ -41,9 +63,7 @@ class eventHistFiller : public objectFill{
 		void SetApplyAngularMatching(bool _applyAngularMatching){applyAngularMatching = _applyAngularMatching;}
 		void SetApplyEnergyMatching(bool _applyEnergyMatching){applyEnergyMatching = _applyEnergyMatching;}
 		void SetUseCaloInfoForEnergyMerging(bool _useCaloInfoDuringEnergyMerging){useCaloInfoDuringEnergyMerging = _useCaloInfoDuringEnergyMerging;}
-		void SetUseCaloCutInsteadMomentumForMergedCandidates(bool _useCaloCutInsteadMomentumForMergedCandidates){useCaloCutInsteadMomentumForMergedCandidates = _useCaloCutInsteadMomentumForMergedCandidates;}
 		void SetUseCaloCutInsteadMomentum(bool _useCaloCutInsteadMomentum){useCaloCutInsteadMomentum = _useCaloCutInsteadMomentum;}
-		void SerNoAngularMatchingForMergedCandidates(bool _noAngularMatchingForMergedCandidates){noAngularMatchingForMergedCandidates = _noAngularMatchingForMergedCandidates;}
 
 	private:
 		string PFOCollectionName;
@@ -59,14 +79,11 @@ class eventHistFiller : public objectFill{
 		bool applyAngularMatching = true;
 		bool applyEnergyMatching = true;
 		bool useCaloInfoDuringEnergyMerging = false;
-		bool useCaloCutInsteadMomentumForMergedCandidates = false;
 		bool useCaloCutInsteadMomentum = false;
-		bool noAngularMatchingForMergedCandidates = false;
 
 		EVENT::MCParticle* genPart = nullptr;
 		IMPL::ReconstructedParticleImpl* partCandidate = nullptr;
 		unsigned int idOfPartCandidate = std::numeric_limits<unsigned int>::max();
-		bool isMergedCandidate = false;
 
 		double truthTheta = std::numeric_limits<double>::max();
 		double cosTruthTheta = std::numeric_limits<double>::max();
@@ -110,6 +127,7 @@ class eventHistFiller : public objectFill{
 				cout << "[ERROR]\teventHistFiller::getHistFromMap(" << histID << ") no hist in the histMap with name <" << histID << ">" << endl;
 			return histMap[histID];
 		}
+
 };
 #endif // EVENTHISTFILLER_H
 

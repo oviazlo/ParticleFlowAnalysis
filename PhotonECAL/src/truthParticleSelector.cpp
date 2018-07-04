@@ -35,13 +35,31 @@ int truthParticleSelector::init(){
 		// objFillMap["eventHists_"+mergeTag]->init();
 
 
-		mergeTag = "photonRecl_noAngularMatching_caloE";
+		// mergeTag = "photonRecl_noAngularMatching_caloE";
+		// eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+		// eventFill->setClusterMerging("photonMerge");
+		// eventFill->SetApplyAngularMatching(false);
+		// eventFill->SetUseCaloInfoForEnergyMerging(true);
+		// objFillMap["eventHists_"+mergeTag] = eventFill;
+		// objFillMap["eventHists_"+mergeTag]->init();
+
+		// mergeTag = "photonAndNeutralRecl_looseThetaCut";
+		// eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+		// eventFill->setClusterMerging("photonAndNeutralLooseMerge");
+		// objFillMap["eventHists_"+mergeTag] = eventFill;
+
+		mergeTag = "photonRecl_useCaloForMergedCandidates";
 		eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+		// eventFill->setClusterMerging("photonAndNeutralLooseMerge");
 		eventFill->setClusterMerging("photonMerge");
-		eventFill->SetApplyAngularMatching(false);
+		eventFill->SetUseCaloCutInsteadMomentumForMergedCandidates(true);
 		eventFill->SetUseCaloInfoForEnergyMerging(true);
 		objFillMap["eventHists_"+mergeTag] = eventFill;
-		objFillMap["eventHists_"+mergeTag]->init();
+
+		for(auto const &mapElement : objFillMap){
+			cout << "Init mapElement: " << mapElement.first << endl;
+			mapElement.second->init();
+		}
 
 		return 0;
 	}
@@ -81,24 +99,52 @@ int truthParticleSelector::init(){
 	eventFill->setClusterMerging("photonAndNeutralLooseMerge");
 	objFillMap["eventHists_"+mergeTag] = eventFill;
 
-	mergeTag = "photonAndNeutralRecl_looseThetaCut_caloEMatching_clusterE";
+	// mergeTag = "photonAndNeutralRecl_looseThetaCut_caloEMatching_clusterE";
+	// eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	// eventFill->setClusterMerging("photonAndNeutralLooseMerge");
+	// eventFill->SetUseCaloInfoForEnergyMerging(true);
+	// eventFill->SetUseCaloCutInsteadMomentum(true);
+	// objFillMap["eventHists_"+mergeTag] = eventFill;
+        //
+        //        mergeTag = "photonAndNeutralRecl_looseThetaCut_clusterE";
+	// eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	// eventFill->setClusterMerging("photonAndNeutralLooseMerge");
+	// eventFill->SetUseCaloInfoForEnergyMerging(true);
+	// objFillMap["eventHists_"+mergeTag] = eventFill;
+        //
+        //        mergeTag = "photonAndNeutralRecl_looseThetaCut_caloEMatchin";
+	// eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	// eventFill->setClusterMerging("photonAndNeutralLooseMerge");
+	// eventFill->SetUseCaloCutInsteadMomentum(true);
+	// objFillMap["eventHists_"+mergeTag] = eventFill;
+
+	mergeTag = "conv_noEnergyMatching";
 	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
-	eventFill->setClusterMerging("photonAndNeutralLooseMerge");
-	eventFill->SetUseCaloInfoForEnergyMerging(true);
-	eventFill->SetUseCaloCutInsteadMomentum(true);
+	eventFill->SetApplyEnergyMatching(false);
 	objFillMap["eventHists_"+mergeTag] = eventFill;
 
-       	mergeTag = "photonAndNeutralRecl_looseThetaCut_clusterE";
+	mergeTag = "photonRecl_conv_noEnergyMatching";
 	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
-	eventFill->setClusterMerging("photonAndNeutralLooseMerge");
-	eventFill->SetUseCaloInfoForEnergyMerging(true);
+	eventFill->setClusterMerging("photonMerge");
+	eventFill->SetApplyEnergyMatching(false);
 	objFillMap["eventHists_"+mergeTag] = eventFill;
 
-       	mergeTag = "photonAndNeutralRecl_looseThetaCut_caloEMatchin";
+	mergeTag = "photonRecl_noConv_noEnergyMatching";
 	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
-	eventFill->setClusterMerging("photonAndNeutralLooseMerge");
-	eventFill->SetUseCaloCutInsteadMomentum(true);
+	eventFill->setClusterMerging("photonMerge");
+	eventFill->SetApplyEnergyMatching(false);
 	objFillMap["eventHists_"+mergeTag] = eventFill;
+
+	mergeTag = "photonRecl_conv";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonMerge");
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
+	mergeTag = "photonRecl_noConv";
+	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	eventFill->setClusterMerging("photonMerge");
+	objFillMap["eventHists_"+mergeTag] = eventFill;
+
 
 	mergeTag = "photonRecl_noAngularMatching";
 	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
@@ -112,17 +158,24 @@ int truthParticleSelector::init(){
 	eventFill->SetApplyEnergyMatching(false);
 	objFillMap["eventHists_"+mergeTag] = eventFill;
 
-	mergeTag = "photonRecl_noAngularMatching_caloE";
+	// mergeTag = "photonRecl_noAngularMatching_caloE";
+	// eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	// eventFill->setClusterMerging("photonMerge");
+	// eventFill->SetApplyAngularMatching(false);
+	// eventFill->SetUseCaloInfoForEnergyMerging(true);
+	// objFillMap["eventHists_"+mergeTag] = eventFill;
+        //
+	// mergeTag = "photonRecl_noEnergyMatching_caloE";
+	// eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
+	// eventFill->setClusterMerging("photonMerge");
+	// eventFill->SetApplyEnergyMatching(false);
+	// eventFill->SetUseCaloInfoForEnergyMerging(true);
+	// objFillMap["eventHists_"+mergeTag] = eventFill;
+	
+	mergeTag = "photonRecl_useCaloForMergedCandidates";
 	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
 	eventFill->setClusterMerging("photonMerge");
-	eventFill->SetApplyAngularMatching(false);
-	eventFill->SetUseCaloInfoForEnergyMerging(true);
-	objFillMap["eventHists_"+mergeTag] = eventFill;
-
-	mergeTag = "photonRecl_noEnergyMatching_caloE";
-	eventFill = new eventHistFiller("eventHists_"+mergeTag,effCollection);
-	eventFill->setClusterMerging("photonMerge");
-	eventFill->SetApplyEnergyMatching(false);
+	eventFill->SetUseCaloCutInsteadMomentumForMergedCandidates(true);
 	eventFill->SetUseCaloInfoForEnergyMerging(true);
 	objFillMap["eventHists_"+mergeTag] = eventFill;
 
