@@ -1,4 +1,5 @@
 #include <objectFill.h>
+#include <TGraphAsymmErrors.h>
 
 objectFill::objectFill(string _outDirName){
 	outDirName = _outDirName;
@@ -8,9 +9,9 @@ objectFill::~objectFill(){
 	for(auto const &it : histMap) {
 		it.second->Delete();
 	}
-	for(auto const &it : tEffMap) {
-		it.second->Delete();
-	}
+	// for(auto const &it : tEffMap) {
+	//         it.second->~TEfficiency();
+	// }
 }
 
 int objectFill::writeToFile(TFile* outFile){
@@ -20,6 +21,16 @@ int objectFill::writeToFile(TFile* outFile){
 	}
 	outFile->cd();
 	TDirectory *mainDir = outFile->mkdir(outDirName.c_str());
+	mainDir->cd();
+
+	mainDir->mkdir("tEff");
+	mainDir->cd("tEff");
+	for(auto const &it : tEffMap){
+		// cout << "tEff name: " << it.second->GetName();
+		TGraphAsymmErrors *tmpGr = it.second->CreateGraph();
+		tmpGr->SetName(it.second->GetName());
+		tmpGr->Write();
+	}
 	mainDir->cd();
 
 	map<string,unsigned int> prefixCounter;

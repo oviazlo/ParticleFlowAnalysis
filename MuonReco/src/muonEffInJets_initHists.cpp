@@ -46,6 +46,14 @@ int muonEffInJets::writeToFile(TFile* outFile){
 	getHistFromMap(histNamePrefix + "_vertexR")->Sumw2();
 	getHistFromMap(histNamePrefix + "_vertexZ")->Sumw2();
 
+	createTEff(histNamePrefix + "_E",histNameDenominator + "_E");
+	createTEff(histNamePrefix + "_pt",histNameDenominator + "_pt");
+	createTEff(histNamePrefix + "_theta",histNameDenominator + "_theta");
+	createTEff(histNamePrefix + "_cosTheta",histNameDenominator + "_cosTheta");
+	createTEff(histNamePrefix + "_phi",histNameDenominator + "_phi");
+	createTEff(histNamePrefix + "_vertexR",histNameDenominator + "_vertexR");
+	createTEff(histNamePrefix + "_vertexZ",histNameDenominator + "_vertexZ");
+
 	getHistFromMap(histNamePrefix + "_E")->Divide(getHistFromMap(histNameDenominator + "_E"));
 	getHistFromMap(histNamePrefix + "_pt")->Divide(getHistFromMap(histNameDenominator + "_pt"));
 	getHistFromMap(histNamePrefix + "_theta")->Divide(getHistFromMap(histNameDenominator + "_theta"));

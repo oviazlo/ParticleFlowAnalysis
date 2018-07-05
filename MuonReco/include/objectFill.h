@@ -81,6 +81,12 @@ class objectFill{
 		void DeleteHists();
 		void createTH1I(string histName, string histTitle, unsigned int nBins, double leftRange, double rightRange); 
 		void createTH1D(string histName, string histTitle, unsigned int nBins, double leftRange, double rightRange);
+		void createTEff(string numeratorHistName, string denominatorHistName){
+			TEfficiency* tmpTEff = new TEfficiency(*getHistFromMap(numeratorHistName),*getHistFromMap(denominatorHistName));	
+			tmpTEff->SetName(numeratorHistName.c_str());
+			tmpTEff->SetDirectory(0);
+			tEffMap[numeratorHistName] = tmpTEff;
+		}
 
 	protected:
 		std::map<std::string, TH1*> histMap;

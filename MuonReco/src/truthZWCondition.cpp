@@ -30,7 +30,7 @@ void truthZWCondition::processEvent(const EVENT::LCEvent* _event){
 	nTruthParticles = MCTruthCollection->getNumberOfElements();
 	if (config::vm.count("debug"))
 		std::cout << "Truth particles:" << std::endl;
-	std::cout << "Truth particles:" << std::endl;
+	// std::cout << "Truth particles:" << std::endl;
 	for(int j=0; j < nTruthParticles; j++) {
 		auto part = static_cast<EVENT::MCParticle*>(MCTruthCollection->getElementAt(j));
 		TVector3 v1(part->getMomentum());
@@ -50,11 +50,12 @@ void truthZWCondition::processEvent(const EVENT::LCEvent* _event){
 				// && (abs(parentPDG)==abs(motherPDG))
 		   )
 		{
-			dumpTruthPart(part,j);
-			auto daughters = part->getDaughters();
-			for (auto iPartInnerLoop: daughters){
-				dumpTruthPart(iPartInnerLoop,j);
-			}
+			// dumpTruthPart(part,j);
+			// auto daughters = part->getDaughters();
+			// for (auto iPartInnerLoop: daughters){
+			//         dumpTruthPart(iPartInnerLoop,j);
+			// }
+
 			// EVENT::MCParticle* loopPart = nullptr;
 			// bool noStableLeptonsOfInterest = false;
 			// while (noStableLeptonsOfInterest == false){
