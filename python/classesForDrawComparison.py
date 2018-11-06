@@ -253,45 +253,6 @@ class helperClass:
 
 ################################################################################
 ################################################################################
-    def getTextLabels(self, hists, cfg):
-        outTextLabels = []
-        prefix = 'textLabel'
-        textLabels = [x for x in cfg if x.startswith(prefix)]
-        for iLabel in textLabels:
-            labelCfg = cfg[iLabel]
-            try:
-                if (len(labelCfg["pos"])!=2):
-                    raise objectPosition("Canvas position should have 2 coordinates!")
-            except KeyError:
-                raise noAttribute("missing mandatory attribute <pos> for: %s" % (iLabel))
-            xCoord = hists[0].GetXaxis().GetXmin() + (hists[0].GetXaxis().GetXmax() - hists[0].GetXaxis().GetXmin()) * labelCfg["pos"][0]
-            yCoord = hists[0].GetMinimum() + (hists[0].GetMaximum() - hists[0].GetMinimum()) * labelCfg["pos"][1]
-            labelCfg.pop("pos")
-            try:
-                ttext = ROOT.TText(xCoord,yCoord,labelCfg["title"])
-                labelCfg.pop("title")
-                outTextLabels.append(ttext)
-            except KeyError:
-                raise noAttribute("missing mandatory attribute <title> for: %s" % (iLabel))
-
-            # TODO experimental functionality
-            availableSetFunctions = [x.replace('Set','') for x in dir(ROOT.TText()) if x.startswith('Set')]
-            for iSetFunc in availableSetFunctions:
-                if (iSetFunc in labelCfg):
-                    if (type(labelCfg[iSetFunc]) == str):
-                        eval('ttext.Set%s("%s")' % (iSetFunc, labelCfg[iSetFunc]))
-                    else:
-                        eval('ttext.Set%s(%s)' % (iSetFunc, labelCfg[iSetFunc]))
-                    labelCfg.pop(iSetFunc)
-
-            if (len(labelCfg)!=0):
-                raise notUsedAttribute("there is(are) not used attribute(s) for textLabel: %s" % (iLabel))
-            cfg.pop(iLabel)
-
-        return outTextLabels
-
-################################################################################
-################################################################################
     def getLatexLabels(self, hists, cfg):
         return self.getLabels(ROOT.TLatex, 'latexLabel', hists, cfg)
 
@@ -333,7 +294,10 @@ class helperClass:
                     labelCfg.pop(iSetFunc)
 
             if (len(labelCfg)!=0):
-                raise notUsedAttribute("there is(are) not used attribute(s) for textLabel: %s" % (iLabel))
+                print("\nNot used attributes in <%s>:" % (iLabel))
+                print(labelCfg)
+                print("")
+                raise notUsedAttribute("there is(are) not used attribute(s) in <%s>. See above!" % (iLabel))
             cfg.pop(iLabel)
 
         return outLabels
@@ -343,7 +307,7 @@ class helperClass:
 def readYamlFile(yamlFile):
     with open(yamlFile, 'r') as ymlfile:
         globalCfg = yaml.load(ymlfile)
-        print ("[info]\t Read yaml file: \n\t\t%s" % (yamlFile))
+        #  print ("[info]\t Read yaml file: \n\t\t%s" % (yamlFile))
 
     #  processSedMe(globalCfg)
 
