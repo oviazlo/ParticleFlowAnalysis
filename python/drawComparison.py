@@ -19,10 +19,12 @@ def main(yamlFile):
     gStyle.SetOptStat(0)
 
     globalCfg = readYamlFile(yamlFile)
+    #  print(globalCfg)
 
     for cfgIterator in globalCfg:
         cfg = globalCfg[cfgIterator]
-        print('[INFO]\tProcess plot: %s' % (cfgIterator))
+        print('\n[INFO]\tProcess plot: %s' % (cfgIterator))
+
        
         #********************************************************************************
         # create objects to draw

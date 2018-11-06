@@ -337,7 +337,10 @@ def readYamlFile(yamlFile):
                 continue
             for cfgIt in defaultCfg:
                 if (cfg.get(cfgIt) is None):
-                    cfg[cfgIt] = defaultCfg.get(cfgIt)
+                    if (type(defaultCfg.get(cfgIt))==dict):
+                        cfg[cfgIt] = dict(defaultCfg.get(cfgIt))
+                    else:
+                        cfg[cfgIt] = defaultCfg.get(cfgIt)
         globalCfg.pop("default")
 
     #  DEBUGGING: print dict
