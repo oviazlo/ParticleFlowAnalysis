@@ -1,6 +1,6 @@
 from __future__ import print_function
 import unittest
-from classesForDrawComparison import helperClass, nLegendCaptions, notUsedAttribute, noMandatoryAttribute
+from classesForDrawComparison import helperClass, nLegendCaptions, notUsedAttribute, noMandatoryAttribute, pythonEvalFuncError
 import sys
 import yaml # WARNING use this environment ~/env/setupPyTools27.env to enable yaml package!!!
 import ROOT
@@ -31,7 +31,7 @@ class QueueTest(unittest.TestCase):
 
     def testConstructor(self):
         self.assertTrue(self.globalCfg.get('default') is None)
-        self.assertTrue(len(self.globalCfg) == 5)
+        self.assertTrue(len(self.globalCfg) == 7)
 
     def testGetProcessedHists(self):
         cfg = self.globalCfg['thetaRes_DR11_FCCee_vs_CLIC_vsCosTheta']
@@ -61,9 +61,15 @@ class QueueTest(unittest.TestCase):
         hists = self.q.getProcessedHists(cfg)
         self.assertRaises(notUsedAttribute,self.q.getTextLabels,hists,cfg)
 
-        cfg = dict(self.globalCfg['testTextLabels'])
+        # attempts to use eval() with wrong input type
+        cfg = dict(self.globalCfg['testLatexLabels1'])
         hists = self.q.getProcessedHists(cfg)
-        labels = self.q.getTextLabels(hists,cfg)
+        self.assertRaises(pythonEvalFuncError,self.q.getLatexLabels,hists,cfg)
+
+        # attempts to use eval() for set-function with multiple arguments (not implemented yet)
+        cfg = dict(self.globalCfg['testLatexLabels2'])
+        hists = self.q.getProcessedHists(cfg)
+        self.assertRaises(pythonEvalFuncError,self.q.getLatexLabels,hists,cfg)
 
 # ----------------------------------------------------------------------
 
@@ -78,5 +84,4 @@ try:
     unittest.main()
 except SystemExit:
     pass
-
 

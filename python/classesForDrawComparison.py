@@ -19,6 +19,9 @@ class notUsedAttribute(Exception):
 
 class noMandatoryAttribute(Exception):
     pass
+
+class pythonEvalFuncError(Exception):
+    pass
 ################################################################################
 ################################################################################
 ################################################################################
@@ -215,6 +218,8 @@ class helperClass:
                 self.hists.append(hist)         
         return self.hists
 
+################################################################################
+################################################################################
 #  def processSedMe(globalCfg):
 #      sedMePairs = []
 #      for cfgIterator in globalCfg:
@@ -284,14 +289,25 @@ class helperClass:
                 raise noAttribute("missing mandatory attribute <title> for: %s" % (iLabel))
 
             # TODO experimental functionality
+            #  print("availableSetFunctions:")
             availableSetFunctions = [x.replace('Set','') for x in dir(callFunction()) if x.startswith('Set')]
+            #  print(availableSetFunctions)
             for iSetFunc in availableSetFunctions:
                 if (iSetFunc in labelCfg):
                     if (type(labelCfg[iSetFunc]) == str):
-                        eval('tlabel.Set%s("%s")' % (iSetFunc, labelCfg[iSetFunc]))
+                        try:
+                            eval('tlabel.Set%s("%s")' % (iSetFunc, labelCfg[iSetFunc]))
+                        except (TypeError, ValueError):
+                            raise pythonEvalFuncError('bad input for python eval() function: %s.Set%s("%s"). Check attribute: %s' % (prefix, iSetFunc, labelCfg[iSetFunc], iSetFunc))
                     else:
-                        eval('tlabel.Set%s(%s)' % (iSetFunc, labelCfg[iSetFunc]))
+                        try:
+                            eval('tlabel.Set%s(%s)' % (iSetFunc, labelCfg[iSetFunc]))
+                        except (TypeError, ValueError):
+                            raise pythonEvalFuncError('bad input for python eval() function: %s.Set%s(%s). Check attribute: %s' % (prefix, iSetFunc, labelCfg[iSetFunc], iSetFunc))
                     labelCfg.pop(iSetFunc)
+
+            #  print("labelCfg:")
+            #  print(labelCfg)
 
             if (len(labelCfg)!=0):
                 print("\nNot used attributes in <%s>:" % (iLabel))
@@ -301,6 +317,7 @@ class helperClass:
             cfg.pop(iLabel)
 
         return outLabels
+
 ################################################################################
 ################################################################################
 ################################################################################
