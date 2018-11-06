@@ -1,15 +1,30 @@
 import ROOT
+import yaml # WARNING use this environment ~/env/setupPyTools27.env to enable yaml package!!!
+import sys
 
+################################################################################
+################################################################################
+################################################################################
 class nLegendCaptions(Exception):
     pass
 
 class objectPosition(Exception):
     pass
 
-################################################################################
-################################################################################
-class histList:
+class noAttribute(Exception):
+    pass
 
+class notUsedAttribute(Exception):
+    pass
+
+class noMandatoryAttribute(Exception):
+    pass
+################################################################################
+################################################################################
+################################################################################
+class helperClass:
+
+################################################################################
 ################################################################################
     def __init__(self):
         self.histColor = [ROOT.kBlack, ROOT.kRed-7, ROOT.kBlue, ROOT.kGreen+2, ROOT.kCyan+1, ROOT.kRed+2, ROOT.kOrange, ROOT.kViolet+2, ROOT.kGray]
@@ -17,6 +32,7 @@ class histList:
         self.leg = None
         self.canvas = None
 
+################################################################################
 ################################################################################
     def getCanvas(self, cfg):
         if (self.canvas == None):
@@ -47,6 +63,7 @@ class histList:
         return self.canvas
 
 
+################################################################################
 ################################################################################
     def getLegend(self, hists, cfg):
         if self.leg is None:
@@ -89,23 +106,30 @@ class histList:
         return self.leg
 
 ################################################################################
+################################################################################
     def getProcessedHists(self, cfg):
+        try:
+            self.fileName = cfg['fileName']
+            cfg.pop('fileName')
+        except KeyError:
+            raise noMandatoryAttribute("mandatory attribute: <fileName> is missing")
+        try:
+            dirPrefix = cfg['dirPrefix']
+            cfg.pop('dirPrefix')
+        except KeyError:
+            raise noMandatoryAttribute("mandatory attribute: <dirPrefix> is missing")
+        try:
+            histName = cfg['histName']
+            cfg.pop('histName')
+        except KeyError:
+            raise noMandatoryAttribute("mandatory attribute: <histName> is missing")
+
         if ("histColor" in cfg):
             self.histColor = cfg['histColor'] + self.histColor
             cfg.pop('histColor')
         if ("markerStyle" in cfg):
             self.markerStyle = cfg['markerStyle'] + self.markerStyle
             cfg.pop('markerStyle')
-
-        if ("fileName" in cfg):
-            self.fileName = cfg['fileName']
-            cfg.pop('fileName')
-        if ("dirPrefix" in cfg):
-            dirPrefix = cfg['dirPrefix']
-            cfg.pop('dirPrefix')
-        if ("histName" in cfg):
-            histName = cfg['histName']
-            cfg.pop('histName')
 
         self.hists = []
         for i in range(0,len(self.fileName)):
@@ -191,3 +215,155 @@ class histList:
                 self.hists.append(hist)         
         return self.hists
 
+#  def processSedMe(globalCfg):
+#      sedMePairs = []
+#      for cfgIterator in globalCfg:
+#          print ("")
+#          cfg = globalCfg[cfgIterator]
+#          strToPrintInBeginning = "********** " + cfgIterator + " **********"
+#          print (strToPrintInBeginning )
+#          #  print ("")
+#          #  print (cfg)
+#          #  print ("")
+#          yamlKey = 'fileName'
+#          if (yamlKey in cfg):
+#                  dummy = cfg[yamlKey]
+#                  print (yamlKey + ":")
+#                  print (dummy)
+#                  print ("")
+#
+#          yamlKey = 'legTitle'
+#          if (yamlKey in cfg):
+#                  dummy = cfg[yamlKey]
+#                  print (yamlKey + ":")
+#                  print (dummy)
+#                  print ("")
+#
+#          for innerIter in cfg:
+#              if "sedMe" in innerIter:
+#                  sedMePairs.append([innerIter, cfg[innerIter]])
+#
+#
+#          print ("*"*len(strToPrintInBeginning))
+#
+#      print ("")
+#      print ("sedMePairs: ")
+#      print (sedMePairs)
+#      sys.exit()
+
+################################################################################
+################################################################################
+    def getTextLabels(self, hists, cfg):
+        outTextLabels = []
+        prefix = 'textLabel'
+        textLabels = [x for x in cfg if x.startswith(prefix)]
+        for iLabel in textLabels:
+            labelCfg = cfg[iLabel]
+            try:
+                if (len(labelCfg["pos"])!=2):
+                    raise objectPosition("Canvas position should have 2 coordinates!")
+            except KeyError:
+                raise noAttribute("missing mandatory attribute <pos> for: %s" % (iLabel))
+            xCoord = hists[0].GetXaxis().GetXmin() + (hists[0].GetXaxis().GetXmax() - hists[0].GetXaxis().GetXmin()) * labelCfg["pos"][0]
+            yCoord = hists[0].GetMinimum() + (hists[0].GetMaximum() - hists[0].GetMinimum()) * labelCfg["pos"][1]
+            labelCfg.pop("pos")
+            try:
+                ttext = ROOT.TText(xCoord,yCoord,labelCfg["title"])
+                labelCfg.pop("title")
+                outTextLabels.append(ttext)
+            except KeyError:
+                raise noAttribute("missing mandatory attribute <title> for: %s" % (iLabel))
+
+            # TODO experimental functionality
+            availableSetFunctions = [x.replace('Set','') for x in dir(ROOT.TText()) if x.startswith('Set')]
+            for iSetFunc in availableSetFunctions:
+                if (iSetFunc in labelCfg):
+                    if (type(labelCfg[iSetFunc]) == str):
+                        eval('ttext.Set%s("%s")' % (iSetFunc, labelCfg[iSetFunc]))
+                    else:
+                        eval('ttext.Set%s(%s)' % (iSetFunc, labelCfg[iSetFunc]))
+                    labelCfg.pop(iSetFunc)
+
+            if (len(labelCfg)!=0):
+                raise notUsedAttribute("there is(are) not used attribute(s) for textLabel: %s" % (iLabel))
+            cfg.pop(iLabel)
+
+        return outTextLabels
+
+################################################################################
+################################################################################
+    def getLatexLabels(self, hists, cfg):
+        return self.getLabels(ROOT.TLatex, 'latexLabel', hists, cfg)
+
+################################################################################
+################################################################################
+    def getTextLabels(self, hists, cfg):
+        return self.getLabels(ROOT.TText, 'textLabel', hists, cfg)
+
+################################################################################
+################################################################################
+    def getLabels(self, callFunction, prefix, hists, cfg):
+        outLabels = []
+        Labels = [x for x in cfg if x.startswith(prefix)]
+        for iLabel in Labels:
+            labelCfg = cfg[iLabel]
+            try:
+                if (len(labelCfg["pos"])!=2):
+                    raise objectPosition("label position should have 2 coordinates!")
+            except KeyError:
+                raise noAttribute("missing mandatory attribute <pos> for: %s" % (iLabel))
+            xCoord = hists[0].GetXaxis().GetXmin() + (hists[0].GetXaxis().GetXmax() - hists[0].GetXaxis().GetXmin()) * labelCfg["pos"][0]
+            yCoord = hists[0].GetMinimum() + (hists[0].GetMaximum() - hists[0].GetMinimum()) * labelCfg["pos"][1]
+            labelCfg.pop("pos")
+            try:
+                tlabel = callFunction(xCoord,yCoord,labelCfg["title"])
+                labelCfg.pop("title")
+                outLabels.append(tlabel)
+            except KeyError:
+                raise noAttribute("missing mandatory attribute <title> for: %s" % (iLabel))
+
+            # TODO experimental functionality
+            availableSetFunctions = [x.replace('Set','') for x in dir(callFunction()) if x.startswith('Set')]
+            for iSetFunc in availableSetFunctions:
+                if (iSetFunc in labelCfg):
+                    if (type(labelCfg[iSetFunc]) == str):
+                        eval('tlabel.Set%s("%s")' % (iSetFunc, labelCfg[iSetFunc]))
+                    else:
+                        eval('tlabel.Set%s(%s)' % (iSetFunc, labelCfg[iSetFunc]))
+                    labelCfg.pop(iSetFunc)
+
+            if (len(labelCfg)!=0):
+                raise notUsedAttribute("there is(are) not used attribute(s) for textLabel: %s" % (iLabel))
+            cfg.pop(iLabel)
+
+        return outLabels
+################################################################################
+################################################################################
+################################################################################
+def readYamlFile(yamlFile):
+    with open(yamlFile, 'r') as ymlfile:
+        globalCfg = yaml.load(ymlfile)
+        print ("[info]\t Read yaml file: \n\t\t%s" % (yamlFile))
+
+    #  processSedMe(globalCfg)
+
+    # copy default settings to every plot entry:
+    if (globalCfg.get("default") is not None):
+        defaultCfg = globalCfg.get("default")
+        for cfgIterator in globalCfg:
+            cfg = globalCfg[cfgIterator]
+            if (cfg == defaultCfg):
+                continue
+            for cfgIt in defaultCfg:
+                if (cfg.get(cfgIt) is None):
+                    cfg[cfgIt] = defaultCfg.get(cfgIt)
+        globalCfg.pop("default")
+
+    #  DEBUGGING: print dict
+    #  for cfgIterator in globalCfg:
+    #          cfg = globalCfg[cfgIterator]
+    #          if (cfg == defaultCfg):
+    #              continue
+    #          print (cfgIterator)
+    #          print (cfg)
+    return globalCfg

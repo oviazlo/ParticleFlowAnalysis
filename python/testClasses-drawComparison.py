@@ -1,6 +1,6 @@
 from __future__ import print_function
 import unittest
-from classesForDrawComparison import histList, nLegendCaptions
+from classesForDrawComparison import helperClass, nLegendCaptions, notUsedAttribute, noMandatoryAttribute
 import sys
 import yaml # WARNING use this environment ~/env/setupPyTools27.env to enable yaml package!!!
 import ROOT
@@ -26,12 +26,12 @@ class QueueTest(unittest.TestCase):
             self.globalCfg = globalCfg
 
     def setUp(self):
-        self.q = histList()
+        self.q = helperClass()
         self.readConfig()
 
     def testConstructor(self):
         self.assertTrue(self.globalCfg.get('default') is None)
-        self.assertTrue(len(self.globalCfg) == 3)
+        self.assertTrue(len(self.globalCfg) == 5)
 
     def testGetProcessedHists(self):
         cfg = self.globalCfg['thetaRes_DR11_FCCee_vs_CLIC_vsCosTheta']
@@ -42,6 +42,7 @@ class QueueTest(unittest.TestCase):
 
     def testGetLegend(self):
         cfg = self.globalCfg['thetaRes_DR11_FCCee_vs_CLIC_vsCosTheta']
+        #  print(cfg)
         hists = self.q.getProcessedHists(cfg)
         tmpCfg = dict(cfg)
         self.assertRaises(nLegendCaptions, self.q.getLegend,hists,tmpCfg)
@@ -49,8 +50,20 @@ class QueueTest(unittest.TestCase):
         leg = self.q.getLegend(hists,cfg)
         # second call of the functino getLegend:
         self.assertTrue(self.q.getLegend(hists,cfg))
-        print(cfg)
+        #  print(cfg)
         
+    def testGetTextLabels(self):
+        cfg = dict(self.globalCfg['testTextLabels'])
+        cfg.pop('histName')
+        self.assertRaises(noMandatoryAttribute,self.q.getProcessedHists,cfg)
+
+        cfg = dict(self.globalCfg['testTextLabels2'])
+        hists = self.q.getProcessedHists(cfg)
+        self.assertRaises(notUsedAttribute,self.q.getTextLabels,hists,cfg)
+
+        cfg = dict(self.globalCfg['testTextLabels'])
+        hists = self.q.getProcessedHists(cfg)
+        labels = self.q.getTextLabels(hists,cfg)
 
 # ----------------------------------------------------------------------
 
