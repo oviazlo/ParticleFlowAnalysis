@@ -1,4 +1,5 @@
 import ROOT
+from ROOT import TMath
 import yaml # WARNING use this environment ~/env/setupPyTools27.env to enable yaml package!!!
 import sys
 
@@ -9,6 +10,9 @@ class nLegendCaptions(Exception):
     pass
 
 class objectPosition(Exception):
+    pass
+
+class wrongRange(Exception):
     pass
 
 class noAttribute(Exception):
@@ -31,7 +35,9 @@ class helperClass:
 ################################################################################
     def __init__(self):
         self.histColor = [ROOT.kBlack, ROOT.kRed-7, ROOT.kBlue, ROOT.kGreen+2, ROOT.kCyan+1, ROOT.kRed+2, ROOT.kOrange, ROOT.kViolet+2, ROOT.kGray]
+        self.funcColor = [ROOT.kBlack, ROOT.kRed-7, ROOT.kBlue, ROOT.kGreen+2, ROOT.kCyan+1, ROOT.kRed+2, ROOT.kOrange, ROOT.kViolet+2, ROOT.kGray]
         self.markerStyle = [ROOT.kOpenCircle, ROOT.kOpenSquare, ROOT.kOpenTriangleUp, ROOT.kOpenDiamond, ROOT.kOpenCross, ROOT.kOpenCircle, ROOT.kOpenCircle]
+        self.customFunctions = {"dscb": fnc_dscb}
         self.leg = None
         self.canvas = None
 
@@ -50,16 +56,20 @@ class helperClass:
                 c1 = ROOT.TCanvas( 'c1', 'A Simple Graph Example', 0, 0, 800, 700 )
 
             if ("gridX" in cfg):
-                c1.SetGridx(cfg['gridX'])
+                if(cfg["gridX"]==True):
+                    c1.SetGridx(cfg['gridX'])
                 cfg.pop('gridX')
             if ("gridY" in cfg):
-                c1.SetGridy(cfg['gridY'])
+                if(cfg["gridY"]==True):
+                    c1.SetGridy(cfg['gridY'])
                 cfg.pop('gridY')
             if ("logX" in cfg):
-                c1.cd(1).SetLogx(cfg['logX'])
+                if(cfg["logX"]==True):
+                    c1.cd(1).SetLogx(cfg['logX'])
                 cfg.pop('logX')
             if ("logY" in cfg):
-                c1.cd(1).SetLogy(cfg['logY'])
+                if(cfg["logY"]==True):
+                    c1.cd(1).SetLogy(cfg['logY'])
                 cfg.pop('logY')
             self.canvas = c1
 
@@ -78,6 +88,8 @@ class helperClass:
             if ("legPos" in cfg):
                 leg = ROOT.TLegend(cfg["legPos"][0],cfg["legPos"][1],cfg["legPos"][2],cfg["legPos"][3])
                 cfg.pop('legPos')
+            else:
+                return None
             if ("legTextSize" in cfg):
                 leg.SetTextSize(cfg["legTextSize"])
                 cfg.pop('legTextSize')
@@ -135,6 +147,7 @@ class helperClass:
             cfg.pop('markerStyle')
 
         self.hists = []
+        histFuncs = []
         for i in range(0,len(self.fileName)):
             myFile = ROOT.TFile.Open(dirPrefix+self.fileName[i],"read")
             #  print ("[info]\t Open file: \n\t\t%s" % (dirPrefix+self.fileName[i]))
@@ -150,6 +163,19 @@ class helperClass:
                         print ('[FATAL]\t Terminating...')
                         sys.exit()
                 hist = myFile.Get(histName[k])
+
+                funcList = hist.GetListOfFunctions()
+                funcCounter = 0
+                for iFunc in funcList:
+                    if type(iFunc) == ROOT.TF1:
+                        funcCounter = funcCounter + 1
+                        if ("drawHistFuncs" in cfg):
+                            if (cfg["drawHistFuncs"]==True):
+                                tmpFunc = iFunc.Clone("histFunc_%d_%d" % (i,funcCounter))
+                                tmpFunc.SetLineColor(self.histColor[0])
+                                tmpFunc.SetNpx(1000)
+                                histFuncs.append(tmpFunc)
+                        iFunc.Delete()
 
                 hist.SetLineColor(self.histColor[0])
                 hist.SetMarkerColor(self.histColor[0])
@@ -215,8 +241,13 @@ class helperClass:
                     hist.GetXaxis().SetTitleSize(float(cfg['xAxisTitleSize']))
                     cfg.pop('xAxisTitleSize')
 
+
                 self.hists.append(hist)         
-        return self.hists
+
+        if ("drawHistFuncs" in cfg):
+            cfg.pop('drawHistFuncs')
+
+        return self.hists, histFuncs
 
 ################################################################################
 ################################################################################
@@ -278,7 +309,8 @@ class helperClass:
                     raise objectPosition("label position should have 2 coordinates!")
             except KeyError:
                 raise noAttribute("missing mandatory attribute <pos> for: %s" % (iLabel))
-            xCoord = hists[0].GetXaxis().GetXmin() + (hists[0].GetXaxis().GetXmax() - hists[0].GetXaxis().GetXmin()) * labelCfg["pos"][0]
+            xAxis = hists[0].GetXaxis()
+            xCoord = xAxis.GetBinLowEdge(xAxis.GetFirst()) + (xAxis.GetBinUpEdge(xAxis.GetLast()) - xAxis.GetBinLowEdge(xAxis.GetFirst())) * labelCfg["pos"][0]
             yCoord = hists[0].GetMinimum() + (hists[0].GetMaximum() - hists[0].GetMinimum()) * labelCfg["pos"][1]
             labelCfg.pop("pos")
             try:
@@ -320,6 +352,48 @@ class helperClass:
 
 ################################################################################
 ################################################################################
+    def getTF1s(self, cfg):
+        outFuncs = []
+        Labels = [x for x in cfg if x.startswith("tf")]
+        for i in range(0,len(Labels)):
+            iLabel = Labels[i]
+            labelCfg = cfg[iLabel]
+            parameters = []
+            funcName = ""
+
+            try:
+                if (len(labelCfg["range"])!=2):
+                    raise wrongRange("range should have 2 values!")
+                parameters = [float(x) for x in labelCfg["parameters"].split()]
+                if (len(parameters)==0):
+                    raise noMandatoryAttribute("there should be at least parameter passed for a fucntions!")
+                funcName = labelCfg["func"]
+            except KeyError:
+                raise noAttribute("missing some mandatory attribute for: %s\nMandatory attributes: range[2], parameters, func" % (iLabel))
+
+            if funcName in self.customFunctions:
+                funcName = self.customFunctions[funcName]
+            func = ROOT.TF1("func_%d" % (i),funcName,float(labelCfg["range"][0]),float(labelCfg["range"][1]),len(parameters))
+            func.SetParameters(*parameters)
+            func.SetNpx(1000)
+            func.SetLineColor(self.funcColor[0])
+            outFuncs.append(func)
+
+            self.funcColor.pop(0)
+            labelCfg.pop("range")
+            labelCfg.pop("func")
+            labelCfg.pop("parameters")
+
+            if (len(labelCfg)!=0):
+                print("\nNot used attributes in <%s>:" % (iLabel))
+                print(labelCfg)
+                print("")
+                raise notUsedAttribute("there is(are) not used attribute(s) in <%s>. See above!" % (iLabel))
+            cfg.pop(iLabel)
+
+        return outFuncs 
+
+################################################################################
 ################################################################################
 def readYamlFile(yamlFile):
     with open(yamlFile, 'r') as ymlfile:
@@ -351,3 +425,31 @@ def readYamlFile(yamlFile):
     #          print (cfgIterator)
     #          print (cfg)
     return globalCfg
+
+################################################################################
+################################################################################
+def fnc_dscb(xx, pp):
+    x   = xx[0]
+    N   = pp[0]
+    mu  = pp[1]
+    sig = pp[2]
+    a1  = pp[3]
+    p1  = pp[4]
+    a2  = pp[5]
+    p2  = pp[6]
+
+    u   = (x-mu)/sig
+    A1  = TMath.Power(p1/TMath.Abs(a1),p1)*TMath.Exp(-a1*a1/2.0)
+    A2  = TMath.Power(p2/TMath.Abs(a2),p2)*TMath.Exp(-a2*a2/2.0)
+    B1  = p1/TMath.Abs(a1) - TMath.Abs(a1)
+    B2  = p2/TMath.Abs(a2) - TMath.Abs(a2)
+
+    result = N
+    if (u < -a1):
+        result *= A1*TMath.Power(B1-u,-p1)
+    if (-a1 < u < a2):
+        result *= TMath.Exp(-u*u/2.0)
+    if (u > a2):
+        result *= A2*TMath.Power(B2+u,-p2)
+
+    return result

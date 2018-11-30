@@ -31,7 +31,7 @@ class QueueTest(unittest.TestCase):
 
     def testConstructor(self):
         self.assertTrue(self.globalCfg.get('default') is None)
-        self.assertTrue(len(self.globalCfg) == 7)
+        self.assertTrue(len(self.globalCfg) == 9)
 
     def testGetProcessedHists(self):
         cfg = self.globalCfg['thetaRes_DR11_FCCee_vs_CLIC_vsCosTheta']
@@ -70,6 +70,16 @@ class QueueTest(unittest.TestCase):
         cfg = dict(self.globalCfg['testLatexLabels2'])
         hists = self.q.getProcessedHists(cfg)
         self.assertRaises(pythonEvalFuncError,self.q.getLatexLabels,hists,cfg)
+
+    def testTF1_nFuncs(self):
+        cfg = dict(self.globalCfg['testTF1_1'])
+        funcs = self.q.getTF1s(cfg)
+        self.assertTrue(len(funcs)==2)
+
+    def testTF1_wrongFuncName(self):
+        cfg = dict(self.globalCfg['testTF1_2'])
+        funcs = self.q.getTF1s(cfg)
+        self.assertTrue(len(funcs)==1)
 
 # ----------------------------------------------------------------------
 

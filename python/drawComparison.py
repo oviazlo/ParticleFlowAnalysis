@@ -30,11 +30,14 @@ def main(yamlFile):
         # create objects to draw
         #********************************************************************************
         classHelper = helperClass()
-        hists = classHelper.getProcessedHists(cfg)
+        hists, funcs = classHelper.getProcessedHists(cfg)
         leg = classHelper.getLegend(hists, cfg)
         canvas = classHelper.getCanvas(cfg)
         labels = classHelper.getTextLabels(hists,cfg)
         labels += classHelper.getLatexLabels(hists,cfg)
+        funcs += classHelper.getTF1s(cfg)
+
+        print("# of labels to be drawn: %d" % (len(labels)))
 
         #********************************************************************************
         # Draw Everything
@@ -56,6 +59,9 @@ def main(yamlFile):
         for iLabel in labels:
             iLabel.Draw("same")
 
+        for iFunc in funcs:
+            iFunc.Draw("same")
+
         #********************************************************************************
         # Save plots
         #********************************************************************************
@@ -66,10 +72,9 @@ def main(yamlFile):
             cfg.pop('histNamePrefix')
         if ("savePictDir" in cfg):
             pythonFileDir = os.path.dirname(os.path.realpath(__file__))
-            fullPath_savePictDir = pythonFileDir + '/pictures/' + cfg['savePictDir'] + '/' + outHistName
-            if not os.path.exists(fullPath_savePictDir):
-                os.makedirs(fullPath_savePictDir)
             outHistName = cfg['savePictDir'] + '/' + outHistName
+            if not os.path.exists("pictures/"+cfg['savePictDir']):
+                os.makedirs("pictures/"+cfg['savePictDir'])
             cfg.pop('savePictDir')
         canvas.SaveAs("pictures/"+outHistName+".png")
         canvas.SaveAs("pictures/"+outHistName+".pdf")
