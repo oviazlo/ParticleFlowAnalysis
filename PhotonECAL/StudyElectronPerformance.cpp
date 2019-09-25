@@ -3,6 +3,7 @@
 #include <truthParticleSelector.h>
 #include <boostServiceFunctions.h>
 #include "truthCondition.h"
+#include "energyFill.h"
 // #include <globalConfig.h>
 
 using namespace std;
@@ -15,7 +16,7 @@ using namespace config;
 // 2112:	neutron
  
 // COLLECTIONS TO USE
-vector<string> particleFillCollections = {"MCParticle","PandoraPFOs"};
+vector<string> particleFillCollections = {"MCParticlesSkimmed","PandoraPFOs"};
 vector<vector<int> > PFOPartTypes =      {{},			{11}};
 vector<string> energyFillCollections = {};
 // vector<string> additionalCollections = {"SiTracks"};
@@ -160,6 +161,14 @@ int main (int argn, char* argv[]) {
 	}
 	}
 
+    // int init();
+    // int fillEvent(const EVENT::LCEvent*);
+    // void setCollectionName(const string _collectionName){collectionName = _collectionName;}
+    // int writeToFile(TFile* outFile);
+
+    energyFill* energyFillInst = new energyFill("ECALBarrel");
+    energyFillInst->init();
+    energyFillInst->setCollectionName("ECALBarrel");
 
 	// LOOP OVER EVENTS
 	if (vm.count("debug")) cout << "Reading first event..." << endl;
@@ -168,7 +177,7 @@ int main (int argn, char* argv[]) {
 	if (vm.count("debug"))
 		cout << "First event pointer: " << event << endl;
 
-	truthCondition::instance()->setMCTruthCollectionName("MCParticle");
+	truthCondition::instance()->setMCTruthCollectionName("MCParticlesSkimmed");
 	if (vm.count("debug"))
 		truthCondition::instance()->setDebugFlag(true);
 
@@ -188,7 +197,9 @@ int main (int argn, char* argv[]) {
 		eventCounter++;
 	
 		for(auto i=0; i<selectors.size(); i++){
-			selectors[i]->selectEvent(event);
+			bool eventPass = selectors[i]->selectEvent(event);
+            if (i==0 && eventPass)
+                energyFillInst->fillEvent(event);
 		}
 		event = m_reader->readNextEvent();
 	}
@@ -198,6 +209,11 @@ int main (int argn, char* argv[]) {
 		selectors[i]->writeToFile(outFile);
 		outFile->Close();
 	}
+
+    TFile *outFile = new TFile(("energyFill_"+ selectors[0]->getPostFixString() +".root").c_str(), "RECREATE");
+    energyFillInst->writeToFile(outFile);
+    outFile->Close();
+
 
 }
 

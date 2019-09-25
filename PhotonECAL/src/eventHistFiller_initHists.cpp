@@ -12,7 +12,7 @@ int eventHistFiller::init(){
 	createTH1I("PFOType","PFO particle type; Type; Counts",2200,0,2200); // max part.type = 2112 (neutron)
 	
 	createTH1D("nPFOsVsTheta_all","nPFOs vs Theta; Theta; Counts per Event",180*2,0,180);
-	createTH1D("nPFOsVsCosTheta_all","nPFOs vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
+	createTH1D("nPFOsVsCosTheta_all","nPFOs vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
 
 	createTH1D("totalEnergyVsTheta","Sum of PFOs Energy vs Theta; Theta; Energy [GeV]",180*2,0,180);
 	createTH1D("matchedEnergyVsTheta","Sum of matched PFOs Energy vs Theta; Theta; Energy [GeV]",180*2,0,180);
@@ -22,34 +22,34 @@ int eventHistFiller::init(){
 
 	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++) {
 		createTH1D(("nPFOsVsTheta_"+it->second).c_str(),("n"+it->second+"s vs Theta; Theta; Counts per Event").c_str(),180*2,0,180);
-		createTH1D(("nPFOsVsCosTheta_"+it->second).c_str(),("n"+it->second+"s vs cos(#theta); cos(#theta); Counts per Event").c_str(),180*2,-1,1);
-		createTH1D(("nPFOsVsCosThetaFailType_"+it->second).c_str(),("n"+it->second+"s vs cos(#theta); cos(#theta); Counts per Event").c_str(),180*2,-1,1);
+		createTH1D(("nPFOsVsCosTheta_"+it->second).c_str(),("n"+it->second+"s vs cos(#theta); cos(#theta); Counts per Event").c_str(),15*2,-1,1);
+		createTH1D(("nPFOsVsCosThetaFailType_"+it->second).c_str(),("n"+it->second+"s vs cos(#theta); cos(#theta); Counts per Event").c_str(),15*2,-1,1);
 
 	}
 	
 	createTH1D("nTruthPartsVsTheta","nTruthParts vs Theta; Theta; Counts per Event",180*2,0,180);
-	createTH1D("nTruthPartsVsCosTheta","nTruthParts vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
+	createTH1D("nTruthPartsVsCosTheta","nTruthParts vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
 	createTH1D("nTruthPartsVsEnergy","nTruthParts vs Energy ;Energy [GeV]; Counts per Event",100,0.5,100.5); 
 
 	createTH1D("efficiencyVsTheta","efficiency vs Theta; Theta; Counts per Event",180*2,0,180);
-	createTH1D("efficiencyVsCosTheta","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
+	createTH1D("efficiencyVsCosTheta","efficiency vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
 	createTH1D("efficiencyVsEnergy","efficiency vs Energy; Energy [GeV]; Counts per Event",100,0.5,100.5);
 	createTH1D("efficiencyVsEnergy_onlyType","efficiency vs Energy; Energy [GeV]; Counts per Event",100,0.5,100.5);
 
 
-	createTH1D("efficiencyVsCosThetaFailType_all","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
-	createTH1D("efficiencyVsCosThetaFailType_onlyPion","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
-	createTH1D("efficiencyVsCosThetaFailType_onlyMuon","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
-	createTH1D("efficiencyVsCosThetaFailType_onlyElectron","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
-	createTH1D("efficiencyVsCosThetaFailType_noChargedParts","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
-	createTH1D("efficiencyVsCosThetaFailType_chargePartsOfTwoOrMoreTypes","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
-	createTH1D("efficiencyVsCosThetaFailAngularMatching","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
-	createTH1D("efficiencyVsCosThetaFailEnergyMatching","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
+	createTH1D("efficiencyVsCosThetaFailType_all","efficiency vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
+	createTH1D("efficiencyVsCosThetaFailType_onlyPion","efficiency vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
+	createTH1D("efficiencyVsCosThetaFailType_onlyMuon","efficiency vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
+	createTH1D("efficiencyVsCosThetaFailType_onlyElectron","efficiency vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
+	createTH1D("efficiencyVsCosThetaFailType_noChargedParts","efficiency vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
+	createTH1D("efficiencyVsCosThetaFailType_chargePartsOfTwoOrMoreTypes","efficiency vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
+	createTH1D("efficiencyVsCosThetaFailAngularMatching","efficiency vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
+	createTH1D("efficiencyVsCosThetaFailEnergyMatching","efficiency vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
 
-	createTH1D("efficiencyVsCosThetaSum","efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
+	createTH1D("efficiencyVsCosThetaSum","efficiency vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
 
 	for (int iCount=0; iCount<=9; iCount++){
-		createTH1D(("efficiencyVsCosThetaCat"+DoubToStr(iCount)).c_str(),"efficiency vs cos(#theta); cos(#theta); Counts per Event",180*2,-1,1);
+		createTH1D(("efficiencyVsCosThetaCat"+DoubToStr(iCount)).c_str(),"efficiency vs cos(#theta); cos(#theta); Counts per Event",15*2,-1,1);
 	}
 
 	createTH1I("truthParticle_isDecayedInTracker","isDecayedInTracker; isDecayedInTracker flag; Counts",2,-0.5,1.5);
@@ -70,7 +70,7 @@ int eventHistFiller::init(){
 
 	for (auto it = config::pfoTypeIntStringMap.begin(); it != config::pfoTypeIntStringMap.end(); it++){
 		createTH1D(("phiResolution_"+it->second).c_str(),(it->second+" Phi resolution; dPhi [rad]; Counts").c_str(),20000,-0.2,0.2);
-		createTH1D(("thetaResolution_"+it->second).c_str(),(it->second+" Theta resolution; dTheta [rad]; Counts").c_str(),400,-0.01,0.01);
+		createTH1D(("thetaResolution_"+it->second).c_str(),(it->second+" Theta resolution; dTheta [rad]; Counts").c_str(),2000,-0.05,0.05);
 		createTH1D(("energyResolution_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),625,0,125);
 		createTH1D(("energyResolution2_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),625,0,125);
 		createTH1D(("energyResolution3_"+it->second).c_str(),(it->second+" Energy resolution; E [GeV]; Counts").c_str(),625,0,125);
@@ -137,6 +137,11 @@ int eventHistFiller::writeToFile(TFile* outFile){
 	getHistFromMap("nPFOsVsTheta_all")->Divide(getHistFromMap("nTruthPartsVsTheta"));
 	getHistFromMap("nPFOsVsCosTheta_all")->Sumw2();
 	getHistFromMap("nPFOsVsCosTheta_all")->Divide(getHistFromMap("nTruthPartsVsCosTheta"));
+
+	createTEff("efficiencyVsTheta","nTruthPartsVsTheta");
+	createTEff("efficiencyVsCosTheta","nTruthPartsVsCosTheta");
+	createTEff("efficiencyVsEnergy","nTruthPartsVsEnergy");
+	createTEff("efficiencyVsEnergy_onlyType","nTruthPartsVsEnergy");
 
 	getHistFromMap("efficiencyVsTheta")->Sumw2();
 	getHistFromMap("efficiencyVsTheta")->Divide(getHistFromMap("nTruthPartsVsTheta"));
@@ -208,54 +213,9 @@ int eventHistFiller::writeToFile(TFile* outFile){
 		cout << "[ERROR|writeToFile]\tno output file is found!" << endl;
 		return -1;
 	}
-	outFile->cd();
-	TDirectory *mainDir = outFile->mkdir(outDirName.c_str());
-	mainDir->cd();
 
-	map<string,unsigned int> prefixCounter;
-	map<string,string> namePrefixMap;
-	map<string,bool> isPrefixSubdirCreated;
-	map<string,string> nameWithoutPrefixMap;
-	for(auto const &it : histMap) {
-		string histName = it.first;
-		vector<string> tmpStrVec = GetSplittedWords(histName,"_");
-		if (tmpStrVec.size()<2) 
-			continue;
-		string prefix = "";
-		for (int i=0; i<tmpStrVec.size()-1; i++){
-			if (i==tmpStrVec.size()-2)
-				prefix += tmpStrVec[i];
-			else
-				prefix += tmpStrVec[i] + "_";
-		}
-		nameWithoutPrefixMap[histName] = tmpStrVec[tmpStrVec.size()-1];
-		prefixCounter[prefix] += 1;
-		isPrefixSubdirCreated[prefix] = false;
-		namePrefixMap[histName] = prefix;
-	}
-	
-
-	for(auto const &it : histMap) {
-		string histName = it.first;
-		string prefix = namePrefixMap[histName];
-		if (prefixCounter[prefix]<2){
-			mainDir->cd();
-			it.second->Write();
-		}
-		else{
-			if (isPrefixSubdirCreated[prefix]==false){
-				mainDir->mkdir(prefix.c_str());
-				isPrefixSubdirCreated[prefix]=true;
-			}
-			mainDir->cd(prefix.c_str());
-			it.second->SetName(nameWithoutPrefixMap[histName].c_str());
-			it.second->Write();
-			mainDir->cd();
-		}
-	}
-	outFile->cd();
+	objectFill::writeToFile(outFile);
 	return 0;
-
 
 }
 

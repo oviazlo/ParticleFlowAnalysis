@@ -170,9 +170,35 @@ vector <unsigned int> eventHistFiller::mergeClusters(){
 
 					double tmpEnergy = recoPart->getEnergy();
 					if (useCaloInfoDuringEnergyMerging){
-						if (config::vm.count("debug"))
-							cout << "[SAHSA]\tnClusters: " << recoPart->getClusters().size() << endl;
 						tmpEnergy = recoPart->getClusters()[0]->getEnergy();
+						if (config::vm.count("debug")){
+							auto clusterPos = recoPart->getClusters()[0]->getPosition();
+							double clusterDist = sqrt(pow(clusterPos[0],2)+pow(clusterPos[1],2)+pow(clusterPos[2],2));
+							TVector3 *clusterMom = new TVector3();
+							clusterMom->SetX(clusterPos[0]*recoPart->getClusters()[0]->getEnergy()/clusterDist);
+							clusterMom->SetY(clusterPos[1]*recoPart->getClusters()[0]->getEnergy()/clusterDist);
+							clusterMom->SetZ(clusterPos[2]*recoPart->getClusters()[0]->getEnergy()/clusterDist);
+							double clusterPhi = clusterMom->Phi()*TMath::RadToDeg();
+							double clusterTheta = clusterMom->Theta()*TMath::RadToDeg();
+
+							cout << "[SASHA]\tnClusters: " << recoPart->getClusters().size() << endl;
+							cout << "[SASHA]\tpartEnergy: " << recoPart->getEnergy() << endl;
+							cout << "[SASHA]\tclusterIPhi: " << recoPart->getClusters()[0]->getIPhi()*TMath::RadToDeg() << "; clusterITheta: " << recoPart->getClusters()[0]->getITheta()*TMath::RadToDeg() << endl;
+							cout << "[SASHA]\tclusterTheta: " << clusterTheta << "; clusterPhi: " << clusterPhi << endl;
+
+
+							EVENT::ReconstructedParticle* candPartTemp = static_cast<EVENT::ReconstructedParticle*>(PFOCollection->getElementAt(idOfPartCandidate));
+							clusterPos = candPartTemp->getClusters()[0]->getPosition();
+							clusterDist = sqrt(pow(clusterPos[0],2)+pow(clusterPos[1],2)+pow(clusterPos[2],2));
+							clusterMom->SetX(clusterPos[0]*candPartTemp->getClusters()[0]->getEnergy()/clusterDist);
+							clusterMom->SetY(clusterPos[1]*candPartTemp->getClusters()[0]->getEnergy()/clusterDist);
+							clusterMom->SetZ(clusterPos[2]*candPartTemp->getClusters()[0]->getEnergy()/clusterDist);
+							clusterPhi = clusterMom->Phi()*TMath::RadToDeg();
+							clusterTheta = clusterMom->Theta()*TMath::RadToDeg();
+							cout << "[SASHA]\tcandClusterTheta: " << clusterTheta << "; candClusterPhi: " << clusterPhi << endl;
+
+							
+						}
 						// tmpEnergy = partCandidate->getEnergy();
 					}
 

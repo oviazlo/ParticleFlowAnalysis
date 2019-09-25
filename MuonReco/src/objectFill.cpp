@@ -90,7 +90,15 @@ int objectFill::writeToFile(TFile* outFile){
 	// return 0;
 }
 
-
+double objectFill::get_dPhi(double phi_reco, double phi_truth){
+	double dPhi = phi_reco - phi_truth;
+	if (fabs(dPhi)<=180.0)
+		return dPhi;
+	if (dPhi>0.0)
+		return dPhi - 360.0;
+	else
+		return 360.0 + dPhi;
+}
 
 void objectFill::createHistsFromMap(const map<string,histStruct> inHistStructMap, const string prefix){
 	for(auto const &ent1 : inHistStructMap){

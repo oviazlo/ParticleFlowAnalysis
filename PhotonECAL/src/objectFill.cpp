@@ -1,4 +1,5 @@
 #include <objectFill.h>
+#include <TGraphAsymmErrors.h>
 
 objectFill::objectFill(string _outDirName){
 	outDirName = _outDirName;
@@ -8,6 +9,9 @@ objectFill::~objectFill(){
 	for(auto const &it : histMap) {
 		it.second->Delete();
 	}
+	// for(auto const &it : tEffMap) {
+	//         it.second->~TEfficiency();
+	// }
 }
 
 int objectFill::writeToFile(TFile* outFile){
@@ -16,24 +20,75 @@ int objectFill::writeToFile(TFile* outFile){
 		return -1;
 	}
 	outFile->cd();
-	TDirectory *dir = outFile->mkdir(outDirName.c_str());
-	dir->cd();
+	TDirectory *mainDir = outFile->mkdir(outDirName.c_str());
+	mainDir->cd();
+
+	mainDir->mkdir("tEff");
+	mainDir->cd("tEff");
+	for(auto const &it : tEffMap){
+		// cout << "tEff name: " << it.second->GetName();
+		TGraphAsymmErrors *tmpGr = it.second->CreateGraph();
+		tmpGr->SetName(it.second->GetName());
+		tmpGr->Write();
+	}
+	mainDir->cd();
+
+	map<string,unsigned int> prefixCounter;
+	map<string,string> namePrefixMap;
+	map<string,bool> isPrefixSubdirCreated;
+	map<string,string> nameWithoutPrefixMap;
 	for(auto const &it : histMap) {
-		it.second->Write();
+		string histName = it.first;
+		vector<string> tmpStrVec = GetSplittedWords(histName,"_");
+		if (tmpStrVec.size()<2) 
+			continue;
+		string prefix = "";
+		for (int i=0; i<tmpStrVec.size()-1; i++){
+			if (i==tmpStrVec.size()-2)
+				prefix += tmpStrVec[i];
+			else
+				prefix += tmpStrVec[i] + "_";
+		}
+		nameWithoutPrefixMap[histName] = tmpStrVec[tmpStrVec.size()-1];
+		prefixCounter[prefix] += 1;
+		isPrefixSubdirCreated[prefix] = false;
+		namePrefixMap[histName] = prefix;
+	}
+	
+
+	for(auto const &it : histMap) {
+		string histName = it.first;
+		string prefix = namePrefixMap[histName];
+		if (prefixCounter[prefix]<2){
+			mainDir->cd();
+			it.second->Write();
+		}
+		else{
+			if (isPrefixSubdirCreated[prefix]==false){
+				mainDir->mkdir(prefix.c_str());
+				isPrefixSubdirCreated[prefix]=true;
+			}
+			mainDir->cd(prefix.c_str());
+			it.second->SetName(nameWithoutPrefixMap[histName].c_str());
+			it.second->Write();
+			mainDir->cd();
+		}
 	}
 	outFile->cd();
 	return 0;
+	// if (!outFile->IsOpen()){
+	//         cout << "[ERROR|writeToFile]\tno output file is found!" << endl;
+	//         return -1;
+	// }
+	// outFile->cd();
+	// TDirectory *dir = outFile->mkdir(outDirName.c_str());
+	// dir->cd();
+	// for(auto const &it : histMap) {
+	//         it.second->Write();
+	// }
+	// outFile->cd();
+	// return 0;
 }
-
-// vector<EVENT::ReconstructedParticle*> objectFill::getObjVecFromCollection(const EVENT::LCCollection* inCollection){
-//         int nElements = inCollection->getNumberOfElements();
-//         vector<EVENT::ReconstructedParticle*> outVec;
-//         for(int j=0; j < nElements; j++) {
-//                 auto part = dynamic_cast<EVENT::ReconstructedParticle*>(inCollection->getElementAt(j));
-//                 outVec.push_back(part);
-//         }
-//         return outVec;
-// }
 
 double objectFill::get_dPhi(double phi_reco, double phi_truth){
 	double dPhi = phi_reco - phi_truth;
@@ -60,13 +115,19 @@ void objectFill::createHistsFromMap(const map<string,histStruct> inHistStructMap
 }
 
 void objectFill::DeleteHists(){
-	for(auto const &mapElement : histMap)
+	for(auto &mapElement : histMap){
 		delete mapElement.second;
+		histMap.erase(mapElement.first);    
+	}
+	for(auto &mapElement : tEffMap){
+		delete mapElement.second;
+		histMap.erase(mapElement.first);    
+	}
 }
 
 TH1* objectFill::getHistFromMap(string histID){
 	if (histMap[histID]==NULL)
-		cout << "[ERROR]\tobjectFill::getHistFromMap(" << histID << ") no hist in the histMap with name <" << histID << ">" << endl;
+		cout << "[ERROR]\t" + className + "::getHistFromMap(" << histID << ") no hist in the histMap with name <" << histID << ">" << endl;
 	return histMap[histID];
 }
 
@@ -83,4 +144,20 @@ IMPL::ReconstructedParticleImpl* objectFill::CopyReconstructedParticle (const EV
 	pfo->setGoodnessOfPID(pfo_orig->getGoodnessOfPID());
 	pfo->setStartVertex(pfo_orig->getStartVertex());
 	return pfo;
+}
+
+void objectFill::createTH1I(string histName, string histTitle, unsigned int nBins, double leftRange, double rightRange){
+	// string finalHistName = outDirName+"-"+histName;
+	string finalHistName = histName;
+	delete gROOT->FindObject(finalHistName.c_str());
+	TH1I* tmpHist = new TH1I(finalHistName.c_str(),histTitle.c_str(),nBins,leftRange,rightRange);
+	tmpHist->SetDirectory(0);
+	histMap[finalHistName] = tmpHist;
+}
+void objectFill::createTH1D(string histName, string histTitle, unsigned int nBins, double leftRange, double rightRange){
+	string finalHistName = histName;
+	delete gROOT->FindObject(finalHistName.c_str());
+	TH1D* tmpHist = new TH1D(finalHistName.c_str(),histTitle.c_str(),nBins,leftRange,rightRange);
+	tmpHist->SetDirectory(0);
+	histMap[finalHistName] = tmpHist;
 }

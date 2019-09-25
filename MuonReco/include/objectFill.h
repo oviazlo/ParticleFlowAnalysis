@@ -93,6 +93,7 @@ class objectFill{
 		std::map<std::string, TEfficiency*> tEffMap;
 		string outDirName;
 		bool debugFlag;
+		double get_dPhi(double phi_reco, double phi_truth);
 		string className = "objectFill";
 };
 
